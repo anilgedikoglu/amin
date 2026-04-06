@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App background color: AC.greenBg = 0xFFd8f3dc — matches HomeScreen backgroundColor -->
+    <color name="launch_background_color">#d8f3dc</color>
+    <!-- Adaptive icon background -->
+    <color name="ic_launcher_background">#d8f3dc</color>
+</resources>

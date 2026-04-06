@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amin - Dua Uygulaması</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:   #1a4731;
+      --green-main:   #2d6a4f;
+      --green-mid:    #40916c;
+      --green-light:  #74c69d;
+      --green-pale:   #b7e4c7;
+      --green-bg:     #d8f3dc;
+      --gold:         #c9a84c;
+      --gold-light:   #f0d080;
+      --cream:        #fdf8ed;
+      --text-dark:    #1a2e1e;
+      --text-mid:     #2d4a34;
+      --shadow:       0 4px 24px rgba(26,71,49,0.18);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--green-bg);
+      font-family: 'Lora', serif;
+      color: var(--text-dark);
+      overflow: hidden;
+    }
+
+    /* ── APP SHELL ── */
+    #app {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: opacity .35s ease, transform .35s ease;
+      overflow-y: auto;
+    }
+    .screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(16px);
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      width: 100%;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-main));
+      padding: 14px 20px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      flex-shrink: 0;
+    }
+    .topbar-logo {
+      width: 36px; height: 36px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .topbar-title {
+      color: var(--gold-light);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-family: 'Amiri', serif;
+    }
+    .topbar-sub {
+      color: var(--green-pale);
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+    }
+    .back-btn {
+      margin-left: auto;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Lora', serif;
+      transition: background .2s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── ORNAMENT DIVIDER ── */
+    .ornament {
+      text-align: center;
+      color: var(--gold);
+      font-size: 22px;
+      letter-spacing: 6px;
+      margin: 10px 0;
+      opacity: .8;
+    }
+
+    /* ════════════════════════════
+       SCREEN 1 — ANA MENÜ
+    ════════════════════════════ */
+    #screen-home {
+      background: linear-gradient(170deg, var(--green-dark) 0%, var(--green-main) 45%, var(--green-bg) 100%);
+      justify-content: center;
+      gap: 0;
+    }
+
+    .home-header {
+      text-align: center;
+      padding: 0 24px 32px;
+    }
+    .home-bismillah {
+      font-family: 'Amiri', serif;
+      font-size: 28px;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+    .home-bismillah-tr {
+      font-size: 12px;
+      color: var(--green-pale);
+      letter-spacing: 1px;
+      margin-bottom: 28px;
+    }
+    .home-emblem {
+      width: 110px; height: 110px;
+      margin: 0 auto 20px;
+      background: radial-gradient(circle at 40% 40%, var(--gold-light), var(--gold));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px;
+      box-shadow: 0 0 0 8px rgba(201,168,76,.2), 0 0 0 16px rgba(201,168,76,.1), var(--shadow);
+    }
+    .home-app-name {
+      font-family: 'Amiri', serif;
+      font-size: 42px;
+      color: var(--gold-light);
+      letter-spacing: 4px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .home-tagline {
+      font-size: 13px;
+      color: var(--green-pale);
+      letter-spacing: 2px;
+      margin-top: 6px;
+    }
+
+    .home-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0 32px;
+      width: 100%;
+      max-width: 380px;
+    }
+    .main-btn {
+      padding: 18px 24px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Lora', serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      transition: transform .15s, box-shadow .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .main-btn:active { transform: scale(.97); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--green-dark);
+      box-shadow: 0 6px 24px rgba(201,168,76,.5);
+    }
+    .btn-primary:hover { box-shadow: 0 8px 32px rgba(201,168,76,.7); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.12);
+      color: var(--gold-light);
+      border: 2px solid rgba(201,168,76,.5);
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,.2); }
+
+    .home-footer {
+      margin-top: 32px;
+      color: var(--green-pale);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    /* ════════════════════════════
+       SCREEN 2 — NİYET SEÇ
+    ════════════════════════════ */
+    #screen-niyet {
+      background: var(--green-bg);
+    }
+
+    .niyet-intro {
+      text-align: center;
+      padding: 20px 24px 10px;
+      width: 100%;
+    }
+    .niyet-intro h2 {
+      font-family: 'Amiri', serif;
+      font-size: 26px;
+      color: var(--green-dark);
+      letter-spacing: 1px;
+    }
+    .niyet-intro p {
+      font-size: 13px;
+      color: var(--text-mid);
+      margin-top: 4px;
+    }
+
+    .niyet-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 12px 16px 24px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .niyet-card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 12px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 10px rgba(45,106,79,.12);
+      transition: all .2s;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .niyet-card:hover {
+      border-color: var(--green-mid);
+      box-shadow: 0 4px 18px rgba(45,106,79,.25);
+      transform: translateY(-2px);
+    }
+    .niyet-card:active { transform: scale(.97); }
+    .niyet-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .niyet-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--green-dark);
+      line-height: 1.3;
+    }
+    .niyet-sub {
+      font-size: 11px;
+      color: var(--green-mid);
+    }
+    .niyet-card .progress-mini {
+      width: 100%;
+      height: 4px;
+      background: var(--green-bg);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .niyet-card .progress-mini-fill {
+      height: 100%;
+      background: var(--green-mid);
+      border-radius: 2px;
+      transition: width .3s;
+    }
+    .niyet-card.done-card { border-color: var(--gold); background: #fffbf0; }
+    .niyet-card.done-card .niyet-name { color: var(--gold); }
+
+    /* ════════════════════════════
+       SCREEN 3 — DUA SAYAÇ
+    ════════════════════════════ */
+    #screen-dua {
+      background: linear-gradient(170deg, var(--green-dark) 0%, var(--green-main) 50%, var(--green-bg) 100%);
+    }
+
+    .dua-header {
+      width: 100%;
+      text-align: center;
+      padding: 20px 24px 8px;
+    }
+    .dua-name {
+      font-family: 'Amiri', serif;
+      font-size: 28px;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+      line-height: 1.2;
+    }
+    .dua-niyet-label {
+      font-size: 12px;
+      color: var(--green-pale);
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+    }
+
+    .dua-text-box {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(201,168,76,.3);
+      border-radius: 16px;
+      margin: 10px 20px;
+      padding: 16px 20px;
+      max-width: 560px;
+      width: calc(100% - 40px);
+    }
+    .dua-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 15px;
+      color: var(--gold-light);
+      line-height: 1.9;
+      text-align: center;
+    }
+    .dua-latin {
+      font-size: 13.5px;
+      color: var(--green-pale);
+      line-height: 1.8;
+      text-align: center;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .dua-counter-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .dua-count-text {
+      font-size: 16px;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+    }
+    .dua-count-text span {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .dua-count-text .count-num { color: #fff; }
+    .dua-count-text .count-total { color: var(--gold-light); }
+
+    .progress-bar {
+      width: calc(100% - 48px);
+      max-width: 320px;
+      height: 8px;
+      background: rgba(255,255,255,.15);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green-light), var(--gold));
+      border-radius: 4px;
+      transition: width .3s ease;
+    }
+
+    /* BIG ROUND BUTTON */
+    .zikir-btn-wrap {
+      margin: 16px 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .zikir-btn {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, var(--gold-light), var(--gold));
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      box-shadow:
+        0 0 0 10px rgba(201,168,76,.18),
+        0 0 0 20px rgba(201,168,76,.08),
+        0 8px 32px rgba(0,0,0,.35);
+      transition: transform .1s, box-shadow .1s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .zikir-btn:active {
+      transform: scale(.93);
+      box-shadow: 0 0 0 6px rgba(201,168,76,.2), 0 4px 16px rgba(0,0,0,.3);
+    }
+    .zikir-btn:hover:not(:active) { transform: scale(1.04); }
+
+    .tamamlandi {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px;
+      animation: popIn .5s cubic-bezier(.17,.67,.35,1.3) forwards;
+    }
+    .tamamlandi.show { display: flex; }
+    @keyframes popIn {
+      from { transform: scale(.7); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    .tamamlandi-icon { font-size: 60px; }
+    .tamamlandi-text {
+      font-family: 'Amiri', serif;
+      font-size: 32px;
+      color: var(--gold-light);
+      letter-spacing: 3px;
+    }
+    .tamamlandi-sub {
+      font-size: 14px;
+      color: var(--green-pale);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .tamamlandi-reset {
+      margin-top: 10px;
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold-light);
+      padding: 10px 28px;
+      border-radius: 10px;
+      font-family: 'Lora', serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .tamamlandi-reset:hover { background: rgba(201,168,76,.15); }
+
+    .dua-tip {
+      font-size: 11.5px;
+      color: var(--green-pale);
+      text-align: center;
+      padding: 0 24px 20px;
+      opacity: .75;
+      line-height: 1.6;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ SCREEN 1: ANA MENÜ ══ -->
+  <div id="screen-home" class="screen">
+    <div class="home-header">
+      <div class="home-bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+      <div class="home-bismillah-tr">Bismillahirrahmanirrahim</div>
+      <div class="home-emblem">☽</div>
+      <div class="home-app-name">AMİN</div>
+      <div class="home-tagline">DUA & ZİKİR UYGULAMASI</div>
+    </div>
+
+    <div class="home-btns">
+      <button class="main-btn btn-primary" onclick="showNiyet()">
+        🤲 DUA ET
+      </button>
+      <button class="main-btn btn-secondary" onclick="duaDevam()">
+        📿 DUA DEVAM
+      </button>
+    </div>
+
+    <div class="home-footer">
+      "Ve Allah'tan yardım ve muvaffakiyet dileriz."<br/>
+      2026 © Amin
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: NİYET SEÇ ══ -->
+  <div id="screen-niyet" class="screen hidden">
+    <div class="topbar">
+      <div class="topbar-logo">☽</div>
+      <div>
+        <div class="topbar-title">AMİN</div>
+        <div class="topbar-sub">DUA UYGULAMASI</div>
+      </div>
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+    </div>
+
+    <div class="niyet-intro">
+      <div class="ornament">✦ ✦ ✦</div>
+      <h2>NİYET SEÇ</h2>
+      <p>Hangi niyet ile dua etmek istiyorsunuz?</p>
+    </div>
+
+    <div class="niyet-grid" id="niyet-grid">
+      <!-- JS ile doldurulacak -->
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: DUA SAYAÇ ══ -->
+  <div id="screen-dua" class="screen hidden">
+    <div class="topbar">
+      <div class="topbar-logo">☽</div>
+      <div>
+        <div class="topbar-title" id="topbar-niyet-name" style="font-size:14px; letter-spacing:1px;"></div>
+        <div class="topbar-sub">DUA SAYACI</div>
+      </div>
+      <button class="back-btn" onclick="showNiyet()">← Niyetler</button>
+    </div>
+
+    <div class="dua-header">
+      <div class="dua-name" id="dua-name"></div>
+      <div class="dua-niyet-label" id="dua-niyet-label"></div>
+    </div>
+
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="dua-text-box">
+      <div class="dua-arabic" id="dua-arabic"></div>
+      <div class="dua-latin" id="dua-latin"></div>
+    </div>
+
+    <div class="dua-counter-section">
+      <div class="dua-count-text">
+        Okunan <span class="count-num" id="count-display">0</span>
+        &nbsp;/&nbsp;
+        Gereken <span class="count-total" id="count-total-display">0</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="zikir-btn-wrap" id="zikir-btn-wrap">
+      <button class="zikir-btn" id="zikir-btn" onclick="sayac()">☽</button>
+    </div>
+
+    <div class="tamamlandi" id="tamamlandi-div">
+      <div class="tamamlandi-icon">🌟</div>
+      <div class="tamamlandi-text">TAMAMLANDI</div>
+      <div class="tamamlandi-sub">
+        Duanız kabul olsun inşallah.<br/>
+        Allah cc. niyetinizi bilir ve duanızı işitir.
+      </div>
+      <button class="tamamlandi-reset" onclick="resetDua()">Yeniden Başla</button>
+    </div>
+
+    <div class="dua-tip" id="dua-tip"></div>
+  </div>
+
+</div>
+
+<script>
+/* ══════════════════════════════════════
+   VERİ: 20 NİYET + 20 DUA
+══════════════════════════════════════ */
+const NIYETLER = [
+  {
+    id: 1,
+    icon: "⭐",
+    isim: "Dilek Gerçekleşmesi",
+    sub: "Dileğinizin kabul olması",
+    duaAdi: "Salat-ı Tefriciye",
+    hedef: 4444,
+    arabic: "اللَّهُمَّ صَلِّ صَلَاةً كَامِلَةً وَسَلِّمْ سَلَامًا تَامًّا",
+    latin: "Allahümme salli salaten kamileten ve sellim selamen tammen\n'alâ seyyidinâ Muhammedinillezî tenfecicü bihil ukadü\nve tenfericü bihil kürebü ve tüksâ bihil mehârifü\nve tünâlü bihil regâibü ve hüsnül hatimeti\nve yüsteskal garâmü bi vechihil kerimi\nve 'alâ âlihi ve sahbihî fî külli lemhatin ve nefesin\nbi adedi külli ma'lumin lek.",
+    tip: "Salat-ı Tefriciye günlük 4444 kez okunmasını tavsiye eder ulema. Sabah namazından sonra okunması en fazîletlidir."
+  },
+  {
+    id: 2,
+    icon: "🛡️",
+    isim: "Nazardan Korunma",
+    sub: "Kötü gözden himaye",
+    duaAdi: "Muavvizeteyn (Felak & Nas)",
+    hedef: 41,
+    arabic: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+    latin: "Kul e'ûzü bi rabbil felak.\nMin şerri mâ halak.\nVe min şerri gâsikin izâ vekab.\nVe min şerrin neffâsâti fil 'ukad.\nVe min şerri hâsidin izâ hased.",
+    tip: "Felak ve Nas surelerini ardı ardına 41 kez oku. Nazar değdiğinde gün boyunca okunabilir."
+  },
+  {
+    id: 3,
+    icon: "💞",
+    isim: "Kavuşma & Hasret",
+    sub: "Sevdiklerinize kavuşmak",
+    duaAdi: "Yasin Suresi (İlk Ayetler)",
+    hedef: 7,
+    arabic: "يس ۚ وَالْقُرْآنِ الْحَكِيمِ",
+    latin: "Yâsîn. Vel Kur'ânil hakîm.\nİnneke le minel murselîn.\n'Alâ sırâtın mustekîm.\nTenzîlel 'azîzir rahîm.\nLitünzira kavmen mâ ünzira âbâühüm fehüm gâfilûn.",
+    tip: "Yasin suresini 7 kez okumak kavuşma ve hasret giderici olarak rivayet edilmiştir."
+  },
+  {
+    id: 4,
+    icon: "📚",
+    isim: "Sınav Geçme",
+    sub: "Başarı ve zekâ için",
+    duaAdi: "Dua-yı İlim",
+    hedef: 100,
+    arabic: "رَبِّ زِدْنِي عِلْمًا",
+    latin: "Rabbi zidnî 'ilmâ.\nVe fehmen ve hıfzan.\nAllahümme fettah aleynâ hikmeteke\nve ensür aleynâ min hazâini rahmetike\nyâ Erhamer râhimîn.",
+    tip: "Sınav sabahı 100 kez okunur. Hz. Musa'nın Kur'an'da geçen bu duası ilim ve anlayışa vesiledir."
+  },
+  {
+    id: 5,
+    icon: "💚",
+    isim: "Şifa Bulmak",
+    sub: "Hastalıktan kurtulmak",
+    duaAdi: "Şifa Duası",
+    hedef: 7,
+    arabic: "اللَّهُمَّ رَبَّ النَّاسِ أَذْهِبِ الْبَأْسَ",
+    latin: "Allahümme Rabban nâs, ezhibilbe's.\nİşfî entaşşâfî lâ şifâe illâ şifâük.\nŞifâen lâ yugâdiru sekamâ.",
+    tip: "Hz. Peygamber sav. hasta ziyaretinde bu duayı okuturdu. 7 kez okunur, her seferinde hastanın üzerine üflenir."
+  },
+  {
+    id: 6,
+    icon: "💰",
+    isim: "Rızık & Bereket",
+    sub: "Bolluk ve genişlik için",
+    duaAdi: "Vâkıa Suresi",
+    hedef: 56,
+    arabic: "وَتَجْعَلُونَ رِزْقَكُمْ أَنَّكُمْ تُكَذِّبُونَ",
+    latin: "Ve tec'alûne rızkakum\nennekum tükezzibûn.\nFe levlâ izâ belegatil hulkûm.\nVe entüm hîneiziN tenzurûn.",
+    tip: "Hazreti Ali ra. fakirlikten şikâyete gelen birine Vakıa suresini tavsiye etmiştir. Her gece 56 ayet olduğundan 56 kez besmele çekilerek okunur."
+  },
+  {
+    id: 7,
+    icon: "💳",
+    isim: "Borçtan Kurtulma",
+    sub: "Darlıktan çıkmak",
+    duaAdi: "Borç Duası (Hz. Ali)",
+    hedef: 100,
+    arabic: "اللَّهُمَّ اكْفِنِي بِحَلالِكَ عَنْ حَرَامِكَ",
+    latin: "Allahümmekfinî bi halâlike 'an harâmik.\nVe ağninî bi fadlike 'ammen sıvâk.\nYâ Muğnî yâ Ganiyy\nağninâ min fadlike yâ Kerîm.",
+    tip: "Hz. Ali ra.'ya borç sıkıntısı için öğretildiği rivayet edilir. Sabah ve akşam 100'er kez okunur."
+  },
+  {
+    id: 8,
+    icon: "💍",
+    isim: "Evlilik & Eş Bulmak",
+    sub: "Hayırlı eş nasip olması",
+    duaAdi: "Tâhâ Suresi (İlk Ayetler)",
+    hedef: 41,
+    arabic: "طه ۚ مَا أَنزَلْنَا عَلَيْكَ الْقُرْآنَ لِتَشْقَىٰ",
+    latin: "Tâhâ. Mâ enzelna aleykel Kur'âne litaşkâ.\nİllâ tezkiraten limen yahşâ.\nTenzîlen mimmen halekale arda vessamâvâtil 'ulâ.\nErrahmânu alel 'arşistevâ.",
+    tip: "Hayırlı eş için Taha suresinin ilk ayetleri 41 gün sabah namazı ardından okunur."
+  },
+  {
+    id: 9,
+    icon: "👶",
+    isim: "Çocuk Sahibi Olmak",
+    sub: "Nesil ve evlat için",
+    duaAdi: "Hz. Zekeriyya'nın Duası",
+    hedef: 33,
+    arabic: "رَبِّ لَا تَذَرْنِي فَرْدًا وَأَنتَ خَيْرُ الْوَارِثِينَ",
+    latin: "Rabbi lâ tezernî ferden\nve ente hayrul vârisîn.\nReb'bi heb lî min ledünke zurriyyeten tayyibeh.\nİnneke semî'ud du'â.",
+    tip: "Hz. Zekeriyya as.'ın Kur'an'da geçen duasıdır. Çocuk sahibi olmak isteyenler için 33 kez okunur."
+  },
+  {
+    id: 10,
+    icon: "✨",
+    isim: "Kalp Huzuru",
+    sub: "İç sükunet ve huzur",
+    duaAdi: "Kelime-i Tevhid",
+    hedef: 1000,
+    arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ",
+    latin: "Lâ ilâhe illallah.\nMuhammedün Resûlullah.\nLâ ilâhe illallahul melikul hakkul mübîn.\nMuhammedün Resûlullahi sâdikul va'del emîn.",
+    tip: "Kelime-i Tevhid'in günde 1000 kez tekrarı kalp huzurunu ve Allah'a yakınlığı artırır. Yüzyıllarca tekrar edilmiş müstesna bir zikirdir."
+  },
+  {
+    id: 11,
+    icon: "😨",
+    isim: "Korku & Kaygıdan Kurtulma",
+    sub: "Sıkıntı ve korkuyu defetmek",
+    duaAdi: "Nas Suresi",
+    hedef: 100,
+    arabic: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+    latin: "Kul e'ûzü bi rabbin nâs.\nMelikin nâs.\nİlâhin nâs.\nMin şerril vesvâsil hannâs.\nEllezî yüvesvisü fî sudûrin nâs.\nMinel cinneti ven nâs.",
+    tip: "Korku ve vesveseden korunmak için Nas Suresi 100 kez okunur. Uyku öncesi 3 kez okunması da sünnet olarak nakledilmiştir."
+  },
+  {
+    id: 12,
+    icon: "💼",
+    isim: "İş & Geçim Bulmak",
+    sub: "Hayırlı iş ve kazanç",
+    duaAdi: "Duhâ Suresi",
+    hedef: 11,
+    arabic: "وَالضُّحَىٰ ۞ وَاللَّيْلِ إِذَا سَجَىٰ",
+    latin: "Vedduhâ.\nVel leyli izâ secâ.\nMâ vedde'ake rabbüke ve mâ kalâ.\nVel âhiretü hayrun leke minel ûlâ.\nVe le sevfe yu'tîke rabbüke fe terdâ.",
+    tip: "Duhâ suresi bolluğun ve Allah'ın nimetlerinin hatırlatıcısıdır. İş aramak için 11 kez okunur."
+  },
+  {
+    id: 13,
+    icon: "🙏",
+    isim: "Günahlardan Arınma",
+    sub: "Tevbe ve istiğfar",
+    duaAdi: "Seyyidul İstiğfar",
+    hedef: 1000,
+    arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنتَ",
+    latin: "Allahümme ente rabbî lâ ilâhe illâ ent.\nHalaktenî ve ene abdük.\nVe ene 'alâ ahdike ve va'dike masteta'tü.\nE'ûzü bike min şerri mâ sana'tü.\nEbû'ü leke bi ni'metike 'aleyye\nve ebû'ü bi zenbî fağfir lî\nfe innehû lâ yağfiruż żünûbe illâ ent.",
+    tip: "Seyyidul İstiğfar, istiğfarların efendisidir. Sabah ve akşam söyleyenin günahlarının bağışlanacağı hadiste bildirilmiştir."
+  },
+  {
+    id: 14,
+    icon: "✈️",
+    isim: "Seyahat Güvenliği",
+    sub: "Yolculukta selamet",
+    duaAdi: "Seyahat Duası",
+    hedef: 3,
+    arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَٰذَا",
+    latin: "Sübhânellezî sahhara lenâ hâzâ\nve mâ künnâ lehû mukrinîn.\nVe innâ ilâ Rabbinâ le münkalibûn.\nAllahümme innâ nes'elüke fî seferinâ\nhâzâ el birre vettakvâ.\nVe minel 'ameli mâ terdâ.",
+    tip: "Yolculuğa çıkmadan önce 3 kez okunur. Hz. Peygamber sav.'in yolculuklarda okuduğu dua olarak nakledilmiştir."
+  },
+  {
+    id: 15,
+    icon: "⚔️",
+    isim: "Düşman Şerrinden Korunma",
+    sub: "Hasedin ve kötü niyetin def'i",
+    duaAdi: "Ayetel Kürsî",
+    hedef: 100,
+    arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ",
+    latin: "Allahü lâ ilâhe illâ hüvel hayyül kayyûm.\nLâ te'huzühû sinetün velâ nevm.\nLehû mâ fis semâvâti vemâ fil ard.\nMen zellezî yeşfe'u 'indehû illâ biiznih.\nYa'lemü mâ beyne eydîhim vemâ halfehüm\nvelâ yühîtûne bişey'in min 'ilmihî\nillâ bimâ şâe vesi'a kürsiyyühüs semâvâti vel ard.\nvelâ yeûdühû hıfzuhumâ ve hüvel 'aliyyül 'azîm.",
+    tip: "Ayetel Kürsî her namazın ardından okunursa kıyamete dek Allah'ın himayesinde olunur. (Hadis-i Şerif)"
+  },
+  {
+    id: 16,
+    icon: "🌿",
+    isim: "Hastalıktan Korunma",
+    sub: "Sağlık ve afiyet",
+    duaAdi: "Subhanallah Zikreti",
+    hedef: 100,
+    arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+    latin: "Sübhanallahi ve bi hamdih.\nSübhanallahil 'azîm.\nEl hamdü lillâhi Rabbil 'âlemin.\nAllahü Ekber\nvelâ havle velâ kuvvete illâ billâhil 'aliyyil 'azîm.",
+    tip: "Peygamber Efendimiz sav. 'Sübhanallahi ve bihamdihi' yi günde 100 kez söyleyenin günahlarının deniz köpüğü kadar çok da olsa silineceğini müjdelemiştir."
+  },
+  {
+    id: 17,
+    icon: "🌙",
+    isim: "Cennet Arzusu",
+    sub: "Ahiret ve Cennet için",
+    duaAdi: "Salavat-ı Şerife",
+    hedef: 1000,
+    arabic: "اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ",
+    latin: "Allahümme salli 'alâ Muhammedin\nve 'alâ âli Muhammed.\nKemâ salleyte 'alâ İbrâhîme\nve 'alâ âli İbrâhîm.\nİnneke hamîdün mecîd.\nAllahümme bârik 'alâ Muhammedin\nve 'alâ âli Muhammed.",
+    tip: "Peygamber Efendimiz'e salavat getirmek en sevaplı amellerden biridir. Günde 1000 salavat getirene şefaat müjdelenmektedir."
+  },
+  {
+    id: 18,
+    icon: "🌸",
+    isim: "Anne-Baba Şefkati",
+    sub: "Ebeveynler için dua",
+    duaAdi: "Ebeveyn Duası",
+    hedef: 100,
+    arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ",
+    latin: "Rabbighfir lî ve li vâlideyye\nve limen dehale beytiye mü'minan.\nVel mü'minîne vel mü'minât.\nVe lâ tezidiz zâlimîne illâ tebâra.\nRabbihhamhumâ kemâ rabbeyanî sagîrâ.",
+    tip: "Anne babasına dua etmek en büyük ibâdetlerdendir. Bu dua her gün 100 kez okunursa anne-babaya büyük hayır ulaşır."
+  },
+  {
+    id: 19,
+    icon: "🏠",
+    isim: "Eve Bereket & Koruma",
+    sub: "Evin huzur ve bereketi",
+    duaAdi: "Bakara Son Ayetleri",
+    hedef: 3,
+    arabic: "آمَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِ",
+    latin: "Âmenar resûlü bimâ ünzile ileyhi min rabbihî vel mü'minûn.\nKüllün âmene billâhi ve melâiketihî ve kütübihî ve rusülih.\nLâ nüferriku beyne ehadin min rusülih.\nVe kâlû semi'nâ ve eta'nâ gufrâneke rabbenâ ve ileykel masîr.",
+    tip: "Bakara suresinin son iki ayeti (Amenarresülü) her gece yatmadan okunursa eve şeytan giremez. (Hadis-i Şerif)"
+  },
+  {
+    id: 20,
+    icon: "🤲",
+    isim: "Hacet & İstek",
+    sub: "Özel bir isteğin kabulü",
+    duaAdi: "Hacet Duası",
+    hedef: 100,
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ بِأَنَّكَ أَنتَ اللَّهُ",
+    latin: "Allahümme innî es'elüke bi enneke entallahü\nlâ ilâhe illâ ente el Ehadu's Samed.\nEllezî lem yelid ve lem yûled\nve lem yekün lehü küfüven ehad.\nAllahümme innî es'elüke en taktiye lî hâcetî.",
+    tip: "Hacet namazı kılındıktan sonra bu dua 100 kez okunur ve Allah'tan hacet dilenir. Cabir ra.'dan rivayet edilmiştir."
+  }
+];
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+let secilenNiyet = null;
+let kayitlar = {};   // { [niyet.id]: count }
+
+function yukleKayit() {
+  try {
+    const raw = localStorage.getItem('amin_kayit');
+    if (raw) kayitlar = JSON.parse(raw);
+  } catch(e) { kayitlar = {}; }
+}
+
+function kaydet() {
+  localStorage.setItem('amin_kayit', JSON.stringify(kayitlar));
+}
+
+function niyet_count(id) {
+  return kayitlar[id] || 0;
+}
+
+/* ══════════════════════════════════════
+   NAVİGASYON
+══════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function goHome()     { showScreen('screen-home'); }
+function showNiyet()  { renderNiyetler(); showScreen('screen-niyet'); }
+
+function showDua(niyet) {
+  secilenNiyet = niyet;
+  const count = niyet_count(niyet.id);
+
+  document.getElementById('topbar-niyet-name').textContent = niyet.isim;
+  document.getElementById('dua-name').textContent = niyet.duaAdi;
+  document.getElementById('dua-niyet-label').textContent = '✦ ' + niyet.isim + ' ✦';
+  document.getElementById('dua-arabic').textContent = niyet.arabic;
+  document.getElementById('dua-latin').innerHTML = niyet.latin.replace(/\n/g,'<br/>');
+  document.getElementById('dua-tip').textContent = niyet.tip;
+  document.getElementById('count-total-display').textContent = niyet.hedef;
+
+  updateCounter(count);
+  showScreen('screen-dua');
+}
+
+/* ══════════════════════════════════════
+   NİYET LİSTESİ RENDER
+══════════════════════════════════════ */
+function renderNiyetler() {
+  const grid = document.getElementById('niyet-grid');
+  grid.innerHTML = '';
+  NIYETLER.forEach(n => {
+    const count = niyet_count(n.id);
+    const pct   = Math.min((count / n.hedef) * 100, 100);
+    const done  = count >= n.hedef;
+    const card  = document.createElement('div');
+    card.className = 'niyet-card' + (done ? ' done-card' : '');
+    card.innerHTML = `
+      <div class="niyet-icon">${n.icon}</div>
+      <div class="niyet-name">${done ? '✅ ' : ''}${n.isim}</div>
+      <div class="niyet-sub">${n.sub}</div>
+      <div class="progress-mini"><div class="progress-mini-fill" style="width:${pct}%"></div></div>
+    `;
+    card.onclick = () => showDua(n);
+    grid.appendChild(card);
+  });
+}
+
+/* ══════════════════════════════════════
+   SAYAÇ
+══════════════════════════════════════ */
+function updateCounter(count) {
+  const hedef = secilenNiyet.hedef;
+  const done  = count >= hedef;
+
+  document.getElementById('count-display').textContent = count;
+  const pct = Math.min((count / hedef) * 100, 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  const btnWrap = document.getElementById('zikir-btn-wrap');
+  const tamDiv  = document.getElementById('tamamlandi-div');
+
+  if (done) {
+    btnWrap.style.display = 'none';
+    tamDiv.classList.add('show');
+  } else {
+    btnWrap.style.display = 'flex';
+    tamDiv.classList.remove('show');
+  }
+}
+
+function sayac() {
+  if (!secilenNiyet) return;
+  const n   = secilenNiyet;
+  const cur = niyet_count(n.id);
+  if (cur >= n.hedef) return;
+
+  const next = cur + 1;
+  kayitlar[n.id] = next;
+  kaydet();
+  updateCounter(next);
+
+  // butona animasyon
+  const btn = document.getElementById('zikir-btn');
+  btn.style.transform = 'scale(0.88)';
+  setTimeout(() => { btn.style.transform = ''; }, 120);
+}
+
+function resetDua() {
+  if (!secilenNiyet) return;
+  kayitlar[secilenNiyet.id] = 0;
+  kaydet();
+  updateCounter(0);
+}
+
+/* ══════════════════════════════════════
+   DUA DEVAM — En son okunulan niyet
+══════════════════════════════════════ */
+function duaDevam() {
+  yukleKayit();
+  // En son sayacı olan ve bitmemiş niyeti bul
+  let best = null;
+  NIYETLER.forEach(n => {
+    const c = niyet_count(n.id);
+    if (c > 0 && c < n.hedef) {
+      if (!best || c > niyet_count(best.id)) best = n;
+    }
+  });
+  if (best) {
+    showDua(best);
+  } else {
+    // Hiç başlanmamış ya da hepsi tamamsa niyetler ekranına git
+    showNiyet();
+  }
+}
+
+/* ══════════════════════════════════════
+   BAŞLAT
+══════════════════════════════════════ */
+yukleKayit();
+showScreen('screen-home');
+</script>
+</body>
+</html>

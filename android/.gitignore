@@ -1,0 +1,14 @@
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# key.properties excluded but keystore included for repo portability
+key.properties
+**/*.keystore
+# amin-release.jks intentionally tracked so release builds work after clone
+!app/amin-release.jks
