@@ -20,7 +20,7 @@ workflows:
       groups:
         - signing_credentials  # CERTIFICATE_PRIVATE_KEY bu grupta olmalı
       vars:
-        APP_STORE_APP_ID: "BURAYA_APP_STORE_CONNECT_ID"  # App Store Connect → Apps → Amin → URL'deki numara
+        APP_STORE_APP_ID: "6779628851"
         BUNDLE_ID: "com.futurastic.Amin"
 
     triggering:
