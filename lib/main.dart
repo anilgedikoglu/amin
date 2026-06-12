@@ -95,18 +95,19 @@ class AdManager {
   void showRewarded({required void Function(AdWithoutView, RewardItem) onRewarded}) {
     _rewarded?.show(onUserEarnedReward: onRewarded);
   }
-}
 
-class _BackPressObserver extends NavigatorObserver {
-  int _count = 0;
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    _count++;
-    if (_count % 5 == 0) AdManager.instance.showInterstitial();
+  // ── TAMAMLANDI sonrası aksiyon sayacı ──
+  // Her 2. tıkta geçiş, her 6. tıkta ödüllü reklam
+  int _completionTapCount = 0;
+  void onDuaCompletion() {
+    _completionTapCount++;
+    if (_completionTapCount % 6 == 0) {
+      showRewarded(onRewarded: (_, __) {});
+    } else if (_completionTapCount % 2 == 0) {
+      showInterstitial();
+    }
   }
 }
-
-final _backPressObserver = _BackPressObserver();
 
 class AC {
   static const greenDark  = Color(0xFF1a4731);
@@ -632,7 +633,6 @@ class AminApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Amin', debugShowCheckedModeBanner: false,
-    navigatorObservers: [_backPressObserver],
     theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: AC.greenMain),
       textTheme: GoogleFonts.loraTextTheme(), useMaterial3: true),
     home: const HomeScreen(),
@@ -1157,13 +1157,26 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
 
   Future<void> _reset() async { setState(() => count = 0); await _save(); }
 
+  // TAMAMLANDI → "Yeniden Başla" veya geri tuşu: reklam tetikle + sıfırla
+  void _resetWithAd() {
+    AdManager.instance.onDuaCompletion();
+    _reset();
+  }
+
   @override
   Widget build(BuildContext context) {
     final n = widget.niyet;
     final done = count >= n.hedef;
     final pct = (count / n.hedef).clamp(0.0, 1.0);
 
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (done) AdManager.instance.onDuaCompletion();
+        Navigator.maybePop(context);
+      },
+      child: Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
@@ -1174,7 +1187,10 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
             padding: const EdgeInsets.fromLTRB(8, 4, 16, 8),
             child: Row(children: [
               IconButton(icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white70, size: 18),
-                onPressed: () => Navigator.maybePop(context)),
+                onPressed: () {
+                  if (done) AdManager.instance.onDuaCompletion();
+                  Navigator.maybePop(context);
+                }),
               Container(width: 32, height: 32,
                 decoration: const BoxDecoration(shape: BoxShape.circle, color: AC.gold),
                 child: const Center(child: Text("☽", style: TextStyle(fontSize: 16)))),
@@ -1258,7 +1274,7 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
                 ),
               )
             else
-              _TamamlandiWidget(onReset: _reset),
+              _TamamlandiWidget(onReset: _resetWithAd),
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -1276,7 +1292,7 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
           ])),
         ])),
       ),
-    );
+    )); // PopScope kapanışı
   }
 }
 
