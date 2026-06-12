@@ -1,15 +1,112 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
+  AdManager.instance.load();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light));
   runApp(const AminApp());
 }
+
+// ── ADMOB ─────────────────────────────────
+class _AdIds {
+  // Interstitial
+  static String get interstitial => Platform.isIOS
+      ? 'ca-app-pub-6470338276121414/1633785489'
+      : 'ca-app-pub-6470338276121414/3936380770';
+  // Rewarded
+  static String get rewarded => Platform.isIOS
+      ? 'ca-app-pub-6470338276121414/9147603563'
+      : 'ca-app-pub-6470338276121414/7877624629';
+}
+
+class AdManager {
+  static final AdManager instance = AdManager._();
+  AdManager._();
+
+  // ── Interstitial ──
+  InterstitialAd? _interstitial;
+  bool _interstitialLoading = false;
+
+  void load() {
+    _loadInterstitial();
+    _loadRewarded();
+  }
+
+  void _loadInterstitial() {
+    if (_interstitialLoading || _interstitial != null) return;
+    _interstitialLoading = true;
+    InterstitialAd.load(
+      adUnitId: _AdIds.interstitial,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitial = ad;
+          _interstitialLoading = false;
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (_) { _interstitial = null; _loadInterstitial(); },
+            onAdFailedToShowFullScreenContent: (_, __) { _interstitial = null; _loadInterstitial(); },
+          );
+        },
+        onAdFailedToLoad: (_) {
+          _interstitialLoading = false;
+          Future.delayed(const Duration(minutes: 1), _loadInterstitial);
+        },
+      ),
+    );
+  }
+
+  void showInterstitial() => _interstitial?.show();
+
+  // ── Rewarded ──
+  RewardedAd? _rewarded;
+  bool _rewardedLoading = false;
+
+  void _loadRewarded() {
+    if (_rewardedLoading || _rewarded != null) return;
+    _rewardedLoading = true;
+    RewardedAd.load(
+      adUnitId: _AdIds.rewarded,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewarded = ad;
+          _rewardedLoading = false;
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (_) { _rewarded = null; _loadRewarded(); },
+            onAdFailedToShowFullScreenContent: (_, __) { _rewarded = null; _loadRewarded(); },
+          );
+        },
+        onAdFailedToLoad: (_) {
+          _rewardedLoading = false;
+          Future.delayed(const Duration(minutes: 1), _loadRewarded);
+        },
+      ),
+    );
+  }
+
+  void showRewarded({required void Function(AdWithoutView, RewardItem) onRewarded}) {
+    _rewarded?.show(onUserEarnedReward: onRewarded);
+  }
+}
+
+class _BackPressObserver extends NavigatorObserver {
+  int _count = 0;
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    _count++;
+    if (_count % 5 == 0) AdManager.instance.showInterstitial();
+  }
+}
+
+final _backPressObserver = _BackPressObserver();
 
 class AC {
   static const greenDark  = Color(0xFF1a4731);
@@ -350,13 +447,114 @@ const List<Niyet> niyetler = [
     latin:"Allahumme tahhir kalbi\nmin kulli ma la yurdik.",
     turkish:"Allah'ım kalbimi seni razı etmeyen her şeyden temizle.",
     tip:"Halk arasında inanışa göre aklından çıkaramadığın her şey için günde 100 kez okunması etkilidir."),
+
+  // ── Kur'an Sureleri 50-59 ──
+  Niyet(id:50, icon:"☀️", isim:"Duhâ Suresi", sub:"İç sıkıntısı, ümit ve moral",
+    duaAdi:"Duhâ Suresi", hedef:7,
+    arabic:"وَالضُّحَىٰ\nوَاللَّيْلِ إِذَا سَجَىٰ\nمَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ\nوَلَلْآخِرَةُ خَيْرٌ لَكَ مِنَ الْأُولَىٰ\nوَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ\nأَلَمْ يَجِدْكَ يَتِيمًا فَآوَىٰ\nوَوَجَدَكَ ضَالًّا فَهَدَىٰ\nوَوَجَدَكَ عَائِلًا فَأَغْنَىٰ\nفَأَمَّا الْيَتِيمَ فَلَا تَقْهَرْ\nوَأَمَّا السَّائِلَ فَلَا تَنْهَرْ\nوَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ",
+    latin:"Ved-duhâ.\nVel-leyli izâ secâ.\nMâ veddeake rabbuke ve mâ kalâ.\nVe lel-âhiretu hayrun leke minel-ûlâ.\nVe lesevfe yu'tîke rabbuke fe terdâ.\nElem yecidke yetîmen fe âvâ.\nVe vecedeke dâllen fe hedâ.\nVe vecedeke âilen fe ağnâ.\nFe emmel-yetîme felâ takher.\nVe emmes-sâile felâ tenher.\nVe emmâ bi ni'meti rabbike fe haddis.",
+    turkish:"Kuşluk vaktine ve sakinleştiği zaman geceye yemin olsun ki Rabbin seni bırakmadı ve sana darılmadı. Ahiret senin için dünyadan daha hayırlıdır. Rabbin sana verecek ve sen hoşnut olacaksın. O seni yetim bulup barındırmadı mı? Yol bilmez halde bulup doğru yola iletmedi mi? İhtiyaç içinde bulup zengin etmedi mi? Öyleyse yetimi ezme, isteyeni azarlama, Rabbinin nimetini anlat.",
+    tip:"Ümit, ferahlık ve gönül rahatlığı niyetiyle sabah/kuşluk vaktinde 7 defa okunması tavsiye edilir."),
+  Niyet(id:51, icon:"🌬️", isim:"İnşirah Suresi", sub:"Gönül ferahlığı, işlerin kolaylaşması",
+    duaAdi:"İnşirah Suresi", hedef:11,
+    arabic:"أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ\nوَوَضَعْنَا عَنْكَ وِزْرَكَ\nالَّذِي أَنْقَضَ ظَهْرَكَ\nوَرَفَعْنَا لَكَ ذِكْرَكَ\nفَإِنَّ مَعَ الْعُسْرِ يُسْرًا\nإِنَّ مَعَ الْعُسْرِ يُسْرًا\nفَإِذَا فَرَغْتَ فَانْصَبْ\nوَإِلَىٰ رَبِّكَ فَارْغَبْ",
+    latin:"Elem neşrah leke sadrak.\nVe vada'nâ anke vizrak.\nEllezî enkada zahrak.\nVe refa'nâ leke zikrak.\nFe inne meal-'usri yusrâ.\nİnne meal-'usri yusrâ.\nFe izâ ferağte fensab.\nVe ilâ rabbike ferğab.",
+    turkish:"Biz senin göğsünü açıp genişletmedik mi? Belini büken yükünü senden kaldırmadık mı? Senin şanını yüceltmedik mi? Şüphesiz güçlükle beraber bir kolaylık vardır. Gerçekten güçlükle beraber bir kolaylık vardır. Öyleyse işin bitince yine gayret et ve ancak Rabbine yönel.",
+    tip:"Gönül ferahlığı ve işlerin kolaylaşması niyetiyle 11 defa okunması tavsiye edilir."),
+  Niyet(id:52, icon:"📖", isim:"Fâtiha Suresi", sub:"Şifa, bereket ve hayırlı kapılar",
+    duaAdi:"Fâtiha Suresi", hedef:7,
+    arabic:"الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\nالرَّحْمَٰنِ الرَّحِيمِ\nمَالِكِ يَوْمِ الدِّينِ\nإِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\nاهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\nصِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ\nغَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ",
+    latin:"Elhamdulillâhi rabbil-âlemîn.\nEr-rahmânir-rahîm.\nMâliki yevmid-dîn.\nİyyâke na'budu ve iyyâke neste'în.\nİhdinas-sırâtal-mustakîm.\nSırâtallezîne en'amte aleyhim.\nĞayril-mağdûbi aleyhim ve led-dâllîn.",
+    turkish:"Hamd, âlemlerin Rabbi Allah'a mahsustur. O Rahmân ve Rahîm'dir. Din gününün sahibidir. Yalnız sana kulluk eder, yalnız senden yardım dileriz. Bizi doğru yola ilet; nimet verdiklerinin yoluna, gazaba uğrayanların ve sapmışların yoluna değil.",
+    tip:"Şifa, bereket ve dua niyetiyle 1 veya 7 defa okunması tavsiye edilir."),
+  Niyet(id:53, icon:"☝️", isim:"İhlâs Suresi", sub:"Tevhid, iman tazeleme ve korunma",
+    duaAdi:"İhlâs Suresi", hedef:3,
+    arabic:"قُلْ هُوَ اللَّهُ أَحَدٌ\nاللَّهُ الصَّمَدُ\nلَمْ يَلِدْ وَلَمْ يُولَدْ\nوَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ",
+    latin:"Kul huvallâhu ehad.\nAllâhus-samed.\nLem yelid ve lem yûled.\nVe lem yekun lehû kufuven ehad.",
+    turkish:"De ki: O Allah birdir. Allah Samed'dir; her şey O'na muhtaçtır, O hiçbir şeye muhtaç değildir. Doğurmamış ve doğurulmamıştır. Hiçbir şey O'na denk değildir.",
+    tip:"Tevhid, korunma ve manevi güç niyetiyle 3 defa okunması tavsiye edilir."),
+  Niyet(id:54, icon:"🌅", isim:"Felak Suresi", sub:"Nazar, haset ve kötülüklerden korunma",
+    duaAdi:"Felak Suresi", hedef:3,
+    arabic:"قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ\nمِنْ شَرِّ مَا خَلَقَ\nوَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ\nوَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ\nوَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+    latin:"Kul e'ûzu bi rabbil-felak.\nMin şerri mâ halak.\nVe min şerri ğâsikin izâ vekab.\nVe min şerrin-neffâsâti fil-'ukad.\nVe min şerri hâsidin izâ hased.",
+    turkish:"De ki: Yarattığı şeylerin şerrinden, karanlığı çöktüğü zaman gecenin şerrinden, düğümlere üfleyenlerin şerrinden ve haset ettiği zaman hasetçinin şerrinden sabahın Rabbine sığınırım.",
+    tip:"Nazar, haset ve kötülüklerden korunma niyetiyle 3 defa okunması tavsiye edilir."),
+  Niyet(id:55, icon:"🤲", isim:"Nâs Suresi", sub:"Vesvese, korku ve manevi korunma",
+    duaAdi:"Nâs Suresi", hedef:3,
+    arabic:"قُلْ أَعُوذُ بِرَبِّ النَّاسِ\nمَلِكِ النَّاسِ\nإِلَٰهِ النَّاسِ\nمِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ\nالَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ\nمِنَ الْجِنَّةِ وَالنَّاسِ",
+    latin:"Kul e'ûzu bi rabbin-nâs.\nMelikin-nâs.\nİlâhin-nâs.\nMin şerril-vesvâsil-hannâs.\nEllezî yuvesvisu fî sudûrin-nâs.\nMinel-cinneti ven-nâs.",
+    turkish:"De ki: İnsanların Rabbine, insanların Melikine, insanların ilahına sığınırım. Sinsice vesvese verenin şerrinden; o ki insanların göğüslerine vesvese verir, cinlerden de insanlardan da olur.",
+    tip:"Vesvese, korku ve manevi korunma niyetiyle 3 defa okunması tavsiye edilir."),
+  Niyet(id:56, icon:"🏛️", isim:"Kâfirûn Suresi", sub:"İmanı koruma, tevhid bilinci",
+    duaAdi:"Kâfirûn Suresi", hedef:3,
+    arabic:"قُلْ يَا أَيُّهَا الْكَافِرُونَ\nلَا أَعْبُدُ مَا تَعْبُدُونَ\nوَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ\nوَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ\nوَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ\nلَكُمْ دِينُكُمْ وَلِيَ دِينِ",
+    latin:"Kul yâ eyyuhel-kâfirûn.\nLâ a'budu mâ ta'budûn.\nVe lâ entum âbidûne mâ a'bud.\nVe lâ ene âbidun mâ abedtum.\nVe lâ entum âbidûne mâ a'bud.\nLekum dînukum ve liye dîn.",
+    turkish:"De ki: Ey inkârcılar! Ben sizin taptıklarınıza tapmam. Siz de benim kulluk ettiğime kulluk etmezsiniz. Ben sizin taptıklarınıza kulluk edecek değilim. Siz de benim kulluk ettiğime kulluk edecek değilsiniz. Sizin dininiz size, benim dinim banadır.",
+    tip:"İmanı koruma ve tevhid bilincini güçlendirme niyetiyle 1 veya 3 defa okunması tavsiye edilir."),
+  Niyet(id:57, icon:"⏳", isim:"Asr Suresi", sub:"Zamanın kıymeti, sabır ve hak",
+    duaAdi:"Asr Suresi", hedef:3,
+    arabic:"وَالْعَصْرِ\nإِنَّ الْإِنْسَانَ لَفِي خُسْرٍ\nإِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ\nوَتَوَاصَوْا بِالْحَقِّ\nوَتَوَاصَوْا بِالصَّبْرِ",
+    latin:"Vel-'asr.\nİnnel-insâne le fî husr.\nİllellezîne âmenû ve amilus-sâlihât.\nVe tevâsav bil-hakk.\nVe tevâsav bis-sabr.",
+    turkish:"Asra yemin olsun ki insan gerçekten ziyandadır. Ancak iman edenler, salih amel işleyenler, birbirlerine hakkı ve sabrı tavsiye edenler başka.",
+    tip:"Zamanı bereketli geçirmek, sabır ve doğruluk niyetiyle 3 defa okunması tavsiye edilir."),
+  Niyet(id:58, icon:"🏆", isim:"Nasr Suresi", sub:"Şükür, başarı ve istiğfar",
+    duaAdi:"Nasr Suresi", hedef:3,
+    arabic:"إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ\nوَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا\nفَسَبِّحْ بِحَمْدِ رَبِّكَ\nوَاسْتَغْفِرْهُ\nإِنَّهُ كَانَ تَوَّابًا",
+    latin:"İzâ câe nasrullâhi vel-feth.\nVe raeyten-nâse yedhulûne fî dînillâhi efvâcâ.\nFesebbih bi hamdi rabbike vestağfirh.\nİnnehû kâne tevvâbâ.",
+    turkish:"Allah'ın yardımı ve fetih geldiğinde, insanların bölük bölük Allah'ın dinine girdiklerini gördüğünde Rabbini hamd ile tesbih et ve O'ndan bağışlanma dile. Çünkü O, tevbeleri çok kabul edendir.",
+    tip:"Yardım, şükür ve istiğfar niyetiyle bir işin sonunda 3 defa okunması tavsiye edilir."),
+  Niyet(id:59, icon:"🐘", isim:"Fîl Suresi", sub:"Zalimlerin şerrinden korunma",
+    duaAdi:"Fîl Suresi", hedef:7,
+    arabic:"أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ\nأَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ\nوَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ\nتَرْمِيهِمْ بِحِجَارَةٍ مِنْ سِجِّيلٍ\nفَجَعَلَهُمْ كَعَصْفٍ مَأْكُولٍ",
+    latin:"Elem tera keyfe fe'ale rabbuke bi ashâbil-fîl.\nElem yec'al keydehum fî tadlîl.\nVe ersele aleyhim tayran ebâbîl.\nTermîhim bi hicâratin min siccîl.\nFe ce'alehum ke'asfin me'kûl.",
+    turkish:"Rabbin fil sahiplerine ne yaptı, görmedin mi? Onların tuzaklarını boşa çıkarmadı mı? Üzerlerine sürü sürü kuşlar gönderdi. Onlara pişmiş çamurdan taşlar attılar. Böylece onları yenmiş ekin yaprağı gibi yaptı.",
+    tip:"Zalimlerin şerrinden korunma ve Allah'a sığınma niyetiyle 7 defa okunması tavsiye edilir."),
+  Niyet(id:60, icon:"🌙", isim:"İstihare Duası", sub:"Karar öncesi hayırlı olanı dilemek",
+    duaAdi:"İstihare Duası", hedef:1,
+    arabic:"اللَّهُمَّ إِنِّي أَسْتَخِيرُكَ بِعِلْمِكَ وَأَسْتَقْدِرُكَ بِقُدْرَتِكَ\nوَأَسْأَلُكَ مِنْ فَضْلِكَ الْعَظِيمِ\nفَإِنَّكَ تَقْدِرُ وَلَا أَقْدِرُ\nوَتَعْلَمُ وَلَا أَعْلَمُ\nوَأَنْتَ عَلَّامُ الْغُيُوبِ\nاللَّهُمَّ إِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ خَيْرٌ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي\nفَاقْدُرْهُ لِي وَيَسِّرْهُ لِي ثُمَّ بَارِكْ لِي فِيهِ\nوَإِنْ كُنْتَ تَعْلَمُ أَنَّ هَذَا الْأَمْرَ شَرٌّ لِي فِي دِينِي وَمَعَاشِي وَعَاقِبَةِ أَمْرِي\nفَاصْرِفْهُ عَنِّي وَاصْرِفْنِي عَنْهُ\nوَاقْدُرْ لِي الْخَيْرَ حَيْثُ كَانَ ثُمَّ أَرْضِنِي بِهِ",
+    latin:"Allâhümme innî estehîruke bi'ilmike ve estakdiruke bikudratike ve es'eluke min fadlike'l-azîm.\nFe inneke takdiru ve lâ akdiru ve ta'lemü ve lâ a'lemü ve ente allâmü'l-ğuyûb.\nAllâhümme in künte ta'lemü enne hâze'l-emre hayrun lî fî dînî ve meâşî ve âkıbeti emrî\nfekdurhu lî ve yessirhu lî sümme bârik lî fîh.\nVe in künte ta'lemü enne hâze'l-emre şerrun lî fî dînî ve meâşî ve âkıbeti emrî\nfasrifhu annî vasrifnî anhu vakdur liyal-hayre haysü kâne sümme arzınî bih.",
+    turkish:"Allah'ım! İlminle hayırlısını istiyorum, kudretinle güç istiyorum ve büyük lütfundan diliyorum. Sen güç yetirirsin, ben yetiremem; sen bilirsin, ben bilemem; sen gaybleri bilensin. Allah'ım! Bu işin dinim, geçimim ve işimin sonucu bakımından hayırlı olduğunu biliyorsan onu bana nasip et, kolaylaştır, sonra bana onu mübarek kıl. Eğer şer olduğunu biliyorsan onu benden ve beni ondan uzaklaştır; nerede olursa olsun benim için hayırlı olanı takdir et, sonra beni bununla razı eyle.",
+    tip:"Bir iş yapmadan önce 2 rekât namaz kılınıp bu dua edilir. Buhârî'de sabit sahih hadis."),
+  Niyet(id:61, icon:"🛡️", isim:"Afiyet Duası", sub:"Dünya ve ahirette af ve afiyet",
+    duaAdi:"Afiyet Duası", hedef:1,
+    arabic:"اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
+    latin:"Allâhümme innî es'elüke'l-afve vel-âfiyete fi'd-dünyâ vel-âhira.",
+    turkish:"Allah'ım! Senden dünya ve ahirette af ve afiyet istiyorum.",
+    tip:"Sabah-akşam okunması tavsiye edilen; Tirmizî ve İbn Mâce'de geçen sahih hadis."),
+  Niyet(id:62, icon:"❤️", isim:"Kalp Sağlamlığı Duası", sub:"Kalbini dinde sabit kılmak",
+    duaAdi:"Kalbi Sabit Kılma Duası", hedef:7,
+    arabic:"يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
+    latin:"Yâ mukallibel-kulûb, sebbit kalbî alâ dînik.",
+    turkish:"Ey kalpleri çeviren! Kalbimi dinin üzere sabit kıl.",
+    tip:"Kalbini dinde sabit kılmak için sıklıkla okunması tavsiye edilir; Tirmizî'de geçen sahih hadis."),
+  Niyet(id:63, icon:"🚪", isim:"Kolaylaştırma Duası", sub:"Zorlukları kolaylaştırması için",
+    duaAdi:"Kolaylaştırma Duası", hedef:7,
+    arabic:"اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا\nوَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا",
+    latin:"Allâhümme lâ sehle illâ mâ ce'altehû sehlâ\nve ente tec'alü'l-hazne izâ şi'te sehlâ.",
+    turkish:"Allah'ım! Sen kolaylaştırdığın şey dışında kolay yoktur. Dilediğinde zorluğu da kolaylaştırırsın.",
+    tip:"Zor işlerde ve sıkıntılarda kolaylık dilemek için okunur; İbn Hibbân'da geçen sahih hadis."),
+  Niyet(id:64, icon:"👁️", isim:"Beden Afiyeti Duası", sub:"Beden, kulak ve göz için afiyet",
+    duaAdi:"Beden Afiyeti Duası", hedef:3,
+    arabic:"اللَّهُمَّ عَافِنِي فِي بَدَنِي\nاللَّهُمَّ عَافِنِي فِي سَمْعِي\nاللَّهُمَّ عَافِنِي فِي بَصَرِي",
+    latin:"Allâhümme âfinî fî bedenî.\nAllâhümme âfinî fî sem'î.\nAllâhümme âfinî fî besarî.",
+    turkish:"Allah'ım! Bedenimde afiyet ver. Allah'ım! Kulağımda afiyet ver. Allah'ım! Gözümde afiyet ver.",
+    tip:"Sabah-akşam beden sağlığı için 3 defa okunması tavsiye edilir; Ebû Dâvûd'da geçer."),
+  Niyet(id:65, icon:"📚", isim:"Faydalı İlim Duası", sub:"Faydalı ilim, temiz rızık ve makbul amel",
+    duaAdi:"Faydalı İlim ve Rızık Duası", hedef:1,
+    arabic:"اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا\nوَرِزْقًا طَيِّبًا\nوَعَمَلًا مُتَقَبَّلًا",
+    latin:"Allâhümme innî es'elüke ilmen nâfi'an\nve rızkan tayyiben\nve amelen mütekabbelen.",
+    turkish:"Allah'ım! Senden faydalı ilim, temiz rızık ve makbul amel istiyorum.",
+    tip:"Sabah namazının ardından okunması tavsiye edilir; İbn Mâce'de geçer."),
 ];
 
 // ── KATEGORİLER ───────────────────────────
 const List<Kategori> kategoriler = [
   Kategori(id:0, icon:"🤲", isim:"Tüm Dualar",
     sub:"Uygulamadaki tüm duaları bir arada görüntüleyin.",
-    niyetIds:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49]),
+    niyetIds:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65]),
+  Kategori(id:11, icon:"🕋", isim:"Kur'an Sureleri",
+    sub:"Kur'an ayetleri ve surelerinden oluşan dualar. Her biri farklı niyet ve ihtiyaçlar için okunabilir.",
+    niyetIds:[2, 3, 4, 6, 8, 11, 12, 19, 15, 42, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]),
   Kategori(id:-1, icon:"📿", isim:"Zikirler",
     sub:"Tesbih, esmaül hüsna ve günlük zikirler. Her birini istediğiniz kadar çekerek kalbinizi Allah'ın zikriyle doldurabilirsiniz.",
     niyetIds:[], isZikir:true),
@@ -378,12 +576,9 @@ const List<Kategori> kategoriler = [
   Kategori(id:6, icon:"💎", isim:"Az Bilinen Çok Etkili Dualar",
     sub:"Halk arasında inanışa göre çoğu kişinin bilmediği bu dualar; bilenlere büyük fayda sağlamıştır.",
     niyetIds:[23, 29, 35, 38, 39, 47, 46, 31]),
-  Kategori(id:7, icon:"📖", isim:"Kur'an ve Sünnet Duaları",
-    sub:"Halk arasında inanışa göre Kur'an ayetleri ve Hz. Peygamber'in sünnetinden gelen bu dualar en güvenilir ve bereketli olanlardır.",
-    niyetIds:[2, 3, 4, 6, 8, 11, 12, 19, 15, 42]),
   Kategori(id:8, icon:"✅", isim:"Sahih Dualar",
     sub:"Halk arasında inanışa göre sahih hadis zinciriyle sabit olan bu dualar en sağlam ve tesirli olanlardır.",
-    niyetIds:[13, 14, 15, 9, 18, 4, 28, 34, 46]),
+    niyetIds:[13, 14, 15, 9, 18, 4, 28, 34, 46, 52, 53, 54, 55, 56, 57, 60, 61, 62, 63, 64, 65]),
   Kategori(id:9, icon:"📜", isim:"Rivayetle Sabit Dualar",
     sub:"Halk arasında inanışa göre büyük zatlara ve sahabeye dayanan rivayetlerle gelen bu dualar asırlarca okunmuştur.",
     niyetIds:[1, 5, 7, 17, 20, 10, 33, 27]),
@@ -437,6 +632,7 @@ class AminApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Amin', debugShowCheckedModeBanner: false,
+    navigatorObservers: [_backPressObserver],
     theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: AC.greenMain),
       textTheme: GoogleFonts.loraTextTheme(), useMaterial3: true),
     home: const HomeScreen(),
@@ -692,7 +888,7 @@ class _KategoriDualarScreenState extends State<KategoriDualarScreen> {
               final pct = (c / n.hedef).clamp(0.0, 1.0);
               final done = c >= n.hedef;
               return _NiyetCard(
-                niyet: n, pct: pct, done: done,
+                niyet: n, count: c, pct: pct, done: done,
                 onTap: () async {
                   await Navigator.push(context,
                     MaterialPageRoute(builder: (_) => DuaScreen(niyet: n)));
@@ -709,10 +905,11 @@ class _KategoriDualarScreenState extends State<KategoriDualarScreen> {
 
 class _NiyetCard extends StatelessWidget {
   final Niyet niyet;
+  final int count;
   final double pct;
   final bool done;
   final VoidCallback onTap;
-  const _NiyetCard({required this.niyet, required this.pct, required this.done, required this.onTap});
+  const _NiyetCard({required this.niyet, required this.count, required this.pct, required this.done, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -730,7 +927,7 @@ class _NiyetCard extends StatelessWidget {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(niyet.icon, style: const TextStyle(fontSize: 28)),
           const SizedBox(height: 8),
-          Text(done ? "✅ ${niyet.isim}" : niyet.isim,
+          Text(niyet.isim,
             style: GoogleFonts.lora(fontSize: 12.5, fontWeight: FontWeight.w700,
               color: done ? AC.gold : AC.greenDark),
             textAlign: TextAlign.center),
@@ -742,6 +939,12 @@ class _NiyetCard extends StatelessWidget {
           ClipRRect(borderRadius: BorderRadius.circular(2),
             child: LinearProgressIndicator(
               value: pct, backgroundColor: AC.greenBg, color: AC.greenMid, minHeight: 5)),
+          if (count ~/ niyet.hedef > 0) ...[
+            const SizedBox(height: 5),
+            Text("✅ ${count ~/ niyet.hedef} tertip tamamlandı",
+              style: const TextStyle(fontSize: 9.5, color: AC.greenMid),
+              textAlign: TextAlign.center),
+          ],
         ]),
       ),
     );
@@ -985,107 +1188,92 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
               ])),
             ]),
           ),
-          Expanded(child: SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 24),
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
-                child: Column(children: [
-                  Text(n.duaAdi,
-                    style: GoogleFonts.amiri(fontSize: 26, color: AC.goldLight), textAlign: TextAlign.center),
-                  const SizedBox(height: 4),
-                  Text("✦ ${n.isim} ✦",
-                    style: const TextStyle(fontSize: 12, color: AC.greenPale, letterSpacing: 1.5)),
-                ]),
-              ),
-              const _Ornament(),
-              // Dua kutusu + TR switch
-              Stack(children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 350),
-                  transitionBuilder: (child, anim) => FadeTransition(opacity: anim,
-                    child: SlideTransition(
-                      position: Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero).animate(anim),
-                      child: child)),
-                  child: showTurkish
-                      ? _DuaKutu(key: const ValueKey('tr'), isTurkish: true, content: n.turkish)
-                      : _DuaKutu(key: const ValueKey('ar'), isTurkish: false, arabic: n.arabic, latin: n.latin),
-                ),
-                Positioned(
-                  top: 10, right: 28,
-                  child: GestureDetector(
-                    onTap: () => setState(() => showTurkish = !showTurkish),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: showTurkish ? AC.gold : Colors.white.withAlpha(40),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AC.gold.withAlpha(180), width: 1.5)),
-                      child: Text(showTurkish ? "AR" : "TR",
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1,
-                          color: showTurkish ? AC.greenDark : AC.goldLight)),
-                    ),
-                  ),
-                ),
+          Expanded(child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 4),
+              child: Column(children: [
+                Text(n.duaAdi,
+                  style: GoogleFonts.amiri(fontSize: 26, color: AC.goldLight), textAlign: TextAlign.center),
+                const SizedBox(height: 4),
+                Text("✦ ${n.isim} ✦",
+                  style: const TextStyle(fontSize: 12, color: AC.greenPale, letterSpacing: 1.5)),
               ]),
-              const SizedBox(height: 18),
-              RichText(text: TextSpan(
-                style: GoogleFonts.lora(fontSize: 16, color: AC.goldLight),
-                children: [
-                  const TextSpan(text: "Okunan "),
-                  TextSpan(text: "$count",
-                    style: const TextStyle(fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold)),
-                  const TextSpan(text: "  /  Gereken "),
-                  TextSpan(text: "${n.hedef}",
-                    style: const TextStyle(color: AC.goldLight, fontWeight: FontWeight.bold)),
-                ],
-              )),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 48),
-                child: ClipRRect(borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(value: pct,
-                    backgroundColor: Colors.white24,
-                    valueColor: const AlwaysStoppedAnimation(AC.greenLight), minHeight: 8)),
+            ),
+            const _Ornament(),
+            // Dua kutusu + TR switch — kutu her zaman tam yüksekliği doldurur
+            Expanded(child: LayoutBuilder(
+              builder: (ctx, bc) => AnimatedSwitcher(
+                duration: const Duration(milliseconds: 350),
+                transitionBuilder: (child, anim) => FadeTransition(opacity: anim,
+                  child: SlideTransition(
+                    position: Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero).animate(anim),
+                    child: child)),
+                child: showTurkish
+                    ? _DuaKutu(key: const ValueKey('tr'), isTurkish: true, content: n.turkish,
+                        availHeight: bc.maxHeight, showTurkish: true,
+                        onToggle: () => setState(() => showTurkish = !showTurkish))
+                    : _DuaKutu(key: const ValueKey('ar'), isTurkish: false, arabic: n.arabic, latin: n.latin,
+                        availHeight: bc.maxHeight, showTurkish: false,
+                        onToggle: () => setState(() => showTurkish = !showTurkish)),
               ),
-              const SizedBox(height: 24),
-              if (!done)
-                ScaleTransition(
-                  scale: _scaleAnim,
-                  child: GestureDetector(
-                    onTap: _tap,
-                    child: Container(
-                      width: 140, height: 140,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: const RadialGradient(
-                          colors: [AC.goldLight, AC.gold], center: Alignment(-0.3, -0.3)),
-                        boxShadow: [
-                          BoxShadow(color: AC.gold.withAlpha(90), blurRadius: 24, spreadRadius: 8),
-                          BoxShadow(color: Colors.black.withAlpha(77), blurRadius: 12)],
-                      ),
-                      child: const Center(child: Text("☽", style: TextStyle(fontSize: 52))),
+            )),
+            const SizedBox(height: 18),
+            RichText(text: TextSpan(
+              style: GoogleFonts.lora(fontSize: 16, color: AC.goldLight),
+              children: [
+                const TextSpan(text: "Okunan "),
+                TextSpan(text: "$count",
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                const TextSpan(text: "  /  Gereken "),
+                TextSpan(text: "${n.hedef}",
+                  style: const TextStyle(color: AC.goldLight, fontWeight: FontWeight.bold)),
+              ],
+            )),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: ClipRRect(borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(value: pct,
+                  backgroundColor: Colors.white24,
+                  valueColor: const AlwaysStoppedAnimation(AC.greenLight), minHeight: 8)),
+            ),
+            const SizedBox(height: 24),
+            if (!done)
+              ScaleTransition(
+                scale: _scaleAnim,
+                child: GestureDetector(
+                  onTap: _tap,
+                  child: Container(
+                    width: 140, height: 140,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: const RadialGradient(
+                        colors: [AC.goldLight, AC.gold], center: Alignment(-0.3, -0.3)),
+                      boxShadow: [
+                        BoxShadow(color: AC.gold.withAlpha(90), blurRadius: 24, spreadRadius: 8),
+                        BoxShadow(color: Colors.black.withAlpha(77), blurRadius: 12)],
                     ),
+                    child: const Center(child: Text("☽", style: TextStyle(fontSize: 52))),
                   ),
-                )
-              else
-                _TamamlandiWidget(onReset: _reset),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AC.greenDark.withAlpha(160), borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AC.greenMid.withAlpha(100))),
-                  child: Text(n.tip,
-                    style: const TextStyle(fontSize: 12, color: AC.greenPale, height: 1.7),
-                    textAlign: TextAlign.center),
                 ),
+              )
+            else
+              _TamamlandiWidget(onReset: _reset),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AC.greenDark.withAlpha(160), borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AC.greenMid.withAlpha(100))),
+                child: Text(n.tip,
+                  style: const TextStyle(fontSize: 12, color: AC.greenPale, height: 1.7),
+                  textAlign: TextAlign.center),
               ),
-            ]),
-          )),
+            ),
+            const SizedBox(height: 24),
+          ])),
         ])),
       ),
     );
@@ -1095,37 +1283,68 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
 class _DuaKutu extends StatelessWidget {
   final bool isTurkish;
   final String? arabic, latin, content;
-  const _DuaKutu({super.key, required this.isTurkish, this.arabic, this.latin, this.content});
+  final bool showTurkish;
+  final VoidCallback onToggle;
+  final double availHeight;
+  const _DuaKutu({super.key, required this.isTurkish, this.arabic, this.latin, this.content,
+      required this.showTurkish, required this.onToggle, required this.availHeight});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.fromLTRB(18, 36, 18, 18),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(18), borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AC.gold.withAlpha(77))),
-      child: isTurkish
-          ? Column(children: [
-              Row(children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(color: AC.gold.withAlpha(60), borderRadius: BorderRadius.circular(8)),
-                  child: const Text("TÜRKÇE MEAL",
-                    style: TextStyle(fontSize: 10, color: AC.goldLight, letterSpacing: 1.5))),
-              ]),
-              const SizedBox(height: 10),
-              Text(content ?? '', style: GoogleFonts.lora(fontSize: 13.5, color: Colors.white, height: 1.9),
-                textAlign: TextAlign.center),
-            ])
-          : Column(children: [
-              Text(arabic ?? '', style: GoogleFonts.amiri(fontSize: 15, color: AC.goldLight, height: 2.0),
-                textAlign: TextAlign.center),
-              const SizedBox(height: 12),
-              Text(latin ?? '', style: GoogleFonts.lora(
-                fontSize: 13, color: AC.greenPale, fontStyle: FontStyle.italic, height: 1.8),
-                textAlign: TextAlign.center),
-            ]),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: availHeight,
+            padding: const EdgeInsets.fromLTRB(18, 36, 18, 18),
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(18), borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AC.gold.withAlpha(77))),
+            child: SingleChildScrollView(
+              child: isTurkish
+                  ? Column(children: [
+                      Row(children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(color: AC.gold.withAlpha(60), borderRadius: BorderRadius.circular(8)),
+                          child: const Text("TÜRKÇE MEAL",
+                            style: TextStyle(fontSize: 10, color: AC.goldLight, letterSpacing: 1.5))),
+                      ]),
+                      const SizedBox(height: 10),
+                      Text(content ?? '', style: GoogleFonts.lora(fontSize: 13.5, color: Colors.white, height: 1.9),
+                        textAlign: TextAlign.center),
+                    ])
+                  : Column(children: [
+                      Text(arabic ?? '', style: GoogleFonts.amiri(fontSize: 15, color: AC.goldLight, height: 2.0),
+                        textAlign: TextAlign.center),
+                      const SizedBox(height: 12),
+                      Text(latin ?? '', style: GoogleFonts.lora(
+                        fontSize: 13, color: AC.greenPale, fontStyle: FontStyle.italic, height: 1.8),
+                        textAlign: TextAlign.center),
+                    ]),
+            ),
+          ),
+          Positioned(
+            top: 8, right: 8,
+            child: GestureDetector(
+              onTap: onToggle,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: showTurkish ? AC.gold : Colors.white.withAlpha(40),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AC.gold.withAlpha(180), width: 1.5)),
+                child: Text(showTurkish ? "AR" : "TR",
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1,
+                    color: showTurkish ? AC.greenDark : AC.goldLight)),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1135,7 +1354,7 @@ class _TamamlandiWidget extends StatelessWidget {
   const _TamamlandiWidget({required this.onReset});
   @override
   Widget build(BuildContext context) => Column(children: [
-    const Text("🌟", style: TextStyle(fontSize: 60)),
+    const Text("✦", style: TextStyle(fontSize: 30, color: AC.gold)),
     const SizedBox(height: 8),
     Text("TAMAMLANDI", style: GoogleFonts.amiri(fontSize: 30, color: AC.goldLight, letterSpacing: 3)),
     const SizedBox(height: 8),
@@ -1148,7 +1367,7 @@ class _TamamlandiWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 28),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AC.gold, width: 2)),
-        child: Text("Yeniden Başla", style: GoogleFonts.lora(fontSize: 14, color: AC.goldLight))),
+        child: Text("Yeniden Başla", style: GoogleFonts.lora(fontSize: 14, color: AC.greenDark))),
     ),
   ]);
 }
@@ -1421,7 +1640,7 @@ class _ZikirSayacScreenState extends State<ZikirSayacScreen> with SingleTickerPr
                 )
               else
                 Column(children: [
-                  const Text("🌟", style: TextStyle(fontSize: 60)),
+                  const Text("✦", style: TextStyle(fontSize: 30, color: AC.gold)),
                   const SizedBox(height: 8),
                   Text("TAMAMLANDI", style: GoogleFonts.amiri(fontSize: 30, color: AC.goldLight, letterSpacing: 3)),
                   const SizedBox(height: 8),
@@ -1434,7 +1653,7 @@ class _ZikirSayacScreenState extends State<ZikirSayacScreen> with SingleTickerPr
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 28),
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: AC.gold, width: 2)),
-                      child: Text("Yeniden Başla", style: GoogleFonts.lora(fontSize: 14, color: AC.goldLight))),
+                      child: Text("Yeniden Başla", style: GoogleFonts.lora(fontSize: 14, color: AC.greenDark))),
                   ),
                 ]),
             ]),
