@@ -50,7 +50,7 @@
 	<false/>
 	<!-- AdMob iOS App ID -->
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-6470338276121414~2679139424</string>
+	<string>ca-app-pub-6470338276121414~8983952032</string>
 	<!-- SKAdNetwork (AdMob için Google'ın güncel listesi) -->
 	<key>SKAdNetworkItems</key>
 	<array>
