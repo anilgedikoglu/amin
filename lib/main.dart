@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,38 +16,85 @@ void main() async {
 }
 
 // ── ADMOB ─────────────────────────────────
+class _AdIds {
+  // Interstitial
+  static String get interstitial => Platform.isIOS
+      ? 'ca-app-pub-6470338276121414/1633785489'
+      : 'ca-app-pub-6470338276121414/3936380770';
+  // Rewarded
+  static String get rewarded => Platform.isIOS
+      ? 'ca-app-pub-6470338276121414/9147603563'
+      : 'ca-app-pub-6470338276121414/7877624629';
+}
+
 class AdManager {
   static final AdManager instance = AdManager._();
   AdManager._();
 
-  static const _adUnitId = 'ca-app-pub-6470338276121414/3936380770';
-  InterstitialAd? _ad;
-  bool _loading = false;
+  // ── Interstitial ──
+  InterstitialAd? _interstitial;
+  bool _interstitialLoading = false;
 
   void load() {
-    if (_loading || _ad != null) return;
-    _loading = true;
+    _loadInterstitial();
+    _loadRewarded();
+  }
+
+  void _loadInterstitial() {
+    if (_interstitialLoading || _interstitial != null) return;
+    _interstitialLoading = true;
     InterstitialAd.load(
-      adUnitId: _adUnitId,
+      adUnitId: _AdIds.interstitial,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
-          _ad = ad;
-          _loading = false;
+          _interstitial = ad;
+          _interstitialLoading = false;
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (_) { _ad = null; load(); },
-            onAdFailedToShowFullScreenContent: (_, __) { _ad = null; load(); },
+            onAdDismissedFullScreenContent: (_) { _interstitial = null; _loadInterstitial(); },
+            onAdFailedToShowFullScreenContent: (_, __) { _interstitial = null; _loadInterstitial(); },
           );
         },
         onAdFailedToLoad: (_) {
-          _loading = false;
-          Future.delayed(const Duration(minutes: 1), load);
+          _interstitialLoading = false;
+          Future.delayed(const Duration(minutes: 1), _loadInterstitial);
         },
       ),
     );
   }
 
-  void show() => _ad?.show();
+  void showInterstitial() => _interstitial?.show();
+
+  // ── Rewarded ──
+  RewardedAd? _rewarded;
+  bool _rewardedLoading = false;
+
+  void _loadRewarded() {
+    if (_rewardedLoading || _rewarded != null) return;
+    _rewardedLoading = true;
+    RewardedAd.load(
+      adUnitId: _AdIds.rewarded,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewarded = ad;
+          _rewardedLoading = false;
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (_) { _rewarded = null; _loadRewarded(); },
+            onAdFailedToShowFullScreenContent: (_, __) { _rewarded = null; _loadRewarded(); },
+          );
+        },
+        onAdFailedToLoad: (_) {
+          _rewardedLoading = false;
+          Future.delayed(const Duration(minutes: 1), _loadRewarded);
+        },
+      ),
+    );
+  }
+
+  void showRewarded({required void Function(AdWithoutView, RewardItem) onRewarded}) {
+    _rewarded?.show(onUserEarnedReward: onRewarded);
+  }
 }
 
 class _BackPressObserver extends NavigatorObserver {
@@ -54,7 +102,7 @@ class _BackPressObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route? previousRoute) {
     _count++;
-    if (_count % 5 == 0) AdManager.instance.show();
+    if (_count % 5 == 0) AdManager.instance.showInterstitial();
   }
 }
 
