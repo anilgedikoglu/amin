@@ -4,15 +4,39 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'features/kutsal/screens/sacred_home_screen.dart';
+import 'features/namaz_hocasi/namaz_hocasi_screen.dart';
+import 'features/notifications/notification_service.dart';
+import 'features/quran/screens/quran_home_screen.dart';
+import 'widgets/brand_icons.dart';
+import 'widgets/home_tools.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
-  AdManager.instance.load();
+  // Fontlar uygulamaya gömülü (assets/google_fonts). Runtime'da CDN'den
+  // indirme KAPALI → tamamen offline, exception/kasma yok.
+  GoogleFonts.config.allowRuntimeFetching = false;
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light));
+  // UI'ı HEMEN göster; AdMob'u açılışı bloklamadan arka planda başlat.
   runApp(const AminApp());
+  MobileAds.instance.initialize().then((_) => AdManager.instance.load());
+  // Bildirimler: SADECE etkinse ve açılış bittikten sonra (3 sn) tazele.
+  // Ağır timezone DB yüklemesi ilk kareyi/açılışı bloklamasın.
+  Future.delayed(const Duration(seconds: 3), () async {
+    final n = NotificationService.instance;
+    final daily = await n.isDailyEnabled();
+    final prayer = await n.isPrayerEnabled();
+    await n.init();
+    if (daily) {
+      final t = await n.dailyTime();
+      await n.scheduleDailyQuotes(t.$1, t.$2);
+    }
+    if (prayer) await n.schedulePrayerReminders();
+    // Dini özel günler: 10 yıllık kutlama bildirimleri (sessizce, ayda bir tazelenir).
+    await n.scheduleReligiousDays();
+  });
 }
 
 // ── ADMOB ─────────────────────────────────
@@ -633,10 +657,199 @@ class AminApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Amin', debugShowCheckedModeBanner: false,
-    theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: AC.greenMain),
-      textTheme: GoogleFonts.loraTextTheme(), useMaterial3: true),
-    home: const HomeScreen(),
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: AC.greenMain),
+      textTheme: GoogleFonts.loraTextTheme(),
+      useMaterial3: true,
+      // Uygulama geneli tutarlı premium temel (ekranlar kendi AppBar'ını
+      // override etse de splash/geçiş/divider/snackbar her yerde aynı).
+      scaffoldBackgroundColor: AC.greenBg,
+      splashColor: AC.gold.withAlpha(38),
+      highlightColor: AC.gold.withAlpha(20),
+      dividerTheme: DividerThemeData(color: AC.greenPale.withAlpha(150), thickness: 1, space: 1),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AC.greenDark,
+        foregroundColor: AC.goldLight,
+        elevation: 3,
+        scrolledUnderElevation: 3,
+        centerTitle: false,
+        iconTheme: const IconThemeData(color: Colors.white70),
+        titleTextStyle: GoogleFonts.lora(
+            fontSize: 17, fontWeight: FontWeight.w700, color: AC.goldLight, letterSpacing: .3),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: AC.greenDark,
+        contentTextStyle: GoogleFonts.lora(fontSize: 13.5, color: AC.greenPale),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(builders: {
+        TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      }),
+    ),
+    home: const SplashScreen(),
   );
+}
+
+// Açılış/geçiş ekranı: besmele + madalyon + AMİN + İMAN PORTALI yumuşak
+// belirir, ardından otomatik olarak ana menüye geçer.
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 1100))..forward();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 2300), () {
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 600),
+          pageBuilder: (_, __, ___) => const HomeScreen(),
+          transitionsBuilder: (_, a, __, child) =>
+              FadeTransition(opacity: a, child: child),
+        ),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AC.greenDark, AC.greenMain, AC.greenDark],
+              stops: [0.0, 0.55, 1.0]),
+        ),
+        child: Stack(children: [
+          const Positioned.fill(child: GeometricBackdrop()),
+          Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 360,
+              child: IgnorePointer(
+                  child: Container(
+                      decoration: BoxDecoration(
+                          gradient: RadialGradient(
+                              center: const Alignment(0, -0.4),
+                              radius: 0.9,
+                              colors: [AC.gold.withAlpha(34), Colors.transparent]))))),
+          Center(
+            child: FadeTransition(
+              opacity: _c,
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Text("بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ",
+                    style: GoogleFonts.amiri(fontSize: 25, color: AC.goldLight, height: 1.4),
+                    textAlign: TextAlign.center),
+                const SizedBox(height: 6),
+                Text("Bismillâhirrahmânirrahîm",
+                    style: GoogleFonts.lora(
+                        fontSize: 11,
+                        color: AC.greenPale,
+                        letterSpacing: 1.5,
+                        fontStyle: FontStyle.italic)),
+                const SizedBox(height: 34),
+                const HeroMedallion(size: 140),
+                const SizedBox(height: 24),
+                Text("AMİN",
+                    style: GoogleFonts.amiri(
+                        fontSize: 50,
+                        color: AC.goldLight,
+                        letterSpacing: 9,
+                        fontWeight: FontWeight.w700,
+                        shadows: [
+                          const Shadow(color: Colors.black45, blurRadius: 16, offset: Offset(0, 3))
+                        ])),
+                const SizedBox(height: 4),
+                Text("İMAN  PORTALI",
+                    style: GoogleFonts.lora(
+                        fontSize: 12,
+                        color: AC.greenPale,
+                        letterSpacing: 4,
+                        fontWeight: FontWeight.w600)),
+                const SizedBox(height: 22),
+                const ArabesqueDivider(width: 220),
+              ]),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
+// Emoji ikonları profesyonel Material ikonlara eşler (Dua & Zikir kartları).
+IconData duaIcon(String e) {
+  switch (e) {
+    case "🌙": case "🌘": return Icons.nightlight_round;
+    case "🌌": return Icons.nights_stay_rounded;
+    case "☀️": case "🌅": return Icons.wb_sunny_rounded;
+    case "🤲": case "🙏": return Icons.volunteer_activism_rounded;
+    case "📿": return Icons.spa_rounded;
+    case "🛡️": case "🔰": return Icons.shield_rounded;
+    case "🌟": case "✨": case "⭐": case "🌠": case "🔮": return Icons.auto_awesome_rounded;
+    case "🧠": return Icons.psychology_rounded;
+    case "🔓": case "🔑": case "🗝️": case "🚪": return Icons.lock_open_rounded;
+    case "📚": case "📖": return Icons.menu_book_rounded;
+    case "📜": return Icons.history_edu_rounded;
+    case "💰": case "💸": case "💳": case "💼": return Icons.savings_rounded;
+    case "💞": case "❤️": case "💝": case "💛": case "💖": case "💔": case "💓": case "🫀": case "💍": case "💎":
+      return Icons.favorite_rounded;
+    case "💊": return Icons.healing_rounded;
+    case "👁️": case "🧿": case "🪬": return Icons.remove_red_eye_rounded;
+    case "🌸": case "🌿": case "🌾": return Icons.local_florist_rounded;
+    case "🌊": return Icons.waves_rounded;
+    case "⚡": return Icons.bolt_rounded;
+    case "⚔️": return Icons.security_rounded;
+    case "🔥": case "🕯️": return Icons.local_fire_department_rounded;
+    case "🧲": return Icons.adjust_rounded;
+    case "🧭": return Icons.explore_rounded;
+    case "🧬": return Icons.biotech_rounded;
+    case "🧘": return Icons.self_improvement_rounded;
+    case "😨": return Icons.sentiment_very_dissatisfied_rounded;
+    case "🗂️": return Icons.folder_rounded;
+    case "🕳️": return Icons.circle_outlined;
+    case "🕋": return Icons.mosque_rounded;
+    case "🕊️": return Icons.flutter_dash_rounded;
+    case "🔁": return Icons.repeat_rounded;
+    case "📅": return Icons.calendar_month_rounded;
+    case "💪": return Icons.fitness_center_rounded;
+    case "💡": return Icons.lightbulb_rounded;
+    case "👶": return Icons.child_care_rounded;
+    case "👂": return Icons.hearing_rounded;
+    case "🐘": return Icons.pets_rounded;
+    case "🏠": return Icons.home_rounded;
+    case "🏛️": return Icons.account_balance_rounded;
+    case "🏆": return Icons.emoji_events_rounded;
+    case "🎁": return Icons.card_giftcard_rounded;
+    case "🌬️": case "🌪️": return Icons.air_rounded;
+    case "✈️": return Icons.flight_rounded;
+    case "✅": return Icons.check_circle_rounded;
+    case "⛓️": return Icons.link_rounded;
+    case "⚖️": return Icons.balance_rounded;
+    case "♾️": return Icons.all_inclusive_rounded;
+    case "☝️": return Icons.front_hand_rounded;
+    case "⏳": return Icons.hourglass_bottom_rounded;
+    default: return Icons.auto_awesome_rounded;
+  }
 }
 
 // ── HOME ──────────────────────────────────
@@ -649,74 +862,572 @@ class HomeScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-            colors: [AC.greenDark, AC.greenMain, AC.greenBg], stops: [0.0, 0.45, 1.0]),
+            colors: [AC.greenDark, AC.greenMain, AC.greenDark], stops: [0.0, 0.55, 1.0]),
         ),
-        child: SafeArea(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text("بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ",
-            style: GoogleFonts.amiri(fontSize: 26, color: AC.goldLight), textAlign: TextAlign.center),
-          const SizedBox(height: 4),
-          const Text("Bismillahirrahmanirrahim",
-            style: TextStyle(fontSize: 11, color: AC.greenPale, letterSpacing: 1.2)),
-          const SizedBox(height: 28),
-          Container(
-            width: 110, height: 110,
-            decoration: BoxDecoration(shape: BoxShape.circle,
-              gradient: const RadialGradient(colors: [AC.goldLight, AC.gold], center: Alignment(-0.3, -0.3)),
-              boxShadow: [BoxShadow(color: AC.gold.withAlpha(90), blurRadius: 24, spreadRadius: 6),
-                BoxShadow(color: Colors.black.withAlpha(50), blurRadius: 12)]),
-            child: const Center(child: Text("☽", style: TextStyle(fontSize: 52))),
-          ),
-          const SizedBox(height: 20),
-          Text("AMİN", style: GoogleFonts.amiri(fontSize: 44, color: AC.goldLight, letterSpacing: 6,
-            shadows: [const Shadow(color: Colors.black38, blurRadius: 12)])),
-          const Text("DUA & ZİKİR UYGULAMASI",
-            style: TextStyle(fontSize: 12, color: AC.greenPale, letterSpacing: 2.5)),
-          const SizedBox(height: 48),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(children: [
-              _HomeBtn(label: "🤲  DUA ET", isPrimary: true,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KategoriScreen()))),
-              const SizedBox(height: 16),
-              _HomeBtn(label: "📿  DUALARA DEVAM", isPrimary: false,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DualarDevamScreen()))),
-            ]),
-          ),
-          const SizedBox(height: 40),
-          const Text('"Ve Allah\'tan yardım ve muvaffakiyet dileriz."\n2026 © Amin',
-            style: TextStyle(fontSize: 11, color: AC.brownDark, letterSpacing: .8),
-            textAlign: TextAlign.center),
-        ])),
+        child: Stack(children: [
+          // Hafif geometrik doku
+          const Positioned.fill(child: GeometricBackdrop()),
+          // Üstte ince altın ışıma
+          Positioned(top: 0, left: 0, right: 0, height: 320, child: IgnorePointer(
+            child: Container(decoration: BoxDecoration(
+              gradient: RadialGradient(center: const Alignment(0, -0.6), radius: 0.9,
+                colors: [AC.gold.withAlpha(28), Colors.transparent]))))),
+          SafeArea(child: LayoutBuilder(
+            builder: (ctx, c) => SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: c.maxHeight),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                    const SizedBox(height: 10),
+                    Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset('assets/icons/aminicon.png',
+                            height: 52, width: 52, fit: BoxFit.cover),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Sıradaki namaz (imsak) — en üstte (bilgi şeridi, buton değil)
+                    const NextPrayerBanner(),
+                    const SizedBox(height: 20),
+                    _MenuTile(
+                      icon: const DuaHandsIcon(size: 30, color: AC.greenDark),
+                      flagship: true,
+                      title: "Dua & Zikir",
+                      subtitle: "Yeni başla veya kaldığın yerden devam et",
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const DuaZikirHubScreen())),
+                    ),
+                    const SizedBox(height: 14),
+                    _MenuTile(
+                      icon: const OpenBookIcon(size: 30, color: AC.greenDark),
+                      title: "Kur'an-ı Kerim",
+                      subtitle: "Oku · meal · tilavet · favoriler",
+                      flagship: true,
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const QuranHomeScreen())),
+                    ),
+                    const SizedBox(height: 14),
+                    _MenuTile(
+                      icon: const Icon(Icons.travel_explore_rounded, size: 30, color: AC.greenDark),
+                      title: "Kutsal Metinler",
+                      subtitle: "Dünya dinlerinin kutsal kitapları · hepsinde birden ara",
+                      flagship: true,
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const SacredHomeScreen())),
+                    ),
+                    const SizedBox(height: 14),
+                    _MenuTile(
+                      icon: const Icon(Icons.self_improvement_rounded, size: 30, color: AC.greenDark),
+                      title: "Namaz Hocası",
+                      subtitle: "Adım adım namaz · pozisyon ve dualar",
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const NamazHocasiScreen())),
+                    ),
+                    const SizedBox(height: 26),
+                    Row(children: [
+                      Expanded(child: Divider(color: AC.gold.withAlpha(80))),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text("İBADET & ARAÇLAR",
+                            style: GoogleFonts.lora(fontSize: 11, letterSpacing: 2.5,
+                                fontWeight: FontWeight.w600, color: AC.greenPale)),
+                      ),
+                      Expanded(child: Divider(color: AC.gold.withAlpha(80))),
+                    ]),
+                    const SizedBox(height: 16),
+                    const ToolsGrid(),
+                    const SizedBox(height: 24),
+                    Row(children: [
+                      Expanded(child: Divider(color: AC.gold.withAlpha(80))),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text("DELİL & İMAN HAKİKATLERİ",
+                            style: GoogleFonts.lora(fontSize: 11, letterSpacing: 2,
+                                fontWeight: FontWeight.w600, color: AC.greenPale)),
+                      ),
+                      Expanded(child: Divider(color: AC.gold.withAlpha(80))),
+                    ]),
+                    const SizedBox(height: 16),
+                    const DelilGrid(),
+                    const SizedBox(height: 16),
+                    const DailyHadisCard(),
+                    const SizedBox(height: 28),
+                    Text('"Ve Allah\'tan yardım ve muvaffakiyet dileriz."',
+                      style: GoogleFonts.lora(fontSize: 11, color: AC.greenPale.withAlpha(150),
+                        fontStyle: FontStyle.italic, height: 1.5),
+                      textAlign: TextAlign.center),
+                    const SizedBox(height: 4),
+                    Text("2026 © Amin",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 10, color: AC.greenMid.withAlpha(180), letterSpacing: 1.5)),
+                    const SizedBox(height: 22),
+                  ]),
+                ),
+              ),
+            ),
+          )),
+        ]),
       ),
     );
   }
 }
 
-class _HomeBtn extends StatelessWidget {
-  final String label;
-  final bool isPrimary;
+// Ana menü için tutarlı premium kart. Primary=altın dolgu CTA;
+// diğerleri=buzlu koyu zemin + altın kenar. flagship=güçlü altın vurgu.
+class _MenuTile extends StatelessWidget {
+  final Widget icon;
+  final String title, subtitle;
+  final String? arabicTag;
+  final String? badge;
+  final bool primary, flagship, iconOnGold;
   final VoidCallback onTap;
-  const _HomeBtn({required this.label, required this.isPrimary, required this.onTap});
+  const _MenuTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.arabicTag,
+    this.badge,
+    this.primary = false,
+    this.flagship = false,
+    this.iconOnGold = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: isPrimary ? const LinearGradient(colors: [AC.gold, AC.goldLight]) : null,
-          color: isPrimary ? null : Colors.white12,
-          border: isPrimary ? null : Border.all(color: const Color(0x80c9a84c), width: 2),
-          boxShadow: [BoxShadow(
-            color: isPrimary ? AC.gold.withAlpha(115) : Colors.black26,
-            blurRadius: isPrimary ? 20 : 10, offset: const Offset(0, 6))],
+    final lightText = !primary;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            gradient: primary
+                ? const LinearGradient(colors: [AC.gold, AC.goldLight],
+                    begin: Alignment.topLeft, end: Alignment.bottomRight)
+                : LinearGradient(colors: [Colors.white.withAlpha(20), Colors.white.withAlpha(10)]),
+            border: Border.all(
+                color: primary
+                    ? Colors.transparent
+                    : (flagship ? AC.gold.withAlpha(180) : AC.gold.withAlpha(90)),
+                width: flagship ? 1.6 : 1.2),
+            boxShadow: [
+              BoxShadow(
+                  color: primary ? AC.gold.withAlpha(120) : Colors.black.withAlpha(60),
+                  blurRadius: primary ? 22 : 12,
+                  offset: const Offset(0, 7)),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+            child: Row(children: [
+              // İkon madalyonu
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: iconOnGold
+                      ? const RadialGradient(center: Alignment(-0.3, -0.4),
+                          colors: [AC.greenMid, AC.greenDark])
+                      : const RadialGradient(center: Alignment(-0.3, -0.4),
+                          colors: [AC.goldLight, AC.gold]),
+                  boxShadow: [BoxShadow(color: Colors.black.withAlpha(50), blurRadius: 8)],
+                ),
+                child: Center(
+                  child: iconOnGold
+                      ? const DuaHandsIcon(size: 28, color: AC.goldLight)
+                      : icon,
+                ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(children: [
+                    Flexible(
+                      child: Text(title,
+                          style: GoogleFonts.lora(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: lightText ? AC.goldLight : AC.greenDark)),
+                    ),
+                    if (arabicTag != null) ...[
+                      const SizedBox(width: 8),
+                      Text(arabicTag!,
+                          style: const TextStyle(
+                              fontFamily: 'AmiriQuran', fontSize: 15, color: AC.greenPale)),
+                    ],
+                    if (badge != null) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        decoration: BoxDecoration(
+                            color: AC.gold, borderRadius: BorderRadius.circular(20)),
+                        child: Text(badge!,
+                            style: GoogleFonts.lora(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                                color: AC.greenDark)),
+                      ),
+                    ],
+                  ]),
+                  const SizedBox(height: 3),
+                  Text(subtitle,
+                      style: GoogleFonts.lora(
+                          fontSize: 11.5,
+                          height: 1.3,
+                          color: lightText ? AC.greenPale : AC.greenDark.withAlpha(200))),
+                ]),
+              ),
+              Icon(Icons.chevron_right_rounded,
+                  color: lightText ? AC.gold : AC.greenDark.withAlpha(170)),
+            ]),
+          ),
         ),
-        child: Text(label, textAlign: TextAlign.center,
-          style: GoogleFonts.lora(fontSize: 17, fontWeight: FontWeight.w700, letterSpacing: 2,
-            color: isPrimary ? AC.greenDark : AC.goldLight)),
+      ),
+    );
+  }
+}
+
+// ── DUA & ZİKİR HUB (yeni / devam ayrımı) ──
+class DuaZikirHubScreen extends StatefulWidget {
+  const DuaZikirHubScreen({super.key});
+  @override
+  State<DuaZikirHubScreen> createState() => _DuaZikirHubScreenState();
+}
+
+class _DuaZikirHubScreenState extends State<DuaZikirHubScreen> {
+  int _devamCount = 0;
+  bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    var c = 0;
+    for (final n in niyetler) {
+      final v = prefs.getInt('niyet_${n.id}') ?? 0;
+      if (v > 0 && v < n.hedef) c++;
+    }
+    for (final z in zikirler) {
+      final v = prefs.getInt('zikir_${z.id}') ?? 0;
+      if (v > 0 && v < z.hedef) c++;
+    }
+    if (mounted) setState(() { _devamCount = c; _loaded = true; });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AC.greenBg,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+            colors: [AC.greenDark, AC.greenMain, AC.greenDark], stops: [0, 0.5, 1]),
+        ),
+        child: SafeArea(child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 16, 8),
+            child: Row(children: [
+              IconButton(icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white70, size: 18),
+                onPressed: () => Navigator.maybePop(context)),
+              Text("Dua & Zikir", style: GoogleFonts.amiri(fontSize: 20, color: AC.goldLight, letterSpacing: 1)),
+            ]),
+          ),
+          const _Ornament(),
+          Expanded(child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+            child: Column(children: [
+              _hubCard(
+                icon: const DuaHandsIcon(size: 40, color: AC.greenDark),
+                title: "Yeni Başla",
+                sub: "Kategorilerden dua veya zikir seç",
+                primary: true,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const KategoriScreen())),
+              ),
+              const SizedBox(height: 16),
+              _hubCard(
+                icon: const TasbihIcon(size: 40, color: AC.greenDark),
+                title: "Devam Et",
+                sub: _loaded
+                    ? (_devamCount > 0
+                        ? "$_devamCount dua/zikir yarım kaldı"
+                        : "Yarım kalan yok — yeni başlayabilirsin")
+                    : "Yükleniyor…",
+                primary: false,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const DualarDevamScreen())),
+              ),
+              const SizedBox(height: 16),
+              _hubCard(
+                icon: const Icon(Icons.insights_rounded, size: 36, color: AC.greenDark),
+                title: "İstatistikler",
+                sub: "Ne okudun, kaç kez, kaç tertip tamamladın",
+                primary: false,
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const IstatistikScreen())),
+              ),
+            ]),
+          )),
+        ])),
+      ),
+    );
+  }
+
+  Widget _hubCard({required Widget icon, required String title, required String sub,
+      required bool primary, required VoidCallback onTap}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Ink(
+          padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 22),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: primary
+                ? const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AC.greenMid, AC.greenDark])
+                : null,
+            color: primary ? null : Colors.white.withAlpha(18),
+            border: Border.all(color: AC.gold.withAlpha(primary ? 200 : 110), width: 1.5),
+            boxShadow: [BoxShadow(
+              color: Colors.black.withAlpha(primary ? 90 : 60),
+              blurRadius: primary ? 20 : 12, offset: const Offset(0, 7))],
+          ),
+          child: Row(children: [
+            Container(
+              width: 64, height: 64,
+              decoration: const BoxDecoration(shape: BoxShape.circle,
+                gradient: RadialGradient(center: Alignment(-0.3, -0.4),
+                  colors: [AC.goldLight, AC.gold])),
+              child: Center(child: icon),
+            ),
+            const SizedBox(width: 18),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: GoogleFonts.lora(fontSize: 20, fontWeight: FontWeight.w700,
+                color: AC.goldLight)),
+              const SizedBox(height: 4),
+              Text(sub, style: GoogleFonts.lora(fontSize: 12.5, height: 1.3,
+                color: AC.greenPale)),
+            ])),
+            const Icon(Icons.chevron_right_rounded, color: AC.gold),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+// ── İSTATİSTİK SCREEN ─────────────────────
+class _StatRow {
+  final int id;
+  final String name;
+  final int count, hedef;
+  final bool zikir;
+  const _StatRow(this.id, this.name, this.count, this.hedef, this.zikir);
+}
+
+class IstatistikScreen extends StatefulWidget {
+  const IstatistikScreen({super.key});
+  @override
+  State<IstatistikScreen> createState() => _IstatistikScreenState();
+}
+
+class _IstatistikScreenState extends State<IstatistikScreen> {
+  bool _loaded = false;
+  int _toplamOkuma = 0, _toplamTertip = 0, _aktif = 0, _tamam = 0;
+  List<_StatRow> _rows = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final p = await SharedPreferences.getInstance();
+    final rows = <_StatRow>[];
+    var okuma = 0, tertip = 0, aktif = 0, tamam = 0;
+    void acc(int id, int c, int hedef, String isim, bool zikir) {
+      if (c > 0) rows.add(_StatRow(id, isim, c, hedef, zikir));
+      okuma += c;
+      tertip += c ~/ hedef;
+      if (c > 0 && c < hedef) aktif++;
+      if (c >= hedef) tamam++;
+    }
+    for (final n in niyetler) {
+      acc(n.id, p.getInt('niyet_${n.id}') ?? 0, n.hedef, n.isim, false);
+    }
+    for (final z in zikirler) {
+      acc(z.id, p.getInt('zikir_${z.id}') ?? 0, z.hedef, z.isim, true);
+    }
+    rows.sort((a, b) => b.count.compareTo(a.count));
+    if (mounted) {
+      setState(() {
+        _toplamOkuma = okuma;
+        _toplamTertip = tertip;
+        _aktif = aktif;
+        _tamam = tamam;
+        _rows = rows;
+        _loaded = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AC.greenBg,
+      appBar: AppBar(title: const Text("İstatistikler")),
+      body: !_loaded
+          ? const Center(child: CircularProgressIndicator(color: AC.greenMain))
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Row(children: [
+                  _statBox("Toplam Okuma", "$_toplamOkuma", Icons.repeat_rounded),
+                  const SizedBox(width: 12),
+                  _statBox("Tamamlanan Tertip", "$_toplamTertip", Icons.verified_rounded),
+                ]),
+                const SizedBox(height: 12),
+                Row(children: [
+                  _statBox("Tamamlanan Dua/Zikir", "$_tamam", Icons.task_alt_rounded),
+                  const SizedBox(width: 12),
+                  _statBox("Yarım Kalan", "$_aktif", Icons.hourglass_bottom_rounded),
+                ]),
+                const SizedBox(height: 22),
+                Text("Okuduklarım (çok → az)",
+                    style: GoogleFonts.lora(
+                        fontSize: 15, fontWeight: FontWeight.w700, color: AC.greenDark)),
+                const SizedBox(height: 10),
+                if (_rows.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 28),
+                    child: Center(
+                      child: Text("Henüz okuma kaydın yok.\nBir dua veya zikir okuyunca burada görünür.",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.lora(color: AC.greenMid, height: 1.5)),
+                    ),
+                  )
+                else
+                  ..._rows.map((r) => _rowTile(context, r)),
+              ],
+            ),
+    );
+  }
+
+  Widget _statBox(String label, String value, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AC.greenPale.withAlpha(160)),
+          boxShadow: [BoxShadow(color: Colors.black.withAlpha(12), blurRadius: 8, offset: const Offset(0, 3))],
+        ),
+        child: Column(children: [
+          Icon(icon, color: AC.gold, size: 24),
+          const SizedBox(height: 8),
+          Text(value,
+              style: GoogleFonts.lora(
+                  fontSize: 24, fontWeight: FontWeight.w800, color: AC.greenDark)),
+          const SizedBox(height: 2),
+          Text(label,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.lora(fontSize: 11, color: AC.greenMid)),
+        ]),
+      ),
+    );
+  }
+
+  Widget _rowTile(BuildContext context, _StatRow r) {
+    final done = r.count >= r.hedef;
+    final pct = (r.count / r.hedef).clamp(0.0, 1.0);
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AC.greenPale.withAlpha(150)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () async {
+            if (r.zikir) {
+              final z = zikirler.firstWhere((x) => x.id == r.id);
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => ZikirSayacScreen(zikir: z)));
+            } else {
+              final n = niyetler.firstWhere((x) => x.id == r.id);
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => DuaScreen(niyet: n)));
+            }
+            _load();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(13),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+            decoration: BoxDecoration(
+                color: (r.zikir ? AC.greenMid : AC.gold).withAlpha(40),
+                borderRadius: BorderRadius.circular(20)),
+            child: Text(r.zikir ? "Zikir" : "Dua",
+                style: GoogleFonts.lora(
+                    fontSize: 10, fontWeight: FontWeight.w700, color: AC.greenDark)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(r.name,
+                style: GoogleFonts.lora(
+                    fontSize: 13.5, fontWeight: FontWeight.w700, color: AC.greenDark)),
+          ),
+          Text("${r.count}",
+              style: GoogleFonts.lora(
+                  fontSize: 16, fontWeight: FontWeight.w800, color: AC.gold)),
+          Text(" kez",
+              style: GoogleFonts.lora(fontSize: 11, color: AC.greenMid)),
+          const SizedBox(width: 6),
+          const Icon(Icons.play_circle_fill_rounded, color: AC.greenMid, size: 22),
+        ]),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: LinearProgressIndicator(
+            value: pct,
+            minHeight: 6,
+            backgroundColor: AC.greenPale.withAlpha(120),
+            valueColor: AlwaysStoppedAnimation(done ? AC.greenMid : AC.gold),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+            done
+                ? "Hedef tamam (${r.count ~/ r.hedef} tertip · hedef ${r.hedef}) · devam etmek için dokun"
+                : "${r.count}/${r.hedef} (hedefe ${r.hedef - r.count} kaldı) · devam etmek için dokun",
+            style: GoogleFonts.lora(fontSize: 10.5, color: AC.greenMid)),
+            ]),
+          ),
+        ),
       ),
     );
   }
@@ -797,7 +1508,7 @@ class _KategoriCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: const LinearGradient(colors: [AC.greenMain, AC.greenDark]),
               borderRadius: BorderRadius.circular(12)),
-            child: Center(child: Text(kategori.icon, style: const TextStyle(fontSize: 28))),
+            child: Center(child: Icon(duaIcon(kategori.icon), size: 26, color: AC.goldLight)),
           ),
           Expanded(child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
@@ -857,7 +1568,7 @@ class _KategoriDualarScreenState extends State<KategoriDualarScreen> {
         leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white70, size: 18),
           onPressed: () => Navigator.maybePop(context)),
         title: Row(children: [
-          Text(widget.kategori.icon, style: const TextStyle(fontSize: 22)),
+          Icon(duaIcon(widget.kategori.icon), size: 20, color: AC.goldLight),
           const SizedBox(width: 10),
           Expanded(child: Text(widget.kategori.isim,
             style: GoogleFonts.amiri(fontSize: 15, color: AC.goldLight, letterSpacing: .5),
@@ -925,7 +1636,7 @@ class _NiyetCard extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(14),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(niyet.icon, style: const TextStyle(fontSize: 28)),
+          Icon(duaIcon(niyet.icon), size: 30, color: done ? AC.gold : AC.greenMain),
           const SizedBox(height: 8),
           Text(niyet.isim,
             style: GoogleFonts.lora(fontSize: 12.5, fontWeight: FontWeight.w700,
@@ -1058,7 +1769,7 @@ class _DevamCard extends StatelessWidget {
             child: Row(children: [
               Container(width: 56, height: 56,
                 decoration: BoxDecoration(color: AC.greenBg, borderRadius: BorderRadius.circular(12)),
-                child: Center(child: Text(niyet.icon, style: const TextStyle(fontSize: 26)))),
+                child: Center(child: Icon(duaIcon(niyet.icon), size: 28, color: AC.greenMain))),
               const SizedBox(width: 14),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(niyet.isim,
@@ -1473,7 +2184,7 @@ class _ZikirlerScreenState extends State<ZikirlerScreen> {
                   ),
                   padding: const EdgeInsets.all(14),
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(z.icon, style: const TextStyle(fontSize: 28)),
+                    Icon(duaIcon(z.icon), size: 30, color: done ? AC.gold : AC.greenMain),
                     const SizedBox(height: 8),
                     Text(done ? "✅ ${z.isim}" : z.isim,
                       style: GoogleFonts.lora(fontSize: 12.5, fontWeight: FontWeight.w700,

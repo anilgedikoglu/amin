@@ -48,6 +48,11 @@
 	<!-- Şifreleme bildirimi: uygulama kendi şifrelemesi kullanmaz, sadece HTTPS (Apple OS muaf) -->
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<!-- Kıble pusulası için konum (yön hesaplaması) -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Kıble yönünü doğru hesaplayabilmek için konumunuz kullanılır.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Kıble yönünü doğru hesaplayabilmek için konumunuz kullanılır.</string>
 	<!-- AdMob iOS App ID -->
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-6470338276121414~8983952032</string>
