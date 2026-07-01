@@ -53,6 +53,9 @@
 	<string>Kıble yönünü doğru hesaplayabilmek için konumunuz kullanılır.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Kıble yönünü doğru hesaplayabilmek için konumunuz kullanılır.</string>
+	<!-- Bazı SDK'lar mikrofon API'sine referans verdiği için Apple açıklama ister (uygulama mikrofon kullanmaz) -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Bu uygulama mikrofonu kullanmaz; bu izin yalnızca kullanılan bir kütüphane gereği tanımlanmıştır.</string>
 	<!-- AdMob iOS App ID -->
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-6470338276121414~8983952032</string>
