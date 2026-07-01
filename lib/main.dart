@@ -683,7 +683,7 @@ class AminApp extends StatelessWidget {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      pageTransitionsTheme: const PageTransitionsTheme(builders: {
+      pageTransitionsTheme: PageTransitionsTheme(builders: {
         TargetPlatform.android: CupertinoPageTransitionsBuilder(),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       }),
@@ -881,14 +881,6 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                    const SizedBox(height: 10),
-                    Center(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset('assets/icons/aminicon.png',
-                            height: 52, width: 52, fit: BoxFit.cover),
-                      ),
-                    ),
                     const SizedBox(height: 12),
                     // Sıradaki namaz (imsak) — en üstte (bilgi şeridi, buton değil)
                     const NextPrayerBanner(),
