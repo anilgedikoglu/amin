@@ -870,6 +870,7 @@ class HomeScreen extends StatelessWidget {
                 colors: [AC.gold.withAlpha(28), Colors.transparent]))))),
           SafeArea(child: LayoutBuilder(
             builder: (ctx, c) => SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: c.maxHeight),
                 child: Padding(
@@ -1873,7 +1874,7 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         if (done) AdManager.instance.onDuaCompletion();
-        Navigator.maybePop(context);
+        Navigator.of(context).pop();
       },
       child: Scaffold(
       body: Container(
@@ -1888,7 +1889,7 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
               IconButton(icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white70, size: 18),
                 onPressed: () {
                   if (done) AdManager.instance.onDuaCompletion();
-                  Navigator.maybePop(context);
+                  Navigator.of(context).pop();
                 }),
               Container(width: 32, height: 32,
                 decoration: const BoxDecoration(shape: BoxShape.circle, color: AC.gold),
