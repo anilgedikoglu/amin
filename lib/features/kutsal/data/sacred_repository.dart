@@ -30,37 +30,15 @@ const List<SacredEntry> kSacredRegistry = [
       religion: 'İslam',
       asset: 'assets/sacred/quran.json'),
   SacredEntry(
-      id: 'bible',
-      name: 'İncil (Kitab-ı Mukaddes)',
-      religion: 'Hristiyanlık',
-      asset: 'assets/sacred/bible.json'),
-  SacredEntry(
-      id: 'tevrat',
-      name: 'Tevrat (Tora)',
-      religion: 'Yahudilik',
-      from: 'bible',
-      bookRange: [0, 5],
-      overrideLicense: 'Public Domain — KJV (Tevrat: ilk beş kitap)'),
-  SacredEntry(
-      id: 'gita',
-      name: 'Bhagavad Gita',
-      religion: 'Hinduizm',
-      asset: 'assets/sacred/gita.json'),
-  SacredEntry(
-      id: 'dhammapada',
-      name: 'Dhammapada',
-      religion: 'Budizm',
-      asset: 'assets/sacred/dhammapada.json'),
-  SacredEntry(
       id: 'tao',
       name: 'Tao Te Ching',
       religion: 'Taoizm',
       asset: 'assets/sacred/tao.json'),
   SacredEntry(
-      id: 'analects',
-      name: 'Konfüçyüs — Analektler',
-      religion: 'Konfüçyüsçülük',
-      asset: 'assets/sacred/analects.json'),
+      id: 'dhammapada',
+      name: 'Dhammapada',
+      religion: 'Budizm',
+      asset: 'assets/sacred/dhammapada.json'),
 ];
 
 /// compute() içinde çalışır — ağır JSON parse arka plan isolate'inde.

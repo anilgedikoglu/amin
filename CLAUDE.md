@@ -25,7 +25,7 @@ Apple 4.2 reddi sonrası uygulama tam kapsamlı bir İslami uygulamaya dönüşt
 | Hadis & Özlü Sözler (~300, kaynağa göre gruplu: Buhârî/Müslim/Tirmizî… + arama) | `features/sozler/` | `assets/data/sozler.json` (224 hadis + 80 söz) |
 | Dini Sorular (1000 popüler soru-cevap, 20 kategori + arama) | `features/sorular/dini_sorular.dart` | `assets/data/dini_sorular.json` (kullanıcının xlsx'inden, `{k,s,c,d}`). Kategori→soru; dokun→cevap sheet (kısa cevap+açıklama); okununca tik (`soru_read` prefs). |
 | Delil & İman Hakikatleri (Deliller/Mucizeler/Cevaplar/Sözler + **Risale-i Nur**) | `features/delil/` + `features/risale/` | `delil` app'inden komple kopyalandı (lib/data ~10MB Dart). Sekme geçişi YOK: `DelilHomeScreen(initialTab)` tek bölüm + AppBar geri tuşu. Ana menüde 5 büyük yatay buton. Tema amin yeşil/altın (`AppColors` remap). **Risale-i Nur Külliyatı**: `assets/risale/` 15 kitap 298 bölüm ~13MB tam metin (alitekdemir/Risale-i-Nur-Diyanet) + `lugatce.json` (~230 terim sade açıklama). Reader: kitap→bölüm→metin + **Lügatçe paneli** (bölümde geçen zor kelimeler); tüm külliyatta konu araması (ilk aramada tüm kitaplar lazy yüklenir). **TELİF:** kullanıcı sorumluluğunu üstlendi. |
-| Kutsal Metinler (7 din, çok-dinli okuyucu + **hepsinde birden arama**) | `features/kutsal/` | `assets/sacred/*.json` (~39k ayet) — Kur'an (İslam, TR Diyanet), İncil (Hristiyanlık, KJV), Tevrat (Yahudilik, KJV ilk 5 kitap sanal), Bhagavad Gita (Hinduizm), Dhammapada (Budizm), Tao Te Ching (Taoizm), Analektler (Konfüçyüsçülük). Public domain. |
+| Kutsal Metinler (çok-dinli okuyucu + **hepsinde birden arama**) | `features/kutsal/` | `assets/sacred/*.json` — **TAMAMI TÜRKÇE**: Kur'an (İslam, TR Diyanet), Tao Te Ching (Taoizm), Dhammapada (Budizm). Tao/Dhammapada = kamu malı İngilizceden (Legge/Müller) **kendi çevirimiz** (`lang:tr`). İncil/Tevrat/Gita/Analektler ÇIKARILDI (telifli TR yok / kaynak belirsiz). |
 | Ezber (kademeli açma + aralıklı tekrar) | `features/ezber/` | 20 dua (`ezber_data.dart`: namaz duaları + kısa sureler + **Fil/Ayetel Kürsi/Salat-ı Tefriciye** vb.). **Mekanik:** önce tam metin → "Ezbere Başla" → ilk kelime → her "Devam"da bir kelime daha açılır (`_started`/`_revealed`). Bitince Bildim/Tekrar → spaced repetition (`_araGun`, prefs `ezber_lv_*`/`ezber_due_*`). |
 | Din Felsefesi (Teoloji, aranabilir) | `features/teoloji/` | 14 derlenmiş kelam/din felsefesi konusu (`teoloji_screen.dart` gömülü); kategorili + arama + detay sheet |
 | Yeni Müslüman rehberi | `features/yeni_musluman/` | Adım adım Müslüman olma + hikmetleri, iman/İslam'ın şartları, haramlar (nedenleriyle); ExpansionTile bölümler |
@@ -102,13 +102,13 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 
 **Kural:** Platform ID'lerini asla birbiriyle karıştırma. Elimde yoksa sor, tahmin etme.
 
-### Reklam Mantığı
+### Reklam Mantığı (1.6.5+)
 
-Dua TAMAMLANDI durumunda "Yeniden Başla" veya geri tuşuna basılınca:
-- Her **2.** tıkta → geçiş reklamı
-- Her **6.** tıkta → ödüllü reklam (6, 12, 18… — 2'nin katı olsa da rewarded öncelikli)
-
-Sayaç: `AdManager.instance._completionTapCount` (singleton, session boyunca birikir)
+**Tek reklam türü: geçiş (interstitial). Ödüllü/banner YOK.**
+- Uygulamada **nereye tıklanırsa tıklansın her 10. tıkta 1 geçiş reklamı**.
+- Global sayaç: `AdManager.instance.onTap()` (`_tapCount % 10 == 0`), `AminApp` MaterialApp `builder`'ında `Listener(onPointerDown)` ile beslenir.
+- Reklam ID'leri **gerçek** (publisher `6470338276121414`, Google test `3940256099942544` DEĞİL). Rewarded ID'leri artık kullanılmıyor.
+- Eski tamamlanma-tabanlı (`onDuaCompletion`, `_completionTapCount`) mantık kaldırıldı.
 
 ## Codemagic (iOS TestFlight)
 
