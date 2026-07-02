@@ -41,27 +41,23 @@ void main() {
 
 // ── ADMOB ─────────────────────────────────
 class _AdIds {
-  // Interstitial
+  // Interstitial — gerçek AdMob ID (test/demo DEĞİL). Platform ID'lerini karıştırma.
   static String get interstitial => Platform.isIOS
       ? 'ca-app-pub-6470338276121414/1633785489'
       : 'ca-app-pub-6470338276121414/3936380770';
-  // Rewarded
-  static String get rewarded => Platform.isIOS
-      ? 'ca-app-pub-6470338276121414/9147603563'
-      : 'ca-app-pub-6470338276121414/7877624629';
 }
 
 class AdManager {
   static final AdManager instance = AdManager._();
   AdManager._();
 
-  // ── Interstitial ──
+  // Tek reklam türü: geçiş (interstitial). Ödüllü/banner YOK.
   InterstitialAd? _interstitial;
   bool _interstitialLoading = false;
+  int _tapCount = 0;
 
   void load() {
     _loadInterstitial();
-    _loadRewarded();
   }
 
   void _loadInterstitial() {
@@ -87,49 +83,18 @@ class AdManager {
     );
   }
 
-  void showInterstitial() => _interstitial?.show();
-
-  // ── Rewarded ──
-  RewardedAd? _rewarded;
-  bool _rewardedLoading = false;
-
-  void _loadRewarded() {
-    if (_rewardedLoading || _rewarded != null) return;
-    _rewardedLoading = true;
-    RewardedAd.load(
-      adUnitId: _AdIds.rewarded,
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (ad) {
-          _rewarded = ad;
-          _rewardedLoading = false;
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (_) { _rewarded = null; _loadRewarded(); },
-            onAdFailedToShowFullScreenContent: (_, __) { _rewarded = null; _loadRewarded(); },
-          );
-        },
-        onAdFailedToLoad: (_) {
-          _rewardedLoading = false;
-          Future.delayed(const Duration(minutes: 1), _loadRewarded);
-        },
-      ),
-    );
-  }
-
-  void showRewarded({required void Function(AdWithoutView, RewardItem) onRewarded}) {
-    _rewarded?.show(onUserEarnedReward: onRewarded);
-  }
-
-  // ── TAMAMLANDI sonrası aksiyon sayacı ──
-  // Her 2. tıkta geçiş, her 6. tıkta ödüllü reklam
-  int _completionTapCount = 0;
-  void onDuaCompletion() {
-    _completionTapCount++;
-    if (_completionTapCount % 6 == 0) {
-      showRewarded(onRewarded: (_, __) {});
-    } else if (_completionTapCount % 2 == 0) {
-      showInterstitial();
+  void showInterstitial() {
+    if (_interstitial != null) {
+      _interstitial!.show();
+    } else {
+      _loadInterstitial(); // hazır değilse bir sonraki için yükle
     }
+  }
+
+  // Her 10 tıkta (uygulamada nereye tıklanırsa tıklansın) 1 geçiş reklamı.
+  void onTap() {
+    _tapCount++;
+    if (_tapCount % 10 == 0) showInterstitial();
   }
 }
 
@@ -657,6 +622,12 @@ class AminApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Amin', debugShowCheckedModeBanner: false,
+    // Uygulamada nereye tıklanırsa tıklansın say; her 10 tıkta 1 geçiş reklamı.
+    builder: (context, child) => Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerDown: (_) => AdManager.instance.onTap(),
+      child: child ?? const SizedBox.shrink(),
+    ),
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: AC.greenMain),
       textTheme: GoogleFonts.loraTextTheme(),
@@ -1857,9 +1828,8 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
 
   Future<void> _reset() async { setState(() => count = 0); await _save(); }
 
-  // TAMAMLANDI → "Yeniden Başla" veya geri tuşu: reklam tetikle + sıfırla
+  // TAMAMLANDI → "Yeniden Başla": sadece sıfırla (reklam global 10-tık sayacında).
   void _resetWithAd() {
-    AdManager.instance.onDuaCompletion();
     _reset();
   }
 
@@ -1873,7 +1843,6 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
-        if (done) AdManager.instance.onDuaCompletion();
         Navigator.of(context).pop();
       },
       child: Scaffold(
@@ -1888,7 +1857,6 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
             child: Row(children: [
               IconButton(icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white70, size: 18),
                 onPressed: () {
-                  if (done) AdManager.instance.onDuaCompletion();
                   Navigator.of(context).pop();
                 }),
               Container(width: 32, height: 32,
