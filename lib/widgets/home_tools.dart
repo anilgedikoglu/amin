@@ -19,6 +19,9 @@ import '../features/risale/risale_screens.dart';
 import '../features/sorular/dini_sorular.dart';
 import '../features/sozler/sozler_repository.dart';
 import '../features/sozler/sozler_screen.dart';
+import '../features/quiz/quiz_screen.dart';
+import '../features/evlilik/evlilik_screen.dart';
+import '../features/sozluk/sozluk_screen.dart';
 
 // ── Sıradaki namaza geri sayım (ana ekran banner) ──
 class NextPrayerBanner extends StatefulWidget {
@@ -242,6 +245,8 @@ class _DelilButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => Navigator.push(
             context,
@@ -307,8 +312,12 @@ class ToolsGrid extends StatelessWidget {
       _Tool(Icons.auto_awesome_rounded, "Esmâ-ül\nHüsnâ", () => const EsmaScreen()),
       _Tool(Icons.menu_book_rounded, "Hadis &\nSözler", () => const SozlerScreen()),
       _Tool(Icons.quiz_rounded, "Dini\nSorular", () => const DiniSorularScreen()),
+      _Tool(Icons.emoji_events_rounded, "Bilgi\nYarışması", () => const QuizScreen()),
       _Tool(Icons.abc_rounded, "Arapça\nOkuma", () => const ElifbaScreen()),
+      _Tool(Icons.translate_rounded, "Arapça\nSözlük", () => const SozlukScreen()),
       _Tool(Icons.psychology_alt_rounded, "Ezber", () => const EzberScreen()),
+      _Tool(Icons.favorite_rounded, "Evlilikte\nMahremiyet",
+          () => const EvlilikScreen()),
       _Tool(Icons.lightbulb_outline_rounded, "Din\nFelsefesi",
           () => const TeolojiScreen()),
       _Tool(Icons.notifications_active_rounded, "Günlük\nHatırlatma",
@@ -320,7 +329,7 @@ class ToolsGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
-      childAspectRatio: 0.92,
+      childAspectRatio: 0.86,
       children: tools.map((t) => _ToolTile(tool: t)).toList(),
     );
   }
@@ -348,18 +357,19 @@ class _ToolTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: QC.gold.withAlpha(75)),
         ),
-        child: Column(children: [
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
-            width: 46,
-            height: 46,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(17),
+              gradient: const RadialGradient(
                   center: Alignment(-0.3, -0.4), colors: [QC.goldLight, QC.gold]),
+              boxShadow: [BoxShadow(color: QC.gold.withAlpha(70), blurRadius: 9, offset: const Offset(0, 3))],
             ),
-            child: Icon(tool.icon, color: QC.greenDark, size: 24),
+            child: Icon(tool.icon, color: QC.greenDark, size: 32),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 9),
           Text(tool.label,
               textAlign: TextAlign.center,
               style: GoogleFonts.lora(

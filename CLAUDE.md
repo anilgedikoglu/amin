@@ -26,18 +26,24 @@ Apple 4.2 reddi sonrası uygulama tam kapsamlı bir İslami uygulamaya dönüşt
 | Dini Sorular (1000 popüler soru-cevap, 20 kategori + arama) | `features/sorular/dini_sorular.dart` | `assets/data/dini_sorular.json` (kullanıcının xlsx'inden, `{k,s,c,d}`). Kategori→soru; dokun→cevap sheet (kısa cevap+açıklama); okununca tik (`soru_read` prefs). |
 | Delil & İman Hakikatleri (Deliller/Mucizeler/Cevaplar/Sözler + **Risale-i Nur**) | `features/delil/` + `features/risale/` | `delil` app'inden komple kopyalandı (lib/data ~10MB Dart). Sekme geçişi YOK: `DelilHomeScreen(initialTab)` tek bölüm + AppBar geri tuşu. Ana menüde 5 büyük yatay buton. Tema amin yeşil/altın (`AppColors` remap). **Risale-i Nur Külliyatı**: `assets/risale/` 15 kitap 298 bölüm ~13MB tam metin (alitekdemir/Risale-i-Nur-Diyanet) + `lugatce.json` (~230 terim sade açıklama). Reader: kitap→bölüm→metin + **Lügatçe paneli** (bölümde geçen zor kelimeler); tüm külliyatta konu araması (ilk aramada tüm kitaplar lazy yüklenir). **TELİF:** kullanıcı sorumluluğunu üstlendi. |
 | Kutsal Metinler (çok-dinli okuyucu + **hepsinde birden arama**) | `features/kutsal/` | `assets/sacred/*.json` — **TAMAMI TÜRKÇE**: Kur'an (İslam, TR Diyanet), Tao Te Ching (Taoizm), Dhammapada (Budizm). Tao/Dhammapada = kamu malı İngilizceden (Legge/Müller) **kendi çevirimiz** (`lang:tr`). İncil/Tevrat/Gita/Analektler ÇIKARILDI (telifli TR yok / kaynak belirsiz). |
-| Ezber (kademeli açma + aralıklı tekrar) | `features/ezber/` | 20 dua (`ezber_data.dart`: namaz duaları + kısa sureler + **Fil/Ayetel Kürsi/Salat-ı Tefriciye** vb.). **Mekanik:** önce tam metin → "Ezbere Başla" → ilk kelime → her "Devam"da bir kelime daha açılır (`_started`/`_revealed`). Bitince Bildim/Tekrar → spaced repetition (`_araGun`, prefs `ezber_lv_*`/`ezber_due_*`). |
+| Ezber (kademeli açma + aralıklı tekrar) | `features/ezber/` | **30 dua** (`ezber_data.dart`: namaz duaları + kısa sureler + Kâfirûn/Mâûn/Kureyş/Mesed/Zilzâl + günlük dualar). **Mekanik:** önce tam metin → "Ezbere Başla" → ilk kelime → her "Devam"da bir kelime açılır (`_started`/`_revealed`); **açılan kelimenin Arapçası kırmızı parıltıyla vurgulanır** (`_arabicHighlighted`). **"Tekrar gerek" çıkmaz, ilk kelimeden yeniden başlatır** (`_restart`). Bitince Bildim/Tekrar → spaced repetition (`_araGun`, prefs `ezber_lv_*`/`ezber_due_*`). |
 | Din Felsefesi (Teoloji, aranabilir) | `features/teoloji/` | 14 derlenmiş kelam/din felsefesi konusu (`teoloji_screen.dart` gömülü); kategorili + arama + detay sheet |
 | Yeni Müslüman rehberi | `features/yeni_musluman/` | Adım adım Müslüman olma + hikmetleri, iman/İslam'ın şartları, haramlar (nedenleriyle); ExpansionTile bölümler |
 | Sosyal (kutlama + paylaşılabilir görsel) | `features/sosyal/` | 10 dini gün için kutlama mesajları (`sosyal_data.dart`); mesajı tasarımlı karta çevirip `RepaintBoundary→PNG→share_plus` ile sosyal medyada paylaşır. **`share_plus ^7.2.2` eklendi** (clean gerektirdi: GeneratedPluginRegistrant stale → `flutter clean`) |
-| Arapça Okuma (Elifba) | `features/elifba/` | 11 ders gömülü (`elifba_screen.dart`): harfler → yazılış → hareke (üstün/esre/ötre) → cezm/şedde/tenvin/med → kelimeler → ibareler; Türkçe anlamlı; AmiriQuran fontu. Ders detay grid + önceki/sonraki. |
+| Arapça Okuma (Elifba) | `features/elifba/` | **15 ders** gömülü (`elifba_screen.dart`): harfler → yazılış → hareke → cezm/şedde/tenvin/med → **kelimeler (~60)** → **ibareler (~20)** → kısa cümleler → Kur'an ayetleri → Esmâ-ül Hüsnâ → dua cümleleri; Türkçe anlamlı; AmiriQuran fontu. Arapça-okunuş arası boşluk düzeltildi (`_ogeCard`). |
+| **Bilgi Yarışması** | `features/quiz/` | `quiz_data.dart` (`kQuizBank`, zorluk 0/1/2) + `quiz_screen.dart`. Her tur `_pickRound()` = 3 kolay+3 orta+4 çok zor rastgele. 10sn geri sayım; süre biterse yanlış+doğru gösterilir, 3sn sonra sonraki. Sonuç X/10 + istatistik (prefs `quiz_played/total_q/correct/perfect`). |
+| **Evlilikte Mahremiyet** | `features/evlilik/` | `evlilik_data.dart` (`kEvlilikSorular` {kategori,soru,cevap}) — İslami fıkha dayalı; helal/haram, gusül, karşılıklı haklar, edep, aile planlaması. Kategorili + arama + ExpansionTile. |
+| **Arapça Sözlük** | `features/sozluk/` | `sozluk_data.dart` (`kSozluk` {arabic,okunus,turkce}). Türkçe↔Arapça çift yönlü; `_fold` TR-duyarsız + Arapça yazımdan da arar. |
+| **Ayarlar** (arka plan teması + Hakkında/koşullar) | `features/settings/` | Tema değişiminde **1 rewarded reklam** (`AdManager.showRewarded`). `HakkindaScreen`: kullanım koşulları/sorumluluk reddi/kaynaklar/telif/gizlilik. **ASLA kişisel ad/e-posta yok.** Ana ekran sağ üstte dişli ikonu. |
+| **Puanlama/Yorum daveti** (her 50 tıkta pop-up: 5 yıldız + değerlendir + paylaş) | `features/rating/` | `rating_service.dart` (`in_app_review` + `share_plus`). `AdManager.onTap` her 50. tıkta (reklam yerine) `RatingService.gosterEgerUygun` → yıldıza dokun → `magazadaDegerlendir()` (native sheet + `openStoreListing`, iOS App ID 6779628851 / Android `com.amin.amin`). `review_done` prefs ile bir daha gösterilmez. Global `rootNavigatorKey` ile context'siz gösterim. Ayarlar'da "DESTEK" girişleri de var. |
+| **Günlük içerik** (Günün Ayeti + Tarihte Bugün + Günün Kız/Erkek İsmi) | `features/gunluk/` | `gunluk_data.dart` (`kGununAyetleri`, `kTarihteBugun` MM-DD map, `kKizIsimleri`/`kErkekIsimleri` {isim,anlam}) + `gunluk_widgets.dart`. `dayOfYear`'a göre seçim; isme dokun→anlam dialog; `IsimlerScreen` aranabilir. Ana ekranda Günün Hadisi altında. |
 | Günlük push + Namaz vakti + **10 yıllık dini gün kutlama** bildirimi | `features/notifications/` | `flutter_local_notifications` + `timezone` + `flutter_timezone` + `hijri`. `scheduleReligiousDays()`: 10 yılın kandil/bayramlarını hicri hesapla + kutlama mesajıyla planla (id base 3000, kanal `religious_days`, sabah 09:00). Açılışta sessizce (ayda bir tazelenir, `_kReligiousLast`). **iOS 64 bekleyen bildirim limiti** → `Platform.isIOS?60:200` cap. |
 
 ### Kutsal Metinler özelliği (`lib/features/kutsal/`)
 - **7 metin (~39k ayet):** Kur'an (İslam), İncil (Hristiyanlık), Tevrat (Yahudilik, sanal), Bhagavad Gita (Hinduizm), Dhammapada (Budizm), Tao Te Ching (Taoizm), Analektler (Konfüçyüsçülük). Kur'an dışı hepsi İngilizce public domain.
 - **Veri:** ortak format `{id,name,religion,lang,license,books:[{n,en?,c:[[ayet...]]}]}`. quran=Diyanet meali+surahs adları, bible=KJV (thiagobodruk/bible, Türkçe kitap adı map'i gömülü), gita=gita/gita repo (701 ayet tek İngilizce çevirmen), dhammapada/tao/analects=Gutenberg düz metinden parse (`scratchpad/parse_eastern.js` — Tao 81 bölüm üç formatı: "N. 1."/"N." şiir/"N. metin"). **Tevrat ayrı dosya DEĞİL** — registry'de `from:'bible', bookRange:[0,5]` ile sanal.
 - **EKSİK 3 (10 hedefinden):** Avesta (Zerdüştlük), Guru Granth Sahib (Sihizm), Kojiki (Şinto) — temiz public-domain JSON YOK; sadece archive.org OCR taraması (dipnot/sayfa no/OCR gürültüsü) veya HTML uygulama. Kalite düşmesin diye eklenmedi; OCR'dan eklenebilir (kalite tradeoff).
-- **Kayıt defteri:** `data/sacred_repository.dart` `kSacredRegistry`. Yeni metin = normalize + `assets/sacred/`'a koy + registry'ye 1 satır. compute() ile lazy parse + cache.
+- **Kayıt defteri:** `data/sacred_repository.dart` `kSacredRegistry`. Yeni metin = normalize + `assets/sacred/`'a koy + registry'ye 1 satır. compute() ile lazy parse + cache. **`hakkinda` alanı**: her metnin tarihçesi (nasıl/kime indi, kaç bölüm…). Okuyucuda kitap listesinin en üstünde açılır kart (`_HakkindaCard`).
 - **Birleşik arama:** `search()` Türkçe-duyarsız `_fold` + **TR↔EN terim köprüsü** (`data/term_bridge.dart`: aşk→love…). Sonuç metne göre gruplu; dokun → ilgili ayet (`SacredReaderScreen.highlightVerse`).
 - **Ekranlar:** `sacred_home_screen` (arama+kütüphane), `sacred_reader_screen` (kitap→bölüm→ayet, kademeli geri). Tema `QC`.
 - **Genişletme:** Avesta/Guru Granth/Kojiki — temiz public-domain JSON YOK (sadece archive.org OCR taraması veya HTML); kaliteyi düşürmemek için eklenmedi. Eklenenler: Dhammapada/Tao/Analects (Gutenberg parse).
@@ -45,6 +51,10 @@ Apple 4.2 reddi sonrası uygulama tam kapsamlı bir İslami uygulamaya dönüşt
 **Açılış (`SplashScreen`):** Uygulama açılışında besmele + HeroMedallion + AMİN + İMAN PORTALI + ArabesqueDivider yumuşak belirir (FadeTransition), ~2.3sn sonra `pushReplacement` ile fade geçişle HomeScreen'e. Branding artık burada; HomeScreen'de tekrar edilmez.
 
 **Ana ekran (`main.dart` HomeScreen):** Branding splash'a taşındığı için menü en üstten başlar. **EN ÜSTTE sıradaki namaz/imsak banner'ı** (`NextPrayerBanner`), sonra `_MenuTile` kartlar: **Dua & Zikir** (→ `DuaZikirHubScreen`) + **Kur'an-ı Kerim** + **Kutsal Metinler** (YENİ) + **Namaz Hocası**. Altında **İBADET & ARAÇLAR** araç grid (Namaz, Kıble, Dini Günler, Esmâ, Hadis, Hatırlatma) + **DELİL** butonları + **Günün Hadisi** kartı. Column `crossAxisAlignment.stretch`, yukarıdan aşağı.
+
+**Dua sayacı (`DuaScreen`, main.dart):** Dua kutusunda **yazı boyutu kontrolü** (sol üst A-/A+, `_fontScale` 1.0–2.0, kutu `SingleChildScrollView` olduğu için taşmaz). **5 sn dokunulmazsa** sayaç butonunun etrafında **nefes alan sarı ışık** bir döngü çalışır (`_breathCtrl`), 5 sn beklenir, tekrar eder; dokununca durur (`_startIdleWatch`/`_breathOnce`). `TickerProviderStateMixin` (iki controller).
+
+**Namaz Hocası dualar:** `_OkumaCard` tıklanınca `NamazOkumaDetayScreen` (tam metin) açılır + **"Bu Duayı Ezberle"** → okumadan `EzberDua` üretip `EzberPracticeScreen`'e gider. Görsel arka planı görselin gerçek bej tonuna eşlendi (`0xFFBFAA97`→`0xFFE4D0BE`).
 
 **Kur'an sure detay:** "Dinle" butonunun hemen altında pratik **meal (çevirmen) seçim butonu** (`_mealButton` → seçili meal adını gösterir, dokun → `MealSelectionScreen`; `_onPrefs` listener seçim değişince otomatik yeniden yükler).
 
@@ -66,7 +76,7 @@ Apple 4.2 reddi sonrası uygulama tam kapsamlı bir İslami uygulamaya dönüşt
 - **AdMob:** `runApp`'tan SONRA, bloklamadan init edilir.
 
 ### Android native config
-- `android/app/build.gradle.kts`: `isCoreLibraryDesugaringEnabled = true` + `coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")` (bildirimler için)
+- `android/app/build.gradle.kts`: `isCoreLibraryDesugaringEnabled = true` + `coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")` (bildirimler için). **`configurations.all { resolutionStrategy.force(...) }`**: `in_app_review` androidx.core/browser'ın AGP 8.9.1 isteyen çok yeni sürümlerini (1.17.0) çekiyordu → AGP 8.7 uyumlu `androidx.core:1.13.1` + `androidx.browser:1.8.0`'a sabitlendi.
 - `AndroidManifest.xml`: POST_NOTIFICATIONS, RECEIVE_BOOT_COMPLETED, SCHEDULE_EXACT_ALARM, USE_EXACT_ALARM + ScheduledNotification receiver'ları (bildirim); ACCESS_FINE/COARSE_LOCATION + compass feature (kıble)
 
 ### iOS native config
@@ -102,13 +112,18 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 
 **Kural:** Platform ID'lerini asla birbiriyle karıştırma. Elimde yoksa sor, tahmin etme.
 
-### Reklam Mantığı (1.6.5+)
+### Reklam Mantığı (1.7.0+)
 
-**Tek reklam türü: geçiş (interstitial). Ödüllü/banner YOK.**
-- Uygulamada **nereye tıklanırsa tıklansın her 10. tıkta 1 geçiş reklamı**.
-- Global sayaç: `AdManager.instance.onTap()` (`_tapCount % 10 == 0`), `AminApp` MaterialApp `builder`'ında `Listener(onPointerDown)` ile beslenir.
-- Reklam ID'leri **gerçek** (publisher `6470338276121414`, Google test `3940256099942544` DEĞİL). Rewarded ID'leri artık kullanılmıyor.
+**Geçiş (interstitial): her 10 tıkta 1. Ödüllü (rewarded): SADECE tema değişiminde.**
+- Uygulamada **nereye tıklanırsa tıklansın her 10. tıkta 1 geçiş reklamı** (`AdManager.instance.onTap()`, `_tapCount % 10 == 0`), `AminApp` `builder`'ında `Listener(onPointerDown)` ile beslenir.
+- **Rewarded geri eklendi (1.7.0):** yalnızca Ayarlar'da tema değişiminde `AdManager.showRewarded(onDone)` — reklam kapanınca tema uygulanır. Reklam hazır değilse akış bloklanmaz.
+- Reklam ID'leri **gerçek** (publisher `6470338276121414`, Google test `3940256099942544` DEĞİL).
 - Eski tamamlanma-tabanlı (`onDuaCompletion`, `_completionTapCount`) mantık kaldırıldı.
+
+### Arka Plan Teması (1.7.0+)
+- `AppBgTheme` (`quran_theme.dart`): `ValueNotifier<int>` + 4 tema (Zümrüt Yeşil/Sıcak Kum/Gök Mavisi/Gece). Sadece **sayfa arka planı** değişir; içerik kartları beyaz kaldığı için tüm temalarda metin okunur.
+- `QC.greenBg` ve `AC.greenBg` artık `static const` DEĞİL → `get greenBg => AppBgTheme.bg`. `AminApp` MaterialApp'i `ValueListenableBuilder`'a sarılı (tema değişince tüm ağaç tazelenir). Prefs `app_theme`, `main()`'de yüklenir.
+- **DİKKAT:** `greenBg` artık const olmadığı için `const Scaffold(backgroundColor: greenBg)` / `const BoxDecoration` derlenmez → non-const yap.
 
 ## Codemagic (iOS TestFlight)
 
@@ -137,7 +152,7 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 - **iOS ikon:** `flutter_launcher_icons` ile üretildi — `ios: true`, `remove_alpha_ios: true`
 - **iOS deployment target:** `13.0`
 - **Android min SDK:** `21`
-- **Sürüm:** `1.2.0+6` (`pubspec.yaml`)
+- **Sürüm:** `1.7.0+21` (`pubspec.yaml`) — codemagic.yaml `--build-name` de eşitle
 - **Global tema:** `AminApp` MaterialApp'te uygulama geneli AppBar/divider/splash(altın ripple)/snackbar + Cupertino sayfa geçişleri tanımlı (tek noktadan tutarlılık).
 - **Web repo:** `github.com/futurastictech/futurastictech.github.io`
 - **Uygulama repo:** `github.com/anilgedikoglu/amin`

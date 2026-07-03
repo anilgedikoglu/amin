@@ -12,6 +12,7 @@ class SacredEntry {
   final String? from; // sanal metin için kaynak id
   final List<int>? bookRange; // [start, end) — from içindeki kitap aralığı
   final String? overrideLicense;
+  final String? hakkinda; // metnin tarihçesi/açıklaması (okuyucuda üstte)
   const SacredEntry({
     required this.id,
     required this.name,
@@ -20,6 +21,7 @@ class SacredEntry {
     this.from,
     this.bookRange,
     this.overrideLicense,
+    this.hakkinda,
   });
 }
 
@@ -28,17 +30,23 @@ const List<SacredEntry> kSacredRegistry = [
       id: 'quran',
       name: "Kur'an-ı Kerim",
       religion: 'İslam',
-      asset: 'assets/sacred/quran.json'),
+      asset: 'assets/sacred/quran.json',
+      hakkinda:
+          'Kur\'an-ı Kerim, İslam inancına göre Allah tarafından Cebrail (Cibrîl) meleği aracılığıyla Hz. Muhammed\'e (s.a.v.) vahyedilen ilahî kitaptır. İlk vahiy, 610 yılında Mekke yakınlarındaki Hira Mağarası\'nda "Oku!" (İkra) emriyle inmeye başlamış, vahiy süreci Peygamber\'in vefatına kadar yaklaşık 23 yıl sürmüştür.\n\nKur\'an bir defada değil, olaylara ve ihtiyaçlara göre parça parça (âyet âyet, sûre sûre) indirilmiştir. Bu tedricî iniş, hükümlerin topluma yavaş yavaş yerleşmesini sağlamıştır. Vahyin yaklaşık üçte biri Mekke\'de (iman, ahiret, tevhid ağırlıklı kısa sûreler), geri kalanı Medine\'de (hukuk, toplum, ibadet düzeni) inmiştir.\n\nKur\'an 114 sûre ve 6236 âyetten oluşur. En uzun sûre Bakara (286 âyet), en kısa sûre Kevser\'dir (3 âyet). Metin, indiği andan itibaren hem ezberlenerek (hafızlık geleneği) hem de yazılarak korunmuştur. Hz. Ebû Bekir döneminde tek bir cilt (mushaf) hâline getirilmiş, Hz. Osman döneminde çoğaltılıp İslam beldelerine gönderilerek metin birliği sağlanmıştır.\n\nKur\'an, indiği Arapça diliyle 14 asırdır tek bir harfi bile değişmeden korunan yegâne kutsal metin kabul edilir. Müslümanlar için sadece bir kitap değil; okunan, ezberlenen, hükümleriyle yaşanan ve tilavetiyle ibadet edilen bir rehberdir.\n\n(Bu uygulamadaki metin Diyanet İşleri meâlidir — Arapça aslın Türkçe anlam çevirisidir.)'),
   SacredEntry(
       id: 'tao',
       name: 'Tao Te Ching',
       religion: 'Taoizm',
-      asset: 'assets/sacred/tao.json'),
+      asset: 'assets/sacred/tao.json',
+      hakkinda:
+          'Tao Te Ching (Dào Dé Jīng — "Yol ve Erdem Kitabı"), Taoizm\'in temel metnidir. Geleneğe göre MÖ 6. yüzyılda yaşadığı söylenen bilge Lao Tzu (Laozi) tarafından yazıldığı kabul edilir; ancak birçok araştırmacı metnin MÖ 4.–3. yüzyıllarda birden çok elden şekillendiğini düşünür.\n\nRivayete göre Lao Tzu, içinde yaşadığı toplumun bozulmasından usanıp bir manda sırtında batıya, ülkeyi terk etmek üzere yola çıkar. Sınır bekçisi Yin Xi, bu bilgeden bilgeliğini yazıya dökmesini rica eder; Lao Tzu da 81 kısa bölümden oluşan bu metni yazıp bırakır ve bir daha görülmez.\n\nKitap 81 kısa şiirsel bölümden oluşur ve iki ana kavram üzerine kuruludur: "Tao" (Yol) — evrenin ardındaki adlandırılamaz, kendiliğinden akan ilke; ve "Te" (Erdem) — bu Yol\'a uygun yaşamanın gücü. Merkezî öğreti "wu wei"dir: zorlamadan, doğanın akışına uyarak eylemek.\n\nTao Te Ching, dünyada Kutsal Kitap\'tan sonra en çok dile çevrilen metinlerden biridir. Bu uygulamadaki Türkçe çeviri, kamu malı (public domain) James Legge İngilizce çevirisinden yapılmış özgün bir çeviridir.'),
   SacredEntry(
       id: 'dhammapada',
       name: 'Dhammapada',
       religion: 'Budizm',
-      asset: 'assets/sacred/dhammapada.json'),
+      asset: 'assets/sacred/dhammapada.json',
+      hakkinda:
+          'Dhammapada ("Erdem/Öğreti Yolu"), Budizm\'in en tanınmış ve en çok okunan metnidir. Buddha\'nın (Siddhartha Gautama, MÖ 6.–5. yüzyıl) çeşitli vesilelerle söylediği özlü sözlerin derlemesidir. Pali dilindeki Budist kanonun (Tipitaka) "Khuddaka Nikaya" bölümünde yer alır.\n\nMetnin, Buddha\'nın vefatından sonra sözlü gelenekle aktarılan öğretilerinin, yaklaşık MÖ 3. yüzyılda yazıya geçirildiği kabul edilir. Sözlerin, dinleyicilerin hayatındaki somut olaylar üzerine söylendiği ve her birinin bir hikâyeye bağlı olduğu rivayet edilir.\n\nDhammapada 423 kısa dizeden (âyetten) oluşur ve 26 bölüme ayrılır: İkilikler, Uyanıklık, Zihin, Çiçekler, Öfke, Mutluluk gibi başlıklar taşır. Temel öğretisi zihnin arındırılması, öfke ve arzunun aşılması, şefkat ve farkındalıkla yaşamaktır. "Her şey zihinden doğar" düşüncesi metnin özüdür.\n\nBu uygulamadaki Türkçe çeviri, kamu malı (public domain) Max Müller İngilizce çevirisinden yapılmış özgün bir çeviridir.'),
 ];
 
 /// compute() içinde çalışır — ağır JSON parse arka plan isolate'inde.

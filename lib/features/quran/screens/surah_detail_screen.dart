@@ -88,9 +88,9 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
   @override
   Widget build(BuildContext context) {
     if (!_ready) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: QC.greenBg,
-        body: Center(child: CircularProgressIndicator(color: QC.greenMain)),
+        body: const Center(child: CircularProgressIndicator(color: QC.greenMain)),
       );
     }
     return Scaffold(

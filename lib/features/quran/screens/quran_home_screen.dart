@@ -11,7 +11,6 @@ import '../widgets/audio_player_bar.dart';
 import 'surah_detail_screen.dart';
 import 'surah_list_screen.dart';
 import 'meal_selection_screen.dart';
-import 'quran_sources_screen.dart';
 
 class QuranHomeScreen extends StatefulWidget {
   const QuranHomeScreen({super.key});
@@ -85,13 +84,6 @@ class _QuranHomeScreenState extends State<QuranHomeScreen> {
                             : "${_prefs.selectedMeals.length} meal · karşılaştırmalı",
                         onTap: () => Navigator.push(context,
                             MaterialPageRoute(builder: (_) => const MealSelectionScreen())),
-                      ),
-                      _actionTile(
-                        icon: Icons.info_outline_rounded,
-                        title: "Kaynaklar & Lisans",
-                        subtitle: "Metin, meal ve tilavet kaynakları",
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => const QuranSourcesScreen())),
                       ),
                     ]),
                   ),

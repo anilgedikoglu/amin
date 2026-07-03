@@ -52,6 +52,16 @@ flutter {
     source = "../.."
 }
 
+// in_app_review, androidx.core/browser'ın çok yeni sürümlerini (AGP 8.9.1+
+// gerektiren 1.17.0 vb.) çeker. AGP 8.7 ile uyumlu sürümlere sabitle.
+configurations.all {
+    resolutionStrategy {
+        force("androidx.core:core:1.13.1")
+        force("androidx.core:core-ktx:1.13.1")
+        force("androidx.browser:browser:1.8.0")
+    }
+}
+
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

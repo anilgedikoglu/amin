@@ -234,6 +234,19 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
     if (mounted) setState(() => _level = EzberPrefs.level(p, widget.dualar[_i].id));
   }
 
+  // "Tekrar gerek": aynı duayı ilk kelimeden yeniden başlatır (çıkmaz),
+  // kelimeler kapanır. Aralıklı tekrar için sessizce seviye düşürülür.
+  Future<void> _restart() async {
+    await EzberPrefs.record(widget.dualar[_i].id, false);
+    if (mounted) {
+      setState(() {
+        _started = true;
+        _revealed = 1;
+      });
+      _loadLevel();
+    }
+  }
+
   Future<void> _rate(bool bildim) async {
     await EzberPrefs.record(widget.dualar[_i].id, bildim);
     if (_i + 1 >= widget.dualar.length) {
@@ -282,21 +295,24 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
                 style: GoogleFonts.lora(fontSize: 12, color: QC.greenMid)),
           ]),
           const SizedBox(height: 14),
-          // Arapça (her zaman görünür — yardımcı)
+          // Arapça (her zaman görünür — yardımcı). Ezber aşamasında açılan
+          // kelimenin Arapçası kırmızı parıltıyla vurgulanır.
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
                 color: QC.greenMain.withAlpha(22),
                 borderRadius: BorderRadius.circular(14)),
-            child: Text(d.arabic,
-                textAlign: TextAlign.right,
-                textDirection: TextDirection.rtl,
-                style: const TextStyle(
-                    fontFamily: QC.arabicFont,
-                    fontSize: 22,
-                    height: 1.9,
-                    color: QC.greenDark)),
+            child: !_started
+                ? Text(d.arabic,
+                    textAlign: TextAlign.right,
+                    textDirection: TextDirection.rtl,
+                    style: const TextStyle(
+                        fontFamily: QC.arabicFont,
+                        fontSize: 22,
+                        height: 1.9,
+                        color: QC.greenDark))
+                : _arabicHighlighted(d.arabic, _revealed),
           ),
           const SizedBox(height: 16),
           Text(
@@ -364,7 +380,7 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
           else
             Row(children: [
               Expanded(
-                  child: _btn('Tekrar gerek', QC.brownDark, () => _rate(false),
+                  child: _btn('Tekrar gerek', QC.brownDark, _restart,
                       icon: Icons.refresh_rounded)),
               const SizedBox(width: 12),
               Expanded(
@@ -382,6 +398,34 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
               style: GoogleFonts.lora(fontSize: 10.5, color: QC.greenMid)),
         ],
       ),
+    );
+  }
+
+  // Arapçayı kelimelere bölüp, en son açılan kelimeyi (revealed-1) kırmızı
+  // parıltıyla vurgular. Diğer kelimeler koyu yeşil kalır (yardımcı olarak açık).
+  Widget _arabicHighlighted(String arabic, int revealed) {
+    final aw = arabic.trim().split(RegExp(r'\s+'));
+    final cur = (revealed - 1).clamp(0, aw.length - 1);
+    return Wrap(
+      alignment: WrapAlignment.end,
+      textDirection: TextDirection.rtl,
+      spacing: 6,
+      runSpacing: 4,
+      children: [
+        for (var i = 0; i < aw.length; i++)
+          Text(aw[i],
+              textDirection: TextDirection.rtl,
+              style: TextStyle(
+                fontFamily: QC.arabicFont,
+                fontSize: 22,
+                height: 1.9,
+                color: i == cur ? const Color(0xFFD32F2F) : QC.greenDark,
+                fontWeight: i == cur ? FontWeight.w700 : FontWeight.w400,
+                shadows: i == cur
+                    ? [const Shadow(color: Color(0x66D32F2F), blurRadius: 12)]
+                    : null,
+              )),
+      ],
     );
   }
 

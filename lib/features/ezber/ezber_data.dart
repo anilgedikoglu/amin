@@ -225,4 +225,106 @@ const List<EzberDua> kEzberDualari = [
     turkish:
         'Allah\'a, meleklerine, kitaplarına, peygamberlerine, ahiret gününe; kadere, hayrın ve şerrin Allah\'tan olduğuna inandım. Öldükten sonra dirilmek haktır. Şahitlik ederim ki Allah\'tan başka ilah yoktur ve Muhammed O\'nun kulu ve elçisidir.',
   ),
+  EzberDua(
+    id: 'kafirun',
+    ad: 'Kâfirûn Sûresi',
+    kategori: 'Kısa Sureler',
+    arabic:
+        'قُلْ يَا أَيُّهَا الْكَافِرُونَ لَا أَعْبُدُ مَا تَعْبُدُونَ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ لَكُمْ دِينُكُمْ وَلِيَ دِينِ',
+    latin:
+        'Kul yâ eyyühel-kâfirûn. Lâ a\'büdü mâ ta\'büdûn. Ve lâ entüm âbidûne mâ a\'büd. Ve lâ ene âbidün mâ abedtüm. Ve lâ entüm âbidûne mâ a\'büd. Leküm dînüküm ve liye dîn.',
+    turkish:
+        'De ki: Ey kâfirler! Ben sizin taptıklarınıza tapmam. Siz de benim taptığıma tapmazsınız. Ben sizin taptıklarınıza tapacak değilim. Siz de benim taptığıma tapacak değilsiniz. Sizin dininiz size, benim dinim banadır.',
+  ),
+  EzberDua(
+    id: 'maun',
+    ad: 'Mâûn Sûresi',
+    kategori: 'Kısa Sureler',
+    arabic:
+        'أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ فَذَٰلِكَ الَّذِي يَدُعُّ الْيَتِيمَ وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ فَوَيْلٌ لِلْمُصَلِّينَ الَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ الَّذِينَ هُمْ يُرَاءُونَ وَيَمْنَعُونَ الْمَاعُونَ',
+    latin:
+        'Eraeytellezî yükezzibü bid-dîn. Fezâlikellezî yedu\'ul-yetîm. Ve lâ yehuddu alâ taâmil-miskîn. Feveylün lil-musallîn. Ellezîne hüm an salâtihim sâhûn. Ellezîne hüm yürâûne ve yemneûnel-mâûn.',
+    turkish:
+        'Dini yalanlayanı gördün mü? İşte o, yetimi itip kakan, yoksulu doyurmaya teşvik etmeyen kimsedir. Yazıklar olsun o namaz kılanlara ki, onlar namazlarından gafildirler. Onlar gösteriş yaparlar ve hayra da engel olurlar.',
+  ),
+  EzberDua(
+    id: 'kureys',
+    ad: 'Kureyş Sûresi',
+    kategori: 'Kısa Sureler',
+    arabic:
+        'لِإِيلَافِ قُرَيْشٍ إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ الَّذِي أَطْعَمَهُمْ مِنْ جُوعٍ وَآمَنَهُمْ مِنْ خَوْفٍ',
+    latin:
+        'Li-îlâfi Kureyş. Îlâfihim rihleteş-şitâi ves-sayf. Felya\'büdû rabbe hâzel-beyt. Ellezî at\'amehüm min cûin ve âmenehüm min havf.',
+    turkish:
+        'Kureyş\'i alıştırdığı için; onları kış ve yaz yolculuğuna alıştırdığı için, onlar bu evin (Kâbe\'nin) Rabbine kulluk etsinler. O ki onları açlıktan doyurdu ve korkudan emin kıldı.',
+  ),
+  EzberDua(
+    id: 'mesed',
+    ad: 'Mesed (Tebbet) Sûresi',
+    kategori: 'Kısa Sureler',
+    arabic:
+        'تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ وَامْرَأَتُهُ حَمَّالَةَ الْحَطَبِ فِي جِيدِهَا حَبْلٌ مِنْ مَسَدٍ',
+    latin:
+        'Tebbet yedâ ebî lehebin ve tebb. Mâ ağnâ anhü mâlühû ve mâ keseb. Seyaslâ nâran zâte leheb. Vemraetühû hammâletel-hatab. Fî cîdihâ hablün min mesed.',
+    turkish:
+        'Ebû Leheb\'in elleri kurusun; kurudu da! Malı ve kazandıkları ona fayda vermedi. O, alevli bir ateşe girecektir. Karısı da odun taşıyıcısı olarak. Boynunda bükülmüş bir ip olacaktır.',
+  ),
+  EzberDua(
+    id: 'zilzal',
+    ad: 'Zilzâl Sûresi',
+    kategori: 'Kısa Sureler',
+    arabic:
+        'إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا وَقَالَ الْإِنْسَانُ مَا لَهَا يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا',
+    latin:
+        'İzâ zülziletil-ardu zilzâlehâ. Ve ahracetil-ardu eskâlehâ. Ve kâlel-insânü mâ lehâ. Yevmeizin tühaddisü ahbârahâ. Bienne rabbeke evhâ lehâ.',
+    turkish:
+        'Yer o şiddetli sarsıntısıyla sarsıldığında, yer ağırlıklarını dışarı çıkardığında ve insan "Ona ne oluyor?" dediğinde; işte o gün yer, Rabbinin ona vahyetmesiyle bütün haberlerini anlatır.',
+  ),
+  EzberDua(
+    id: 'yemek_sonrasi',
+    ad: 'Yemekten Sonra Dua',
+    kategori: 'Günlük',
+    arabic:
+        'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مِنَ الْمُسْلِمِينَ',
+    latin: 'Elhamdü lillâhillezî at\'amenâ ve sekânâ ve cealenâ minel-müslimîn.',
+    turkish:
+        'Bizi yediren, içiren ve Müslümanlardan kılan Allah\'a hamd olsun.',
+  ),
+  EzberDua(
+    id: 'uyku_duasi',
+    ad: 'Uyumadan Önce Dua',
+    kategori: 'Günlük',
+    arabic: 'اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا',
+    latin: 'Allâhümme bismike emûtü ve ahyâ.',
+    turkish: 'Allah\'ım! Senin adınla ölür ve Senin adınla dirilirim.',
+  ),
+  EzberDua(
+    id: 'rabbi_yessir',
+    ad: 'Rabbi Yessir',
+    kategori: 'Günlük',
+    arabic: 'رَبِّ يَسِّرْ وَلَا تُعَسِّرْ رَبِّ تَمِّمْ بِالْخَيْرِ',
+    latin: 'Rabbi yessir ve lâ tüassir. Rabbi temmim bil-hayr.',
+    turkish:
+        'Rabbim! Kolaylaştır, zorlaştırma. Rabbim! Hayırla tamamla.',
+  ),
+  EzberDua(
+    id: 'hasbunallah',
+    ad: 'Hasbünallâh',
+    kategori: 'Faziletli Dualar',
+    arabic: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ نِعْمَ الْمَوْلَى وَنِعْمَ النَّصِيرُ',
+    latin: 'Hasbünallâhü ve ni\'mel-vekîl. Ni\'mel-mevlâ ve ni\'men-nasîr.',
+    turkish:
+        'Allah bize yeter, O ne güzel vekildir. O ne güzel dost ve ne güzel yardımcıdır.',
+  ),
+  EzberDua(
+    id: 'istigfar',
+    ad: 'Tövbe İstiğfar',
+    kategori: 'Günlük',
+    arabic:
+        'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَٰهَ إِلَّا هُوَ الْحَيَّ الْقَيُّومَ وَأَتُوبُ إِلَيْهِ',
+    latin:
+        'Estağfirullâhel-azîm ellezî lâ ilâhe illâ hüvel-hayyel-kayyûme ve etûbü ileyh.',
+    turkish:
+        'Kendisinden başka ilah olmayan, diri ve her şeyi ayakta tutan yüce Allah\'tan bağışlanma diler ve O\'na tövbe ederim.',
+  ),
 ];

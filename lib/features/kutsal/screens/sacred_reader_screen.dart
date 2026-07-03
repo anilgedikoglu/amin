@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../quran/quran_theme.dart';
 import '../models/sacred_models.dart';
+import '../data/sacred_repository.dart';
 
 class SacredReaderScreen extends StatefulWidget {
   final SacredText text;
@@ -98,14 +99,22 @@ class _BookList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String? hakkinda = kSacredRegistry
+        .firstWhere((e) => e.id == text.id,
+            orElse: () => const SacredEntry(id: '', name: '', religion: ''))
+        .hakkinda;
     return Column(children: [
       _LicenseBar(text: text),
       Expanded(
         child: ListView.separated(
           padding: const EdgeInsets.all(12),
-          itemCount: text.books.length,
+          itemCount: text.books.length + (hakkinda != null ? 1 : 0),
           separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemBuilder: (_, i) {
+          itemBuilder: (_, idx) {
+            if (hakkinda != null && idx == 0) {
+              return _HakkindaCard(name: text.name, hakkinda: hakkinda);
+            }
+            final i = hakkinda != null ? idx - 1 : idx;
             final b = text.books[i];
             final sub = b.singleChapter
                 ? '${b.chapters[0].length} ayet'
@@ -244,6 +253,50 @@ class _VerseListState extends State<_VerseList> {
           ]),
         );
       },
+    );
+  }
+}
+
+// Metnin tarihçesini gösteren açılır kart (kitap listesinin en üstünde).
+class _HakkindaCard extends StatelessWidget {
+  final String name, hakkinda;
+  const _HakkindaCard({required this.name, required this.hakkinda});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [QC.greenMain, QC.greenDark]),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          iconColor: QC.goldLight,
+          collapsedIconColor: QC.goldLight,
+          leading: const Icon(Icons.auto_stories_rounded, color: QC.goldLight),
+          title: Text('Hakkında — $name',
+              style: GoogleFonts.lora(
+                  fontSize: 14.5, fontWeight: FontWeight.w700, color: Colors.white)),
+          subtitle: Text('Tarihçe · nasıl indirildi · kaç bölüm',
+              style: GoogleFonts.lora(fontSize: 11.5, color: QC.greenPale)),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              child: Text(hakkinda,
+                  style: GoogleFonts.lora(
+                      fontSize: 13.5, height: 1.7, color: const Color(0xFF374151))),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

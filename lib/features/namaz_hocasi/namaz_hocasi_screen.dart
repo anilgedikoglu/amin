@@ -4,6 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../quran/quran_theme.dart';
+import '../ezber/ezber_data.dart';
+import '../ezber/ezber_screen.dart';
 import 'namaz_steps.dart';
 
 class NamazHocasiScreen extends StatefulWidget {
@@ -121,7 +123,6 @@ class _NamazHocasiScreenState extends State<NamazHocasiScreen> {
     required VoidCallback onTap,
     bool primary = false,
   }) {
-    final color = primary ? QC.gold : Colors.white;
     return Opacity(
       opacity: enabled ? 1 : 0.4,
       child: Material(
@@ -166,7 +167,7 @@ class _StepCard extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: const LinearGradient(
                 begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Color(0xFFf4ece0), Color(0xFFe8ddc9)]),
+                colors: [Color(0xFFBFAA97), Color(0xFFE4D0BE)]),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: QC.gold.withAlpha(120), width: 1.4),
             boxShadow: [BoxShadow(color: QC.greenMain.withAlpha(28), blurRadius: 12, offset: const Offset(0, 4))],
@@ -235,36 +236,134 @@ class _OkumaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale, width: 1.2),
         boxShadow: [BoxShadow(color: QC.greenMain.withAlpha(14), blurRadius: 8, offset: const Offset(0, 2))],
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-          decoration: BoxDecoration(
-              color: QC.greenMain, borderRadius: BorderRadius.circular(7)),
-          child: Text(okuma.ad,
-              style: const TextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w700, color: QC.goldLight)),
+      clipBehavior: Clip.antiAlias,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => Navigator.push(context,
+              MaterialPageRoute(builder: (_) => NamazOkumaDetayScreen(okuma: okuma))),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                  decoration: BoxDecoration(
+                      color: QC.greenMain, borderRadius: BorderRadius.circular(7)),
+                  child: Text(okuma.ad,
+                      style: const TextStyle(
+                          fontSize: 11, fontWeight: FontWeight.w700, color: QC.goldLight)),
+                ),
+                const Spacer(),
+                const Icon(Icons.open_in_full_rounded, size: 15, color: QC.gold),
+              ]),
+              const SizedBox(height: 10),
+              Text(okuma.arapca,
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontFamily: QC.arabicFont, fontSize: 21, height: 1.9, color: QC.greenDark)),
+              const SizedBox(height: 8),
+              Text(okuma.okunus,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.lora(
+                      fontSize: 13.5, height: 1.6, fontStyle: FontStyle.italic, color: QC.greenMain)),
+              const SizedBox(height: 6),
+              Text('Tamamı için dokun · ezberle',
+                  style: GoogleFonts.lora(
+                      fontSize: 11, fontWeight: FontWeight.w600, color: QC.gold)),
+            ]),
+          ),
         ),
-        const SizedBox(height: 10),
-        Text(okuma.arapca,
-            textAlign: TextAlign.right,
-            textDirection: TextDirection.rtl,
-            style: const TextStyle(
-                fontFamily: QC.arabicFont, fontSize: 21, height: 1.9, color: QC.greenDark)),
-        const SizedBox(height: 8),
-        Text(okuma.okunus,
-            style: GoogleFonts.lora(
-                fontSize: 13.5, height: 1.6, fontStyle: FontStyle.italic, color: QC.greenMain)),
-        const SizedBox(height: 6),
-        Text(okuma.anlam,
-            style: GoogleFonts.lora(fontSize: 13, height: 1.6, color: const Color(0xFF4b5563))),
-      ]),
+      ),
+    );
+  }
+}
+
+// Namaz duasının tam metnini gösteren detay ekranı + Ezberle butonu.
+class NamazOkumaDetayScreen extends StatelessWidget {
+  final NamazOkuma okuma;
+  const NamazOkumaDetayScreen({super.key, required this.okuma});
+
+  EzberDua get _ezberDua => EzberDua(
+        id: 'namaz_${okuma.ad}',
+        ad: okuma.ad,
+        kategori: 'Namaz Duaları',
+        arabic: okuma.arapca,
+        latin: okuma.okunus,
+        turkish: okuma.anlam,
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: QC.greenBg,
+      appBar: AppBar(title: Text(okuma.ad)),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+                color: QC.greenMain.withAlpha(22),
+                borderRadius: BorderRadius.circular(16)),
+            child: Text(okuma.arapca,
+                textAlign: TextAlign.right,
+                textDirection: TextDirection.rtl,
+                style: const TextStyle(
+                    fontFamily: QC.arabicFont, fontSize: 26, height: 2.1, color: QC.greenDark)),
+          ),
+          const SizedBox(height: 16),
+          Text('Okunuş',
+              style: GoogleFonts.lora(
+                  fontSize: 12, fontWeight: FontWeight.w700, color: QC.gold)),
+          const SizedBox(height: 6),
+          Text(okuma.okunus,
+              style: GoogleFonts.lora(
+                  fontSize: 16.5, height: 1.8, fontStyle: FontStyle.italic, color: QC.greenMain)),
+          const SizedBox(height: 18),
+          Text('Anlamı',
+              style: GoogleFonts.lora(
+                  fontSize: 12, fontWeight: FontWeight.w700, color: QC.gold)),
+          const SizedBox(height: 6),
+          Text(okuma.anlam,
+              style: GoogleFonts.lora(
+                  fontSize: 15, height: 1.75, color: const Color(0xFF374151))),
+          const SizedBox(height: 26),
+          Material(
+            color: QC.greenMain,
+            borderRadius: BorderRadius.circular(14),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(14),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => EzberPracticeScreen(dualar: [_ezberDua]))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  const Icon(Icons.psychology_alt_rounded, color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
+                  Text('Bu Duayı Ezberle',
+                      style: GoogleFonts.lora(
+                          fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                ]),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+        ],
+      ),
     );
   }
 }

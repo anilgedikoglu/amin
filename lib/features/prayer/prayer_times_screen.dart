@@ -77,9 +77,9 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   @override
   Widget build(BuildContext context) {
     if (!_ready) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: QC.greenBg,
-        body: Center(child: CircularProgressIndicator(color: QC.greenMain)),
+        body: const Center(child: CircularProgressIndicator(color: QC.greenMain)),
       );
     }
     final p = _p ?? _svc.timesFor(DateTime(_day.year, _day.month, _day.day));

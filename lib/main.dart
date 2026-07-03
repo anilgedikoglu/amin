@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,15 +8,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'features/kutsal/screens/sacred_home_screen.dart';
 import 'features/namaz_hocasi/namaz_hocasi_screen.dart';
 import 'features/notifications/notification_service.dart';
+import 'features/rating/rating_service.dart';
+import 'features/gunluk/gunluk_widgets.dart';
+import 'features/quran/quran_theme.dart';
 import 'features/quran/screens/quran_home_screen.dart';
+import 'features/settings/settings_screen.dart';
 import 'widgets/brand_icons.dart';
 import 'widgets/home_tools.dart';
+
+// Puanlama pop-up'ını context olmadan (AdManager'dan) gösterebilmek için.
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // Fontlar uygulamaya gömülü (assets/google_fonts). Runtime'da CDN'den
   // indirme KAPALI → tamamen offline, exception/kasma yok.
   GoogleFonts.config.allowRuntimeFetching = false;
+  // Kayıtlı arka plan temasını yükle (açılışı bloklamadan).
+  SharedPreferences.getInstance().then((p) {
+    AppBgTheme.notifier.value = p.getInt('app_theme') ?? 0;
+  });
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light));
@@ -45,19 +57,63 @@ class _AdIds {
   static String get interstitial => Platform.isIOS
       ? 'ca-app-pub-6470338276121414/1633785489'
       : 'ca-app-pub-6470338276121414/3936380770';
+  // Rewarded (ödüllü) — sadece tema değişiminde kullanılır.
+  static String get rewarded => Platform.isIOS
+      ? 'ca-app-pub-6470338276121414/9147603563'
+      : 'ca-app-pub-6470338276121414/7877624629';
 }
 
 class AdManager {
   static final AdManager instance = AdManager._();
   AdManager._();
 
-  // Tek reklam türü: geçiş (interstitial). Ödüllü/banner YOK.
+  // Geçiş (interstitial): her 10 tıkta 1. Ödüllü (rewarded): tema değişiminde.
   InterstitialAd? _interstitial;
   bool _interstitialLoading = false;
   int _tapCount = 0;
+  RewardedAd? _rewarded;
+  bool _rewardedLoading = false;
 
   void load() {
     _loadInterstitial();
+    _loadRewarded();
+  }
+
+  void _loadRewarded() {
+    if (_rewardedLoading || _rewarded != null) return;
+    _rewardedLoading = true;
+    RewardedAd.load(
+      adUnitId: _AdIds.rewarded,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewarded = ad;
+          _rewardedLoading = false;
+        },
+        onAdFailedToLoad: (_) {
+          _rewardedLoading = false;
+          Future.delayed(const Duration(minutes: 1), _loadRewarded);
+        },
+      ),
+    );
+  }
+
+  /// Ödüllü reklamı gösterir; kapanınca [onDone] çağrılır (reklam yoksa da).
+  void showRewarded(VoidCallback onDone) {
+    final ad = _rewarded;
+    if (ad == null) {
+      _loadRewarded();
+      onDone(); // reklam hazır değilse akışı bloklamadan devam et
+      return;
+    }
+    _rewarded = null;
+    var done = false;
+    void finish() { if (!done) { done = true; onDone(); } }
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (a) { a.dispose(); _loadRewarded(); finish(); },
+      onAdFailedToShowFullScreenContent: (a, _) { a.dispose(); _loadRewarded(); finish(); },
+    );
+    ad.show(onUserEarnedReward: (_, __) => finish());
   }
 
   void _loadInterstitial() {
@@ -91,9 +147,14 @@ class AdManager {
     }
   }
 
-  // Her 10 tıkta (uygulamada nereye tıklanırsa tıklansın) 1 geçiş reklamı.
+  // Her 10 tıkta 1 geçiş reklamı; her 50 tıkta (reklam yerine) puanlama pop-up'ı.
   void onTap() {
     _tapCount++;
+    if (_tapCount % 50 == 0) {
+      final ctx = rootNavigatorKey.currentContext;
+      if (ctx != null) RatingService.gosterEgerUygun(ctx);
+      return; // 50. tıkta reklam yerine değerlendirme daveti
+    }
     if (_tapCount % 10 == 0) showInterstitial();
   }
 }
@@ -104,7 +165,7 @@ class AC {
   static const greenMid   = Color(0xFF40916c);
   static const greenLight = Color(0xFF74c69d);
   static const greenPale  = Color(0xFFb7e4c7);
-  static const greenBg    = Color(0xFFd8f3dc);
+  static Color get greenBg => AppBgTheme.bg; // Ayarlar'dan değişen sayfa arka planı
   static const gold       = Color(0xFFc9a84c);
   static const goldLight  = Color(0xFFf0d080);
   static const brownDark  = Color(0xFF5C3A1E);
@@ -620,8 +681,11 @@ const List<Zikir> zikirler = [
 class AminApp extends StatelessWidget {
   const AminApp({super.key});
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context) => ValueListenableBuilder<int>(
+    valueListenable: AppBgTheme.notifier,
+    builder: (context, _, __) => MaterialApp(
     title: 'Amin', debugShowCheckedModeBanner: false,
+    navigatorKey: rootNavigatorKey,
     // Uygulamada nereye tıklanırsa tıklansın say; her 10 tıkta 1 geçiş reklamı.
     builder: (context, child) => Listener(
       behavior: HitTestBehavior.translucent,
@@ -656,6 +720,7 @@ class AminApp extends StatelessWidget {
       ),
     ),
     home: const SplashScreen(),
+  ),
   );
 }
 
@@ -849,7 +914,17 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 6),
+                    // Üst sağ: Ayarlar
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: const Icon(Icons.settings_rounded, color: AC.goldLight),
+                        tooltip: 'Ayarlar',
+                        onPressed: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => const SettingsScreen())),
+                      ),
+                    ),
                     // Sıradaki namaz (imsak) — en üstte (bilgi şeridi, buton değil)
                     const NextPrayerBanner(),
                     const SizedBox(height: 20),
@@ -915,6 +990,12 @@ class HomeScreen extends StatelessWidget {
                     const DelilGrid(),
                     const SizedBox(height: 16),
                     const DailyHadisCard(),
+                    const SizedBox(height: 14),
+                    const DailyAyahCard(),
+                    const SizedBox(height: 14),
+                    const TarihteBugunCard(),
+                    const SizedBox(height: 14),
+                    const GununIsimleriCard(),
                     const SizedBox(height: 28),
                     Text('"Ve Allah\'tan yardım ve muvaffakiyet dileriz."',
                       style: GoogleFonts.lora(fontSize: 11, color: AC.greenPale.withAlpha(150),
@@ -1789,11 +1870,16 @@ class DuaScreen extends StatefulWidget {
   State<DuaScreen> createState() => _DuaScreenState();
 }
 
-class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMixin {
+class _DuaScreenState extends State<DuaScreen> with TickerProviderStateMixin {
   int count = 0;
   bool showTurkish = false;
   late AnimationController _ctrl;
   late Animation<double> _scaleAnim;
+  // Dua kutusu yazı ölçeği (1.0 = en küçük/mevcut; kaydırmadan büyür).
+  double _fontScale = 1.0;
+  // 5 sn dokunulmazsa butonun etrafında nefes alan sarı ışık.
+  late AnimationController _breathCtrl;
+  Timer? _idleTimer;
 
   @override
   void initState() {
@@ -1801,11 +1887,35 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
     _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 120));
     _scaleAnim = Tween<double>(begin: 1.0, end: 0.88)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+    _breathCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1400));
     _load();
+    _startIdleWatch();
   }
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _idleTimer?.cancel();
+    _breathCtrl.dispose();
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  // Boşta bekleme izleyici: 5 sn dokunulmazsa bir nefes döngüsü çalışır,
+  // ardından 5 sn beklenip tekrar eder.
+  void _startIdleWatch() {
+    _idleTimer?.cancel();
+    _idleTimer = Timer(const Duration(seconds: 5), _breathOnce);
+  }
+
+  Future<void> _breathOnce() async {
+    if (!mounted || count >= widget.niyet.hedef) return;
+    await _breathCtrl.forward(from: 0);
+    if (!mounted) return;
+    await _breathCtrl.reverse();
+    if (!mounted) return;
+    _idleTimer = Timer(const Duration(seconds: 5), _breathOnce);
+  }
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -1820,6 +1930,10 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
   void _tap() async {
     if (count >= widget.niyet.hedef) return;
     HapticFeedback.lightImpact();
+    // Dokununca nefes ışığını durdur ve boşta sayacı yeniden başlat.
+    _breathCtrl.stop();
+    _breathCtrl.value = 0;
+    _startIdleWatch();
     setState(() => count++);
     _save();
     await _ctrl.forward();
@@ -1827,6 +1941,9 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
   }
 
   Future<void> _reset() async { setState(() => count = 0); await _save(); }
+
+  void _fontUp() => setState(() => _fontScale = (_fontScale + 0.15).clamp(1.0, 2.0));
+  void _fontDown() => setState(() => _fontScale = (_fontScale - 0.15).clamp(1.0, 2.0));
 
   // TAMAMLANDI → "Yeniden Başla": sadece sıfırla (reklam global 10-tık sayacında).
   void _resetWithAd() {
@@ -1847,9 +1964,9 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
       },
       child: Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
-            colors: [AC.greenDark, AC.greenMain, AC.greenBg], stops: [0.0, 0.5, 1.0])),
+            colors: const [AC.greenDark, AC.greenMain] + [AC.greenBg], stops: const [0.0, 0.5, 1.0])),
         child: SafeArea(child: Column(children: [
           Container(
             color: AC.greenDark,
@@ -1894,10 +2011,12 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
                     child: child)),
                 child: showTurkish
                     ? _DuaKutu(key: const ValueKey('tr'), isTurkish: true, content: n.turkish,
-                        availHeight: bc.maxHeight, showTurkish: true,
+                        availHeight: bc.maxHeight, showTurkish: true, fontScale: _fontScale,
+                        onFontUp: _fontUp, onFontDown: _fontDown,
                         onToggle: () => setState(() => showTurkish = !showTurkish))
                     : _DuaKutu(key: const ValueKey('ar'), isTurkish: false, arabic: n.arabic, latin: n.latin,
-                        availHeight: bc.maxHeight, showTurkish: false,
+                        availHeight: bc.maxHeight, showTurkish: false, fontScale: _fontScale,
+                        onFontUp: _fontUp, onFontDown: _fontDown,
                         onToggle: () => setState(() => showTurkish = !showTurkish)),
               ),
             )),
@@ -1927,16 +2046,28 @@ class _DuaScreenState extends State<DuaScreen> with SingleTickerProviderStateMix
                 scale: _scaleAnim,
                 child: GestureDetector(
                   onTap: _tap,
-                  child: Container(
-                    width: 140, height: 140,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const RadialGradient(
-                        colors: [AC.goldLight, AC.gold], center: Alignment(-0.3, -0.3)),
-                      boxShadow: [
-                        BoxShadow(color: AC.gold.withAlpha(90), blurRadius: 24, spreadRadius: 8),
-                        BoxShadow(color: Colors.black.withAlpha(77), blurRadius: 12)],
-                    ),
+                  child: AnimatedBuilder(
+                    animation: _breathCtrl,
+                    builder: (context, child) {
+                      final t = Curves.easeInOut.transform(_breathCtrl.value);
+                      return Container(
+                        width: 140, height: 140,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const RadialGradient(
+                            colors: [AC.goldLight, AC.gold], center: Alignment(-0.3, -0.3)),
+                          boxShadow: [
+                            // Nefes alan sarı halka (5 sn boştaysa büyür/küçülür).
+                            BoxShadow(
+                                color: const Color(0xFFFFE14D).withAlpha((150 * t).round()),
+                                blurRadius: 24 + 30 * t,
+                                spreadRadius: 8 + 22 * t),
+                            BoxShadow(color: AC.gold.withAlpha(90), blurRadius: 24, spreadRadius: 8),
+                            const BoxShadow(color: Color(0x4D000000), blurRadius: 12)],
+                        ),
+                        child: child,
+                      );
+                    },
                     child: const Center(child: Text("☽", style: TextStyle(fontSize: 52))),
                   ),
                 ),
@@ -1970,11 +2101,15 @@ class _DuaKutu extends StatelessWidget {
   final bool showTurkish;
   final VoidCallback onToggle;
   final double availHeight;
+  final double fontScale;
+  final VoidCallback onFontUp, onFontDown;
   const _DuaKutu({super.key, required this.isTurkish, this.arabic, this.latin, this.content,
-      required this.showTurkish, required this.onToggle, required this.availHeight});
+      required this.showTurkish, required this.onToggle, required this.availHeight,
+      required this.fontScale, required this.onFontUp, required this.onFontDown});
 
   @override
   Widget build(BuildContext context) {
+    final fs = fontScale;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Stack(
@@ -1982,7 +2117,7 @@ class _DuaKutu extends StatelessWidget {
           Container(
             width: double.infinity,
             height: availHeight,
-            padding: const EdgeInsets.fromLTRB(18, 36, 18, 18),
+            padding: const EdgeInsets.fromLTRB(18, 44, 18, 18),
             decoration: BoxDecoration(
               color: Colors.white.withAlpha(18), borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AC.gold.withAlpha(77))),
@@ -1997,18 +2132,27 @@ class _DuaKutu extends StatelessWidget {
                             style: TextStyle(fontSize: 10, color: AC.goldLight, letterSpacing: 1.5))),
                       ]),
                       const SizedBox(height: 10),
-                      Text(content ?? '', style: GoogleFonts.lora(fontSize: 13.5, color: Colors.white, height: 1.9),
+                      Text(content ?? '', style: GoogleFonts.lora(fontSize: 13.5 * fs, color: Colors.white, height: 1.9),
                         textAlign: TextAlign.center),
                     ])
                   : Column(children: [
-                      Text(arabic ?? '', style: GoogleFonts.amiri(fontSize: 15, color: AC.goldLight, height: 2.0),
+                      Text(arabic ?? '', style: GoogleFonts.amiri(fontSize: 15 * fs, color: AC.goldLight, height: 2.0),
                         textAlign: TextAlign.center),
                       const SizedBox(height: 12),
                       Text(latin ?? '', style: GoogleFonts.lora(
-                        fontSize: 13, color: AC.greenPale, fontStyle: FontStyle.italic, height: 1.8),
+                        fontSize: 13 * fs, color: AC.greenPale, fontStyle: FontStyle.italic, height: 1.8),
                         textAlign: TextAlign.center),
                     ]),
             ),
+          ),
+          // Yazı boyutu kontrolü (sol üst): A- / A+
+          Positioned(
+            top: 8, left: 8,
+            child: Row(children: [
+              _fontBtn(Icons.remove_rounded, onFontDown, fontScale > 1.0),
+              const SizedBox(width: 6),
+              _fontBtn(Icons.add_rounded, onFontUp, fontScale < 2.0),
+            ]),
           ),
           Positioned(
             top: 8, right: 8,
@@ -2028,6 +2172,24 @@ class _DuaKutu extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _fontBtn(IconData icon, VoidCallback onTap, bool enabled) {
+    return GestureDetector(
+      onTap: enabled ? onTap : null,
+      child: Opacity(
+        opacity: enabled ? 1 : 0.35,
+        child: Container(
+          width: 30, height: 26,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white.withAlpha(40),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AC.gold.withAlpha(180), width: 1.5)),
+          child: Icon(icon, size: 15, color: AC.goldLight),
+        ),
       ),
     );
   }
@@ -2220,9 +2382,9 @@ class _ZikirSayacScreenState extends State<ZikirSayacScreen> with SingleTickerPr
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
-            colors: [AC.greenDark, AC.greenMain, AC.greenBg], stops: [0.0, 0.5, 1.0])),
+            colors: const [AC.greenDark, AC.greenMain] + [AC.greenBg], stops: const [0.0, 0.5, 1.0])),
         child: SafeArea(child: Column(children: [
           Container(
             color: AC.greenDark,
