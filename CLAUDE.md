@@ -34,8 +34,8 @@ Apple 4.2 reddi sonrası uygulama tam kapsamlı bir İslami uygulamaya dönüşt
 | **Bilgi Yarışması** | `features/quiz/` | `quiz_data.dart` (`kQuizBank`, zorluk 0/1/2) + `quiz_screen.dart`. Her tur `_pickRound()` = 3 kolay+3 orta+4 çok zor rastgele. 10sn geri sayım; süre biterse yanlış+doğru gösterilir, 3sn sonra sonraki. Sonuç X/10 + istatistik (prefs `quiz_played/total_q/correct/perfect`). |
 | **Evlilikte Mahremiyet** | `features/evlilik/` | `evlilik_data.dart` (`kEvlilikSorular` {kategori,soru,cevap}) — İslami fıkha dayalı; helal/haram, gusül, karşılıklı haklar, edep, aile planlaması. Kategorili + arama + ExpansionTile. |
 | **Arapça Sözlük** | `features/sozluk/` | `sozluk_data.dart` (`kSozluk` {arabic,okunus,turkce}). Türkçe↔Arapça çift yönlü; `_fold` TR-duyarsız + Arapça yazımdan da arar. |
-| **Ayarlar** (arka plan teması + Hakkında/koşullar) | `features/settings/` | Tema değişiminde **1 rewarded reklam** (`AdManager.showRewarded`). `HakkindaScreen`: kullanım koşulları/sorumluluk reddi/kaynaklar/telif/gizlilik. **ASLA kişisel ad/e-posta yok.** Ana ekran sağ üstte dişli ikonu. |
-| **Puanlama/Yorum daveti** (her 50 tıkta pop-up: 5 yıldız + değerlendir + paylaş) | `features/rating/` | `rating_service.dart` (`in_app_review` + `share_plus`). `AdManager.onTap` her 50. tıkta (reklam yerine) `RatingService.gosterEgerUygun` → yıldıza dokun → `magazadaDegerlendir()` (native sheet + `openStoreListing`, iOS App ID 6779628851 / Android `com.amin.amin`). `review_done` prefs ile bir daha gösterilmez. Global `rootNavigatorKey` ile context'siz gösterim. Ayarlar'da "DESTEK" girişleri de var. |
+| **Ayarlar** (Değerlendir/Paylaş + Hakkında/koşullar) | `features/settings/` | DESTEK (Değerlendir/Paylaş) + `HakkindaScreen`: kullanım koşulları/sorumluluk reddi/kaynaklar/telif/gizlilik. **ASLA kişisel ad/e-posta yok.** Ana ekran sağ üstte dişli ikonu. (Tema seçimi 1.7.1'de kaldırıldı.) |
+| **Puanlama/Yorum daveti** (her 100 tıkta pop-up: 5 yıldız + değerlendir + paylaş) | `features/rating/` | `rating_service.dart` (`in_app_review` + `share_plus`). `AdManager.onTap` her 100. tıkta (reklam yerine) `RatingService.gosterEgerUygun` → yıldıza dokun → `magazadaDegerlendir()` (native sheet + `openStoreListing`, iOS App ID 6779628851 / Android `com.amin.amin`). `review_done` prefs ile bir daha gösterilmez. **`AdManager.pauseTaps`**: Bilgi Yarışması ekranındayken tıklamalar hiç sayılmaz (reklam/pop-up çıkmaz). Global `rootNavigatorKey` ile context'siz gösterim. Ayarlar'da "DESTEK" girişleri de var. |
 | **Günlük içerik** (Günün Ayeti + Tarihte Bugün + Günün Kız/Erkek İsmi) | `features/gunluk/` | `gunluk_data.dart` (`kGununAyetleri`, `kTarihteBugun` MM-DD map, `kKizIsimleri`/`kErkekIsimleri` {isim,anlam}) + `gunluk_widgets.dart`. `dayOfYear`'a göre seçim; isme dokun→anlam dialog; `IsimlerScreen` aranabilir. Ana ekranda Günün Hadisi altında. |
 | Günlük push + Namaz vakti + **10 yıllık dini gün kutlama** bildirimi | `features/notifications/` | `flutter_local_notifications` + `timezone` + `flutter_timezone` + `hijri`. `scheduleReligiousDays()`: 10 yılın kandil/bayramlarını hicri hesapla + kutlama mesajıyla planla (id base 3000, kanal `religious_days`, sabah 09:00). Açılışta sessizce (ayda bir tazelenir, `_kReligiousLast`). **iOS 64 bekleyen bildirim limiti** → `Platform.isIOS?60:200` cap. |
 
@@ -120,10 +120,9 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 - Reklam ID'leri **gerçek** (publisher `6470338276121414`, Google test `3940256099942544` DEĞİL).
 - Eski tamamlanma-tabanlı (`onDuaCompletion`, `_completionTapCount`) mantık kaldırıldı.
 
-### Arka Plan Teması (1.7.0+)
-- `AppBgTheme` (`quran_theme.dart`): `ValueNotifier<int>` + 4 tema (Zümrüt Yeşil/Sıcak Kum/Gök Mavisi/Gece). Sadece **sayfa arka planı** değişir; içerik kartları beyaz kaldığı için tüm temalarda metin okunur.
-- `QC.greenBg` ve `AC.greenBg` artık `static const` DEĞİL → `get greenBg => AppBgTheme.bg`. `AminApp` MaterialApp'i `ValueListenableBuilder`'a sarılı (tema değişince tüm ağaç tazelenir). Prefs `app_theme`, `main()`'de yüklenir.
-- **DİKKAT:** `greenBg` artık const olmadığı için `const Scaffold(backgroundColor: greenBg)` / `const BoxDecoration` derlenmez → non-const yap.
+### Arka Plan Teması — KALDIRILDI (1.7.1)
+- Kullanıcı istemediği için tema seçimi Ayarlar'dan kaldırıldı. `AppBgTheme` (`quran_theme.dart`) hâlâ duruyor ama `notifier` daima 0 (Zümrüt Yeşil) — `main()`'deki `app_theme` yükleme satırı silindi.
+- `QC.greenBg`/`AC.greenBg` hâlâ `get greenBg => AppBgTheme.bg` (const değil) → `const Scaffold(backgroundColor: greenBg)` derlenmez, non-const yap. `AdManager.showRewarded` kodu duruyor ama artık çağrılmıyor.
 
 ## Codemagic (iOS TestFlight)
 
@@ -152,7 +151,7 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 - **iOS ikon:** `flutter_launcher_icons` ile üretildi — `ios: true`, `remove_alpha_ios: true`
 - **iOS deployment target:** `13.0`
 - **Android min SDK:** `21`
-- **Sürüm:** `1.7.0+21` (`pubspec.yaml`) — codemagic.yaml `--build-name` de eşitle
+- **Sürüm:** `1.7.1+22` (`pubspec.yaml`) — codemagic.yaml `--build-name` de eşitle
 - **Global tema:** `AminApp` MaterialApp'te uygulama geneli AppBar/divider/splash(altın ripple)/snackbar + Cupertino sayfa geçişleri tanımlı (tek noktadan tutarlılık).
 - **Web repo:** `github.com/futurastictech/futurastictech.github.io`
 - **Uygulama repo:** `github.com/anilgedikoglu/amin`

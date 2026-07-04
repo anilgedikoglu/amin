@@ -24,10 +24,6 @@ void main() {
   // Fontlar uygulamaya gömülü (assets/google_fonts). Runtime'da CDN'den
   // indirme KAPALI → tamamen offline, exception/kasma yok.
   GoogleFonts.config.allowRuntimeFetching = false;
-  // Kayıtlı arka plan temasını yükle (açılışı bloklamadan).
-  SharedPreferences.getInstance().then((p) {
-    AppBgTheme.notifier.value = p.getInt('app_theme') ?? 0;
-  });
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light));
@@ -73,6 +69,8 @@ class AdManager {
   int _tapCount = 0;
   RewardedAd? _rewarded;
   bool _rewardedLoading = false;
+  // Bilgi Yarışması sırasında tıklamalar sayılmaz (pop-up/reklam çıkmasın).
+  bool pauseTaps = false;
 
   void load() {
     _loadInterstitial();
@@ -147,13 +145,15 @@ class AdManager {
     }
   }
 
-  // Her 10 tıkta 1 geçiş reklamı; her 50 tıkta (reklam yerine) puanlama pop-up'ı.
+  // Her 10 tıkta 1 geçiş reklamı; her 100 tıkta (reklam yerine) puanlama pop-up'ı.
+  // Bilgi Yarışması sırasında tıklamalar hiç sayılmaz.
   void onTap() {
+    if (pauseTaps) return;
     _tapCount++;
-    if (_tapCount % 50 == 0) {
+    if (_tapCount % 100 == 0) {
       final ctx = rootNavigatorKey.currentContext;
       if (ctx != null) RatingService.gosterEgerUygun(ctx);
-      return; // 50. tıkta reklam yerine değerlendirme daveti
+      return; // 100. tıkta reklam yerine değerlendirme daveti
     }
     if (_tapCount % 10 == 0) showInterstitial();
   }

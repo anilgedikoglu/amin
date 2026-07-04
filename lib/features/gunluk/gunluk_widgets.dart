@@ -19,29 +19,31 @@ class DailyAyahCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            colors: [QC.greenMain, QC.greenDark]),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: QC.gold.withAlpha(120), width: 1.3),
-        boxShadow: [BoxShadow(color: Colors.black.withAlpha(30), blurRadius: 12, offset: const Offset(0, 5))],
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha(55), blurRadius: 14, offset: const Offset(0, 6))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.menu_book_rounded, color: QC.gold, size: 18),
+          const Icon(Icons.menu_book_rounded, color: QC.goldLight, size: 18),
           const SizedBox(width: 8),
           Text('GÜNÜN AYETİ',
               style: GoogleFonts.lora(
-                  fontSize: 11, letterSpacing: 2, fontWeight: FontWeight.w700, color: QC.gold)),
+                  fontSize: 11, letterSpacing: 2, fontWeight: FontWeight.w700, color: QC.goldLight)),
         ]),
         const SizedBox(height: 10),
         Text('“${a.metin}”',
             style: GoogleFonts.lora(
-                fontSize: 15, height: 1.7, color: QC.greenDark, fontStyle: FontStyle.italic)),
+                fontSize: 15, height: 1.7, color: Colors.white, fontStyle: FontStyle.italic)),
         const SizedBox(height: 8),
         Align(
           alignment: Alignment.centerRight,
           child: Text('— ${a.kaynak}',
               style: GoogleFonts.lora(
-                  fontSize: 12, fontWeight: FontWeight.w700, color: QC.greenMain)),
+                  fontSize: 12, fontWeight: FontWeight.w700, color: QC.greenPale)),
         ),
       ]),
     );
@@ -61,24 +63,27 @@ class TarihteBugunCard extends StatelessWidget {
         '${now.day} ${_aylar[now.month - 1]}';
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: QC.greenMain.withAlpha(28),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: QC.greenPale.withAlpha(160)),
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            colors: [QC.greenMain, QC.greenDark]),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: QC.gold.withAlpha(120), width: 1.3),
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha(55), blurRadius: 14, offset: const Offset(0, 6))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.history_edu_rounded, color: QC.greenMain, size: 18),
+          const Icon(Icons.history_edu_rounded, color: QC.goldLight, size: 18),
           const SizedBox(width: 8),
           Text('TARİHTE BUGÜN · $tarihStr',
               style: GoogleFonts.lora(
-                  fontSize: 11, letterSpacing: 1.5, fontWeight: FontWeight.w700, color: QC.greenMain)),
+                  fontSize: 11, letterSpacing: 1.5, fontWeight: FontWeight.w700, color: QC.goldLight)),
         ]),
         const SizedBox(height: 10),
         if (olaylar == null)
           Text('Bugüne dair kayıtlı özel bir olay bulunmuyor. Her günü hayır ve dua ile değerlendirmek en güzel tarihtir.',
-              style: GoogleFonts.lora(fontSize: 13, height: 1.6, color: QC.greenDark))
+              style: GoogleFonts.lora(fontSize: 13.5, height: 1.65, color: Colors.white))
         else
           for (final o in olaylar)
             Padding(
@@ -86,11 +91,11 @@ class TarihteBugunCard extends StatelessWidget {
               child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Padding(
                   padding: EdgeInsets.only(top: 6, right: 8),
-                  child: Icon(Icons.circle, size: 6, color: QC.gold),
+                  child: Icon(Icons.circle, size: 6, color: QC.goldLight),
                 ),
                 Expanded(
                   child: Text(o,
-                      style: GoogleFonts.lora(fontSize: 13, height: 1.6, color: QC.greenDark)),
+                      style: GoogleFonts.lora(fontSize: 13.5, height: 1.65, color: Colors.white)),
                 ),
               ]),
             ),
@@ -114,26 +119,29 @@ class GununIsimleriCard extends StatelessWidget {
     final erkek = kErkekIsimleri[d % kErkekIsimleri.length];
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: QC.greenPale.withAlpha(160)),
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            colors: [QC.greenMain, QC.greenDark]),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: QC.gold.withAlpha(120), width: 1.3),
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha(55), blurRadius: 14, offset: const Offset(0, 6))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.badge_rounded, color: QC.gold, size: 18),
+          const Icon(Icons.badge_rounded, color: QC.goldLight, size: 18),
           const SizedBox(width: 8),
           Text('GÜNÜN İSİMLERİ',
               style: GoogleFonts.lora(
-                  fontSize: 11, letterSpacing: 1.5, fontWeight: FontWeight.w700, color: QC.gold)),
+                  fontSize: 11, letterSpacing: 1.5, fontWeight: FontWeight.w700, color: QC.goldLight)),
           const Spacer(),
           GestureDetector(
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (_) => const IsimlerScreen())),
             child: Text('Tümü ›',
                 style: GoogleFonts.lora(
-                    fontSize: 12, fontWeight: FontWeight.w700, color: QC.greenMain)),
+                    fontSize: 12, fontWeight: FontWeight.w700, color: QC.goldLight)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -152,9 +160,9 @@ class GununIsimleriCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: renk.withAlpha(18),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: renk.withAlpha(90)),
+          border: Border.all(color: renk.withAlpha(120)),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(etiket.toUpperCase(),

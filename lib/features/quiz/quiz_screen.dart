@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../main.dart' show AdManager;
 import '../quran/quran_theme.dart';
 import 'quiz_data.dart';
 
@@ -90,7 +91,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         style: GoogleFonts.lora(
                             fontSize: 19, fontWeight: FontWeight.w700, color: Colors.white)),
                     const SizedBox(height: 6),
-                    Text('10 soru · 3 kolay, 3 orta, 4 çok zor\nHer soru için 10 saniye',
+                    Text('10 soru · her soru için 10 saniye',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.lora(fontSize: 12.5, height: 1.5, color: QC.greenPale)),
                   ]),
@@ -178,6 +179,8 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
   @override
   void initState() {
     super.initState();
+    // Yarışma sırasında tıklamalar sayılmasın (reklam/pop-up çıkmasın).
+    AdManager.instance.pauseTaps = true;
     _baslatTimer();
   }
 
@@ -235,6 +238,7 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    AdManager.instance.pauseTaps = false;
     super.dispose();
   }
 
@@ -242,8 +246,6 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
   Widget build(BuildContext context) {
     if (_bitti) return _sonucEkrani();
     final q = widget.sorular[_i];
-    final zorlukEt = ['KOLAY', 'ORTA', 'ÇOK ZOR'][q.zorluk];
-    final zorlukRenk = [QC.greenMain, QC.gold, QC.brownDark][q.zorluk];
     return Scaffold(
       backgroundColor: QC.greenBg,
       appBar: AppBar(
@@ -269,16 +271,7 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                  color: zorlukRenk, borderRadius: BorderRadius.circular(8)),
-              child: Text(zorlukEt,
-                  style: GoogleFonts.lora(
-                      fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
-            ),
-            const Spacer(),
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             Icon(Icons.timer_outlined,
                 size: 18, color: _kalan < 3 ? const Color(0xFFD32F2F) : QC.greenMid),
             const SizedBox(width: 4),
@@ -289,25 +282,31 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
                     color: _kalan < 3 ? const Color(0xFFD32F2F) : QC.greenMid)),
           ]),
         ),
+        // Soru + şıklar dikeyde ortalı (gerekirse kaydırılır).
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: QC.greenPale.withAlpha(160)),
-                ),
-                child: Text(q.soru,
-                    style: GoogleFonts.lora(
-                        fontSize: 17, height: 1.5, fontWeight: FontWeight.w700, color: QC.greenDark)),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: QC.greenPale.withAlpha(160)),
+                    ),
+                    child: Text(q.soru,
+                        style: GoogleFonts.lora(
+                            fontSize: 17, height: 1.5, fontWeight: FontWeight.w700, color: QC.greenDark)),
+                  ),
+                  const SizedBox(height: 16),
+                  for (var s = 0; s < q.secenekler.length; s++) _secenek(q, s),
+                ],
               ),
-              const SizedBox(height: 16),
-              for (var s = 0; s < q.secenekler.length; s++) _secenek(q, s),
-            ],
+            ),
           ),
         ),
       ]),

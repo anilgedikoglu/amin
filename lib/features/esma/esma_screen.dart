@@ -173,13 +173,15 @@ class _EsmaSheet extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 14, 24, 32),
+      child: SingleChildScrollView(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(width: 44, height: 4,
             decoration: BoxDecoration(color: Colors.white30, borderRadius: BorderRadius.circular(2))),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
         Text(esma.arabic,
-            style: const TextStyle(fontFamily: QC.arabicFont, fontSize: 52, color: QC.goldLight)),
-        const SizedBox(height: 6),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontFamily: QC.arabicFont, fontSize: 52, height: 1.5, color: QC.goldLight)),
+        const SizedBox(height: 18),
         Text(esma.okunus,
             style: GoogleFonts.lora(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white)),
         const SizedBox(height: 4),
@@ -203,6 +205,7 @@ class _EsmaSheet extends StatelessWidget {
               style: GoogleFonts.lora(fontSize: 14, height: 1.7, color: QC.greenPale)),
         ),
       ]),
+      ),
     );
   }
 }

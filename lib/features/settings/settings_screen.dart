@@ -1,34 +1,11 @@
-// Ayarlar — arka plan teması (değişimde 1 ödüllü reklam) + Hakkında/koşullar.
+// Ayarlar — Değerlendir/Paylaş + Hakkında/koşullar.
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../main.dart' show AdManager;
 import '../quran/quran_theme.dart';
 import '../rating/rating_service.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  // Her tema için önizleme rengi.
-  static const List<Color> _onizleme = AppBgTheme.arkaplan;
-
-  Future<void> _secTema(int i) async {
-    if (i == AppBgTheme.index) return;
-    // Tema değişiminde 1 ödüllü reklam göster; kapanınca uygula.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Tema uygulanıyor…'), duration: Duration(milliseconds: 900)),
-    );
-    AdManager.instance.showRewarded(() async {
-      AppBgTheme.notifier.value = i;
-      final p = await SharedPreferences.getInstance();
-      await p.setInt('app_theme', i);
-      if (mounted) setState(() {});
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,23 +15,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _baslik('ARKA PLAN TEMASI'),
-          const SizedBox(height: 4),
-          Text('Tema değişiminde kısa bir ödüllü reklam gösterilir.',
-              style: GoogleFonts.lora(fontSize: 11.5, color: QC.greenMid)),
-          const SizedBox(height: 12),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 1.7,
-            children: [
-              for (var i = 0; i < AppBgTheme.adlar.length; i++) _temaKart(i),
-            ],
-          ),
-          const SizedBox(height: 24),
           _baslik('DESTEK'),
           const SizedBox(height: 10),
           _tile(Icons.star_rounded, 'Uygulamayı Değerlendir',
@@ -76,51 +36,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           }),
           const SizedBox(height: 30),
         ],
-      ),
-    );
-  }
-
-  Widget _temaKart(int i) {
-    final secili = i == AppBgTheme.index;
-    return Material(
-      color: _onizleme[i],
-      borderRadius: BorderRadius.circular(14),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: () => _secTema(i),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-                color: secili ? QC.gold : QC.greenPale.withAlpha(160),
-                width: secili ? 2.4 : 1.2),
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(children: [
-                // Örnek beyaz kart (içeriğin okunur kaldığını gösterir).
-                Container(
-                  width: 26,
-                  height: 26,
-                  decoration: BoxDecoration(
-                      color: Colors.white, borderRadius: BorderRadius.circular(7)),
-                  child: const Icon(Icons.text_fields_rounded, size: 15, color: QC.greenDark),
-                ),
-                const Spacer(),
-                if (secili)
-                  const Icon(Icons.check_circle_rounded, color: QC.gold, size: 20),
-              ]),
-              Text(AppBgTheme.adlar[i],
-                  style: GoogleFonts.lora(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w700,
-                      color: i == 3 ? Colors.white : QC.greenDark)),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -240,4 +155,4 @@ const String _kTelif =
     'Uygulamanın özgün tasarımı, düzeni, derlenmiş içerikleri ve yazılımı fikrî mülkiyet kapsamındadır ve izinsiz çoğaltılamaz, dağıtılamaz veya ticari amaçla kullanılamaz. Üçüncü taraflara ait içerikler ilgili sahiplerinin haklarına tabidir. Bir içeriğin hak ihlali oluşturduğunu düşünüyorsanız, uygulamanın destek kanalı üzerinden bildirebilirsiniz; geçerli bildirimler değerlendirilerek gerekli düzeltmeler yapılır.';
 
 const String _kGizlilik =
-    'Uygulama, temel tercihlerinizi (seçili meal, favoriler, ilerleme, tema vb.) yalnızca cihazınızda saklar. Bu veriler sunucuya gönderilmez. Reklam sağlayıcıları kendi gizlilik politikaları çerçevesinde cihaz/însan tanımlayıcıları kullanabilir; ayrıntılar için ilgili sağlayıcının (Google AdMob) gizlilik politikasına bakınız. Detaylı gizlilik politikası uygulamanın web sayfasında yayımlanır.';
+    'Uygulama, temel tercihlerinizi (seçili meal, favoriler, ilerleme vb.) yalnızca cihazınızda saklar. Bu veriler sunucuya gönderilmez. Reklam sağlayıcıları kendi gizlilik politikaları çerçevesinde cihaz tanımlayıcıları kullanabilir; ayrıntılar için ilgili sağlayıcının (Google AdMob) gizlilik politikasına bakınız. Detaylı gizlilik politikası uygulamanın web sayfasında yayımlanır.';

@@ -161,24 +161,23 @@ class _StepCard extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       children: [
-        // Görsel
+        // Görsel — çerçeve görselle aynı oranda (kare), dolgu yok.
         Container(
-          height: 220,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-                begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Color(0xFFBFAA97), Color(0xFFE4D0BE)]),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: QC.gold.withAlpha(120), width: 1.4),
             boxShadow: [BoxShadow(color: QC.greenMain.withAlpha(28), blurRadius: 12, offset: const Offset(0, 4))],
           ),
           clipBehavior: Clip.antiAlias,
-          child: Image.asset(
-            namazImage(adim.image),
-            fit: BoxFit.contain,
-            filterQuality: FilterQuality.medium,
-            errorBuilder: (_, __, ___) => const Center(
-                child: Icon(Icons.mosque_rounded, size: 64, color: QC.greenMid)),
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Image.asset(
+              namazImage(adim.image),
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
+              errorBuilder: (_, __, ___) => const Center(
+                  child: Icon(Icons.mosque_rounded, size: 64, color: QC.greenMid)),
+            ),
           ),
         ),
         const SizedBox(height: 16),
