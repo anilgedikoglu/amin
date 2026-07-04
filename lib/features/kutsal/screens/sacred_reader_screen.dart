@@ -104,7 +104,6 @@ class _BookList extends StatelessWidget {
             orElse: () => const SacredEntry(id: '', name: '', religion: ''))
         .hakkinda;
     return Column(children: [
-      _LicenseBar(text: text),
       Expanded(
         child: ListView.separated(
           padding: const EdgeInsets.all(12),
@@ -301,17 +300,3 @@ class _HakkindaCard extends StatelessWidget {
   }
 }
 
-class _LicenseBar extends StatelessWidget {
-  final SacredText text;
-  const _LicenseBar({required this.text});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: QC.greenMain.withAlpha(30),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
-      child: Text('${text.religion} · ${text.license}',
-          style: GoogleFonts.lora(fontSize: 11.5, color: QC.greenMid)),
-    );
-  }
-}

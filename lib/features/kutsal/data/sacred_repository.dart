@@ -48,21 +48,19 @@ const List<SacredEntry> kSacredRegistry = [
       hakkinda:
           'Dhammapada ("Erdem/Öğreti Yolu"), Budizm\'in en tanınmış ve en çok okunan metnidir. Buddha\'nın (Siddhartha Gautama, MÖ 6.–5. yüzyıl) çeşitli vesilelerle söylediği özlü sözlerin derlemesidir. Pali dilindeki Budist kanonun (Tipitaka) "Khuddaka Nikaya" bölümünde yer alır.\n\nMetnin, Buddha\'nın vefatından sonra sözlü gelenekle aktarılan öğretilerinin, yaklaşık MÖ 3. yüzyılda yazıya geçirildiği kabul edilir. Sözlerin, dinleyicilerin hayatındaki somut olaylar üzerine söylendiği ve her birinin bir hikâyeye bağlı olduğu rivayet edilir.\n\nDhammapada 423 kısa dizeden (âyetten) oluşur ve 26 bölüme ayrılır: İkilikler, Uyanıklık, Zihin, Çiçekler, Öfke, Mutluluk gibi başlıklar taşır. Temel öğretisi zihnin arındırılması, öfke ve arzunun aşılması, şefkat ve farkındalıkla yaşamaktır. "Her şey zihinden doğar" düşüncesi metnin özüdür.\n\nBu uygulamadaki Türkçe çeviri, kamu malı (public domain) Max Müller İngilizce çevirisinden yapılmış özgün bir çeviridir.'),
   SacredEntry(
-      id: 'bible',
-      name: 'İncil (Kutsal Kitap)',
-      religion: 'Hristiyanlık',
-      asset: 'assets/sacred/bible.json',
-      hakkinda:
-          'Kutsal Kitap (Bible), Hristiyanlığın temel metnidir ve iki ana bölümden oluşur: Eski Ahit (Tevrat, Zebur ve peygamber kitapları — Yahudilikle ortak) ve Yeni Ahit (İncil — İsa Mesih\'in hayatı, öğretileri ve ilk kilisenin yazıları). Toplam 66 kitaptan meydana gelir.\n\nEski Ahit büyük ölçüde İbranice, Yeni Ahit ise Grekçe (Koine Yunancası) yazılmıştır. Metinler, MÖ ~1200\'lerden MS ~100\'e kadar uzanan geniş bir zaman diliminde, farklı peygamber, kral ve havariler tarafından kaleme alınmıştır. Yeni Ahit\'in dört İncil\'i (Matta, Markos, Luka, Yuhanna) İsa\'nın hayatını anlatır.\n\nİslam inancına göre İncil, Allah\'ın Hz. İsa\'ya indirdiği ilahî kitaptır; ancak Müslümanlar mevcut metinlerin zamanla değişikliğe (tahrif) uğradığına inanır. Kur\'an, İncil ve Tevrat\'ı "önceki kitaplar" olarak anar.\n\nBu uygulamadaki Türkçe metin, "Yorumsuz Türkçe Çeviri" (YTC) çevirisidir; kamu malı World English Bible esas alınarak İsmail Serinken ve eBible.org tarafından hazırlanmıştır.\n\nTelif: © 2023–2025 İsmail Serinken & eBible.org — Creative Commons Atıf-Türetilemez 4.0 (CC BY-ND 4.0) lisansıyla, metin değiştirilmeden kullanılmıştır.'),
-  SacredEntry(
-      id: 'torah',
-      name: 'Tevrat (Tora)',
+      id: 'tevrat',
+      name: 'Tevrat (Eski Ahit)',
       religion: 'Yahudilik',
-      from: 'bible',
-      bookRange: [0, 5],
-      overrideLicense: 'Yorumsuz Türkçe Çeviri (YTC) © 2023–2025 İsmail Serinken & eBible.org — CC BY-ND 4.0',
+      asset: 'assets/sacred/tevrat.json',
       hakkinda:
-          'Tevrat (Tora — "Öğreti, Kanun"), Yahudiliğin en kutsal metnidir ve Kutsal Kitap\'ın (Eski Ahit) ilk beş kitabından oluşur: Yaratılış, Mısır\'dan Çıkış, Levililer, Çölde Sayım ve Yasa\'nın Tekrarı. Bu beş kitaba birlikte "Pentateuk" (Beş Kitap) da denir.\n\nYahudi geleneğine göre Tevrat, Hz. Musa\'ya (Moşe) Sina Dağı\'nda vahyedilmiştir. İçinde evrenin ve insanın yaratılışı, peygamber kıssaları, İsrailoğulları\'nın tarihi ve Yahudi hukukunun temeli olan emirler (mitzvot, On Emir dâhil) yer alır.\n\nİslam inancına göre Tevrat, Allah\'ın Hz. Musa\'ya indirdiği ilahî kitaptır; Kur\'an onu sıkça anar. Müslümanlar mevcut metinlerin zamanla değişikliğe uğradığına inanır.\n\nBu bölüm, Türkçe "Yorumsuz Türkçe Çeviri" (YTC) Kutsal Kitap\'ının ilk beş kitabıdır. Telif: © 2023–2025 İsmail Serinken & eBible.org — CC BY-ND 4.0.'),
+          'Tevrat, Yahudiliğin kutsal metni Eski Ahit\'tir. Bu bölüm Eski Ahit\'in 39 kitabını, Yaratılış\'tan (evrenin ve insanın yaratılışı) başlayıp Malaki\'ye kadar içerir; ilk beş kitap (Yaratılış, Mısır\'dan Çıkış, Levililer, Çölde Sayım, Yasa\'nın Tekrarı) dar anlamda "Tora" ya da "Pentateuk"tur, ardından tarih kitapları, Mezmurlar (Zebur), Süleyman\'ın Özdeyişleri ve peygamber kitapları gelir.\n\nMetinler büyük ölçüde İbranice yazılmıştır ve MÖ ~1200\'lerden MÖ ~400\'e kadar uzanan geniş bir dönemde peygamberler, krallar ve bilgeler tarafından kaleme alınmıştır. İçinde peygamber kıssaları, İsrailoğulları\'nın tarihi ve Yahudi hukukunun temeli olan emirler (On Emir dâhil) yer alır.\n\nİslam inancına göre Tevrat, Allah\'ın Hz. Musa\'ya indirdiği ilahî kitaptır; Zebur da Hz. Davud\'a indirilmiştir. Kur\'an bu kitapları sıkça anar; ancak Müslümanlar mevcut metinlerin zamanla değişikliğe (tahrif) uğradığına inanır.\n\nMetin: "Yorumsuz Türkçe Çeviri" (YTC), kamu malı World English Bible esas alınarak hazırlanmıştır. Telif: © 2023–2025 İsmail Serinken & eBible.org — Creative Commons Atıf-Türetilemez 4.0 (CC BY-ND 4.0) lisansıyla, metin değiştirilmeden kullanılmıştır.'),
+  SacredEntry(
+      id: 'incil',
+      name: 'İncil (Yeni Ahit)',
+      religion: 'Hristiyanlık',
+      asset: 'assets/sacred/incil.json',
+      hakkinda:
+          'İncil (Yeni Ahit), Hristiyanlığın temel metnidir. Bu bölüm 27 kitaptan oluşur ve İsa Mesih\'in hayatını ve öğretilerini anlatan dört İncil ile başlar: Matta, Markos, Luka ve Yuhanna. Ardından Elçilerin İşleri, elçilerin (Pavlus vb.) mektupları ve Vahiy kitabı gelir.\n\nMetinler Grekçe (Koine Yunancası) ile, MS ~50–100 arasında havariler ve ilk kilise yazarları tarafından kaleme alınmıştır. Dört İncil, İsa\'nın doğuşunu, öğretilerini, mucizelerini, çarmıha gerilişini ve dirilişini anlatır.\n\nİslam inancına göre İncil, Allah\'ın Hz. İsa\'ya indirdiği ilahî kitaptır; Kur\'an onu "önceki kitaplar"dan biri olarak anar. Ancak Müslümanlar mevcut metinlerin zamanla değişikliğe (tahrif) uğradığına inanır.\n\nMetin: "Yorumsuz Türkçe Çeviri" (YTC), kamu malı World English Bible esas alınarak hazırlanmıştır. Telif: © 2023–2025 İsmail Serinken & eBible.org — Creative Commons Atıf-Türetilemez 4.0 (CC BY-ND 4.0) lisansıyla, metin değiştirilmeden kullanılmıştır.'),
   SacredEntry(
       id: 'gita',
       name: 'Bhagavad Gita',
