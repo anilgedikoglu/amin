@@ -77,6 +77,27 @@ const List<SacredEntry> kSacredRegistry = [
       asset: 'assets/sacred/analects.json',
       hakkinda:
           'Analektler (Lún Yǔ — "Seçme Sözler"), Çin bilgesi Konfüçyüs\'ün (MÖ 551–479) öğretilerini, sözlerini ve öğrencileriyle diyaloglarını içeren temel metindir. Konfüçyüsçülüğün en önemli klasiğidir ve iki bin yıldan fazla süre Çin düşüncesini, ahlakını ve devlet anlayışını şekillendirmiştir.\n\nMetin, Konfüçyüs\'ün kendisi tarafından değil, vefatından sonra öğrencileri ve onların öğrencileri tarafından, yaklaşık MÖ 5.–3. yüzyıllarda derlenmiştir. 20 "kitap" (bölüm) hâlinde düzenlenmiş kısa pasajlardan oluşur; her pasaj çoğunlukla "Üstat dedi ki…" diye başlar.\n\nAnalektler\'in özü; erdem (ren — insanlık/şefkat), doğruluk, âdâb (li), aileye ve topluma karşı sorumluluk, ve "kendine yapılmasını istemediğini başkasına yapma" ilkesidir. Bilgelik, öğrenme ve ahlaki olgunluk sürekli vurgulanır.\n\nBu uygulamadaki metin, kamu malı (public domain) James Legge çevirisi (1893) İngilizcesidir.'),
+  SacredEntry(
+      id: 'popolvuh',
+      name: 'Popol Vuh',
+      religion: 'Maya (Kiçe)',
+      asset: 'assets/sacred/popolvuh.json',
+      hakkinda:
+          'Popol Vuh ("Topluluk Kitabı" / "Öğüt Kitabı"), Orta Amerika\'daki Kiçe-Maya halkının kutsal yaratılış destanıdır. Maya mitolojisinin, evren ve insanın yaratılışının, kahraman ikiz tanrıların ve Kiçe krallarının soyunun anlatıldığı en önemli yerli Amerika metnidir.\n\nMetin, İspanyol istilasından önce sözlü gelenekle ve resimli kodekslerle aktarılıyordu. 16. yüzyılda Latin alfabesiyle Kiçe dilinde yazıya geçirilmiş, 18. yüzyılın başında Dominiken rahip Francisco Ximénez tarafından kopyalanıp İspanyolcaya çevrilmiştir; asıl kodeksler yok olmuştur.\n\nAnlatı; sessiz ve karanlık bir evrende tanrıların danışıp önce hayvanları, sonra çamurdan ve ağaçtan başarısız insanları, en sonunda mısırdan gerçek insanı yaratmasını; kahraman ikizler Hun-Ahpu ve Xbalanque\'nin yeraltı dünyası Xibalba\'nın efendilerine karşı verdiği mücadeleyi konu alır.\n\nBu uygulamadaki Türkçe metin, kamu malı (public domain) Lewis Spence İngilizce özetinden (1908) çevrilmiştir.'),
+  SacredEntry(
+      id: 'bookdead',
+      name: 'Mısır Ölüler Kitabı',
+      religion: 'Antik Mısır',
+      asset: 'assets/sacred/bookdead.json',
+      hakkinda:
+          'Mısır Ölüler Kitabı (aslen "Gündüze Çıkış Kitabı"), Antik Mısır dininin cenaze metinleridir. Ölen kişinin öbür dünyaya güvenle geçebilmesi, tehlikeleri aşabilmesi ve sonsuz yaşama kavuşabilmesi için gereken büyüler, ilahiler ve dualardan oluşur.\n\nMetinler, MÖ ~1550\'den itibaren papirüs rulolarına yazılıp mezarlara, mumyaların yanına konurdu; kökleri daha eski "Piramit Metinleri" ve "Tabut Metinleri"ne uzanır. Her papirüs kişiye özeldi; bu yüzden tek bir "kitap" değil, seçilmiş bölümlerden oluşan bir derlemedir. En ünlü bölümlerden biri, kalbin adalet tanrıçası Maat\'ın tüyüyle tartıldığı "kalbin tartılması" sahnesidir.\n\nBu uygulamadaki metin, kamu malı (public domain) E. A. Wallis Budge İngilizce çevirisinden seçilmiş bölümlerdir (özgün İngilizce).'),
+  SacredEntry(
+      id: 'upanishads',
+      name: 'Upanişadlar',
+      religion: 'Hinduizm',
+      asset: 'assets/sacred/upanishads.json',
+      hakkinda:
+          'Upanişadlar, Hinduizmin felsefî temelini oluşturan kutsal metinlerdir. Vedaların sonunda yer aldıkları için "Vedanta" (Vedaların sonu/özü) olarak da anılırlar. Yaklaşık MÖ 800–200 arasında, orman inzivalarında üstatlarla öğrenciler arasındaki söyleşiler biçiminde şekillenmişlerdir.\n\n"Upanişad" kelimesi "yakına oturmak" anlamına gelir; öğrencinin, gizli bilgiyi almak için üstadın yanına oturmasına işaret eder. Yüzlerce metinden oluşurlar; en önemlileri 10-13 "asıl Upanişad"dır.\n\nTemel öğretileri; her şeyin ardındaki nihai gerçeklik "Brahman" ile bireysel ruh "Atman"ın özde bir ve aynı olduğu ("Tat tvam asi — O sensin"), ruhun bedenden bedene geçişi (reenkarnasyon) ve nihai kurtuluş (mokşa) düşünceleridir.\n\nBu uygulamadaki metin, kamu malı (public domain) Max Müller İngilizce çevirisidir (özgün İngilizce).'),
 ];
 
 /// compute() içinde çalışır — ağır JSON parse arka plan isolate'inde.

@@ -146,38 +146,38 @@ class GununIsimleriCard extends StatelessWidget {
         ]),
         const SizedBox(height: 12),
         Row(children: [
-          Expanded(child: _isimKutu(context, 'Kız', kiz, const Color(0xFFC2185B))),
+          Expanded(child: _isimKutu(context, 'Kız', kiz)),
           const SizedBox(width: 10),
-          Expanded(child: _isimKutu(context, 'Erkek', erkek, QC.greenMain)),
+          Expanded(child: _isimKutu(context, 'Erkek', erkek)),
         ]),
       ]),
     );
   }
 
-  Widget _isimKutu(BuildContext context, String etiket, Isim isim, Color renk) {
+  Widget _isimKutu(BuildContext context, String etiket, Isim isim) {
     return GestureDetector(
       onTap: () => _anlamGoster(context, isim),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white.withAlpha(22),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: renk.withAlpha(120)),
+          border: Border.all(color: QC.goldLight.withAlpha(90)),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(etiket.toUpperCase(),
               style: GoogleFonts.lora(
-                  fontSize: 10, letterSpacing: 1, fontWeight: FontWeight.w700, color: renk)),
+                  fontSize: 10, letterSpacing: 1, fontWeight: FontWeight.w700, color: QC.goldLight)),
           const SizedBox(height: 4),
           Text(isim.isim,
               style: GoogleFonts.lora(
-                  fontSize: 18, fontWeight: FontWeight.w800, color: QC.greenDark)),
+                  fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
           const SizedBox(height: 4),
           Row(children: [
-            Icon(Icons.touch_app_rounded, size: 12, color: renk),
+            const Icon(Icons.touch_app_rounded, size: 12, color: QC.goldLight),
             const SizedBox(width: 4),
             Text('anlamı için dokun',
-                style: GoogleFonts.lora(fontSize: 10.5, color: QC.greenMid)),
+                style: GoogleFonts.lora(fontSize: 10.5, color: QC.greenPale)),
           ]),
         ]),
       ),
