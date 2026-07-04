@@ -151,7 +151,7 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 - **iOS ikon:** `flutter_launcher_icons` ile üretildi — `ios: true`, `remove_alpha_ios: true`
 - **iOS deployment target:** `13.0`
 - **Android min SDK:** `21`
-- **Sürüm:** `1.7.5+26` (`pubspec.yaml`) — codemagic.yaml `--build-name` de eşitle
+- **Sürüm:** `1.7.6+27` (`pubspec.yaml`) — codemagic.yaml `--build-name` de eşitle
 - **Global tema:** `AminApp` MaterialApp'te uygulama geneli AppBar/divider/splash(altın ripple)/snackbar + Cupertino sayfa geçişleri tanımlı (tek noktadan tutarlılık).
 - **Web repo:** `github.com/futurastictech/futurastictech.github.io`
 - **Uygulama repo:** `github.com/anilgedikoglu/amin`
