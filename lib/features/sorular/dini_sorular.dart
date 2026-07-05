@@ -109,7 +109,7 @@ class _DiniSorularScreenState extends State<DiniSorularScreen> {
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
                 child: TextField(
                   onChanged: (v) => setState(() => _q = v),
-                  style: GoogleFonts.lora(color: Colors.white, fontSize: 14.5),
+                  style: GoogleFonts.lora(color: Color(0xFFFAF7F0), fontSize: 14.5),
                   decoration: InputDecoration(
                     hintText: 'Soru ara (oruç, nazar, sakız, cin…)',
                     hintStyle: GoogleFonts.lora(color: QC.greenPale, fontSize: 13.5),
@@ -149,7 +149,7 @@ class _DiniSorularScreenState extends State<DiniSorularScreen> {
           return Container(
             margin: const EdgeInsets.only(bottom: 9),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Color(0xFFFAF7F0),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: QC.greenPale.withAlpha(160)),
             ),
@@ -216,7 +216,7 @@ class _DiniSorularScreenState extends State<DiniSorularScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: QC.greenPale.withAlpha(150)),
       ),
@@ -296,7 +296,7 @@ class _DiniSorularScreenState extends State<DiniSorularScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(13),
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xFFFAF7F0),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: QC.greenPale.withAlpha(160))),
                 child: Text(s.cevap,
@@ -365,7 +365,7 @@ class _DiniSorularKategoriScreenState extends State<DiniSorularKategoriScreen> {
           return Container(
             margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Color(0xFFFAF7F0),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: QC.greenPale.withAlpha(150)),
             ),
@@ -436,7 +436,7 @@ class _DiniSorularKategoriScreenState extends State<DiniSorularKategoriScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(13),
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xFFFAF7F0),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: QC.greenPale.withAlpha(160))),
                 child: Text(s.cevap,

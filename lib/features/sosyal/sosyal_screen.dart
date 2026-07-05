@@ -37,7 +37,7 @@ class SosyalScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale.withAlpha(160)),
       ),
@@ -82,7 +82,7 @@ class _MesajListScreen extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xFFFAF7F0),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: QC.greenPale.withAlpha(150)),
               ),
@@ -96,7 +96,7 @@ class _MesajListScreen extends StatelessWidget {
                   child: FilledButton.icon(
                     style: FilledButton.styleFrom(
                         backgroundColor: QC.greenMain,
-                        foregroundColor: Colors.white,
+                        foregroundColor: Color(0xFFFAF7F0),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8)),
                     icon: const Icon(Icons.ios_share_rounded, size: 18),
                     label: Text('Görsel oluştur & paylaş',
@@ -237,7 +237,7 @@ class _Card extends StatelessWidget {
             Text(mesaj,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.lora(
-                    fontSize: 15.5, height: 1.6, color: Colors.white)),
+                    fontSize: 15.5, height: 1.6, color: Color(0xFFFAF7F0))),
             const SizedBox(height: 22),
             const ArabesqueDivider(width: 110),
             const SizedBox(height: 12),

@@ -128,7 +128,7 @@ class _LocationGateState extends State<_LocationGate> {
             ElevatedButton(
               onPressed: onTap,
               style: ElevatedButton.styleFrom(
-                  backgroundColor: QC.greenMain, foregroundColor: Colors.white,
+                  backgroundColor: QC.greenMain, foregroundColor: Color(0xFFFAF7F0),
                   padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
               child: Text(btn),
@@ -158,7 +158,7 @@ class _QiblaCompass extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 24),
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             decoration: BoxDecoration(
-              color: aligned ? QC.gold : Colors.white,
+              color: aligned ? QC.gold : Color(0xFFFAF7F0),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: aligned ? QC.gold : QC.greenPale, width: 1.4),
             ),
@@ -222,7 +222,7 @@ class _DialPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final c = Offset(size.width / 2, size.height / 2);
     final r = size.width / 2 - 6;
-    canvas.drawCircle(c, r, Paint()..color = Colors.white);
+    canvas.drawCircle(c, r, Paint()..color = Color(0xFFFAF7F0));
     canvas.drawCircle(c, r,
         Paint()..color = QC.greenPale..style = PaintingStyle.stroke..strokeWidth = 2);
     canvas.drawCircle(c, r - 14,

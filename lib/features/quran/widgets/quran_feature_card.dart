@@ -49,7 +49,7 @@ class QuranFeatureCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text("Kur'an-ı Kerim",
                   style: GoogleFonts.lora(
-                      fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                      fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
               const SizedBox(height: 3),
               const Text("Oku · Meal · Tilavet dinle · Favoriler",
                   style: TextStyle(fontSize: 10.5, color: QC.greenPale, letterSpacing: .3)),

@@ -76,14 +76,14 @@ class _EsmaScreenState extends State<EsmaScreen> {
                 padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
                 child: TextField(
                   onChanged: (v) => setState(() => _q = v),
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  style: const TextStyle(color: Color(0xFFFAF7F0), fontSize: 14),
                   cursorColor: QC.goldLight,
                   decoration: InputDecoration(
                     hintText: "İsim veya anlam ara…",
                     hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
                     prefixIcon: const Icon(Icons.search, color: QC.greenPale, size: 20),
                     filled: true,
-                    fillColor: Colors.white.withAlpha(22),
+                    fillColor: Color(0xFFFAF7F0).withAlpha(22),
                     contentPadding: const EdgeInsets.symmetric(vertical: 0),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -122,7 +122,7 @@ class _EsmaTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: QC.greenPale, width: 1.2),
           boxShadow: [BoxShadow(color: QC.greenMain.withAlpha(16), blurRadius: 8, offset: const Offset(0, 2))],
@@ -183,7 +183,7 @@ class _EsmaSheet extends StatelessWidget {
             style: const TextStyle(fontFamily: QC.arabicFont, fontSize: 52, height: 1.5, color: QC.goldLight)),
         const SizedBox(height: 18),
         Text(esma.okunus,
-            style: GoogleFonts.lora(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white)),
+            style: GoogleFonts.lora(fontSize: 22, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
         const SizedBox(height: 4),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
@@ -197,7 +197,7 @@ class _EsmaSheet extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-              color: Colors.white.withAlpha(20),
+              color: Color(0xFFFAF7F0).withAlpha(20),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: QC.gold.withAlpha(70))),
           child: Text(esma.aciklama,

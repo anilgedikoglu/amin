@@ -206,7 +206,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                 const SizedBox(height: 2),
                 Text("${_surah.turkishName} Suresi",
                     style: GoogleFonts.lora(
-                        fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                        fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
                 const SizedBox(height: 6),
                 Wrap(
                   alignment: WrapAlignment.center,
@@ -232,7 +232,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
   Widget _chip(String t) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
         decoration: BoxDecoration(
-            color: Colors.white.withAlpha(28),
+            color: Color(0xFFFAF7F0).withAlpha(28),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: QC.gold.withAlpha(120))),
         child: Text(t, style: const TextStyle(fontSize: 10.5, color: QC.greenPale)),
@@ -250,7 +250,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
-            color: Colors.white.withAlpha(28),
+            color: Color(0xFFFAF7F0).withAlpha(28),
             borderRadius: BorderRadius.circular(22),
             border: Border.all(color: QC.gold.withAlpha(130))),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -308,10 +308,10 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
           child: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-                color: Colors.white.withAlpha(28),
+                color: Color(0xFFFAF7F0).withAlpha(28),
                 shape: BoxShape.circle,
                 border: Border.all(color: QC.gold.withAlpha(120))),
-            child: Icon(icon, color: Colors.white, size: 18),
+            child: Icon(icon, color: Color(0xFFFAF7F0), size: 18),
           ),
         ),
       );
@@ -327,14 +327,14 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 9),
             decoration: BoxDecoration(
-                color: active ? QC.gold : Colors.white.withAlpha(28),
+                color: active ? QC.gold : Color(0xFFFAF7F0).withAlpha(28),
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(color: QC.gold.withAlpha(160))),
             child: Text(label,
                 style: TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.bold,
-                    color: active ? QC.greenDark : Colors.white)),
+                    color: active ? QC.greenDark : Color(0xFFFAF7F0))),
           ),
         ),
       );

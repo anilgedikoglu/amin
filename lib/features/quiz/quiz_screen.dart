@@ -89,7 +89,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     const SizedBox(height: 10),
                     Text('Dinî Bilgi Yarışması',
                         style: GoogleFonts.lora(
-                            fontSize: 19, fontWeight: FontWeight.w700, color: Colors.white)),
+                            fontSize: 19, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
                     const SizedBox(height: 6),
                     Text('10 soru · her soru için 10 saniye',
                         textAlign: TextAlign.center,
@@ -142,7 +142,7 @@ class _QuizScreenState extends State<QuizScreen> {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: QC.greenPale.withAlpha(150)),
       ),
@@ -294,7 +294,7 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color(0xFFFAF7F0),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: QC.greenPale.withAlpha(160)),
                     ),
@@ -314,7 +314,7 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
   }
 
   Widget _secenek(QuizQ q, int index) {
-    Color bg = Colors.white;
+    Color bg = Color(0xFFFAF7F0);
     Color border = QC.greenPale.withAlpha(160);
     Color fg = QC.greenDark;
     IconData? ikon;
@@ -422,7 +422,7 @@ class _QuizGameScreenState extends State<QuizGameScreen> {
                       child: Center(
                         child: Text('Tekrar Oyna',
                             style: GoogleFonts.lora(
-                                fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                                fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
                       ),
                     ),
                   ),

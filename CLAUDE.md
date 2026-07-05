@@ -151,7 +151,8 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 - **iOS ikon:** `flutter_launcher_icons` ile üretildi — `ios: true`, `remove_alpha_ios: true`
 - **iOS deployment target:** `13.0`
 - **Android min SDK:** `21`
-- **Sürüm:** `1.7.9+30` (`pubspec.yaml`) — codemagic.yaml `--build-name` de eşitle
+- **Sürüm:** `1.8.0+31` (`pubspec.yaml`) — codemagic.yaml `--build-name` de eşitle
+- **Renk teması (1.8.0):** Sayfa arka planı yeşilden **sıcak fildişine** (`AppBgTheme.arkaplan[0]=0xFFF3EEE3`) alındı; bembeyaz kartlar **yumuşak sıcak beyaza** (`Colors.white`→`Color(0xFFFAF7F0)` toplu değişim, 135 yer). Yeşil artık ana ekran/AppBar/marka kartlarında **vurgu** rengi. Açılışta Arapça↔besmele arası açıldı.
 - **Global tema:** `AminApp` MaterialApp'te uygulama geneli AppBar/divider/splash(altın ripple)/snackbar + Cupertino sayfa geçişleri tanımlı (tek noktadan tutarlılık).
 - **Web repo:** `github.com/futurastictech/futurastictech.github.io`
 - **Uygulama repo:** `github.com/anilgedikoglu/amin`

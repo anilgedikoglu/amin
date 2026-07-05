@@ -133,7 +133,7 @@ class _NamazHocasiScreenState extends State<NamazHocasiScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
-              color: primary ? QC.gold : Colors.white,
+              color: primary ? QC.gold : Color(0xFFFAF7F0),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: primary ? QC.gold : QC.greenPale, width: 1.4),
             ),
@@ -203,7 +203,7 @@ class _StepCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Color(0xFFFAF7F0),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: QC.greenPale, width: 1.2),
           ),
@@ -236,7 +236,7 @@ class _OkumaCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale, width: 1.2),
         boxShadow: [BoxShadow(color: QC.greenMain.withAlpha(14), blurRadius: 8, offset: const Offset(0, 2))],
@@ -351,11 +351,11 @@ class NamazOkumaDetayScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(Icons.psychology_alt_rounded, color: Colors.white, size: 20),
+                  const Icon(Icons.psychology_alt_rounded, color: Color(0xFFFAF7F0), size: 20),
                   const SizedBox(width: 8),
                   Text('Bu Duayı Ezberle',
                       style: GoogleFonts.lora(
-                          fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                          fontSize: 15, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
                 ]),
               ),
             ),

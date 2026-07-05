@@ -155,7 +155,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
           child: Text("$h : $m : $s",
               style: const TextStyle(
                   fontFamily: 'monospace',
-                  fontSize: 26, fontWeight: FontWeight.w700, color: Colors.white, letterSpacing: 2)),
+                  fontSize: 26, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0), letterSpacing: 2)),
         ),
         const SizedBox(height: 4),
         const Text("kaldı", style: TextStyle(fontSize: 11, color: QC.greenPale)),
@@ -167,7 +167,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale, width: 1.2),
       ),
@@ -186,7 +186,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                 lastDate: DateTime(2036, 12, 31),
                 builder: (ctx, child) => Theme(
                   data: Theme.of(ctx).copyWith(
-                    colorScheme: const ColorScheme.light(primary: QC.greenMain, onPrimary: Colors.white),
+                    colorScheme: const ColorScheme.light(primary: QC.greenMain, onPrimary: Color(0xFFFAF7F0)),
                   ),
                   child: child!,
                 ),
@@ -234,7 +234,7 @@ class _PrayerRow extends StatelessWidget {
         gradient: highlight
             ? const LinearGradient(colors: [QC.gold, QC.goldLight])
             : null,
-        color: highlight ? null : Colors.white,
+        color: highlight ? null : Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: highlight ? QC.gold : QC.greenPale, width: 1.2),
         boxShadow: [
@@ -292,7 +292,7 @@ class _CityPickerState extends State<_CityPicker> {
               decoration: InputDecoration(
                 hintText: "Şehir ara…",
                 prefixIcon: const Icon(Icons.search, color: QC.greenMain),
-                filled: true, fillColor: Colors.white,
+                filled: true, fillColor: Color(0xFFFAF7F0),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: QC.greenPale)),

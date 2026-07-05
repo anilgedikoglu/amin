@@ -37,7 +37,7 @@ class DailyAyahCard extends StatelessWidget {
         const SizedBox(height: 10),
         Text('“${a.metin}”',
             style: GoogleFonts.lora(
-                fontSize: 15, height: 1.7, color: Colors.white, fontStyle: FontStyle.italic)),
+                fontSize: 15, height: 1.7, color: Color(0xFFFAF7F0), fontStyle: FontStyle.italic)),
         const SizedBox(height: 8),
         Align(
           alignment: Alignment.centerRight,
@@ -83,7 +83,7 @@ class TarihteBugunCard extends StatelessWidget {
         const SizedBox(height: 10),
         if (olaylar == null)
           Text('Bugüne dair kayıtlı özel bir olay bulunmuyor. Her günü hayır ve dua ile değerlendirmek en güzel tarihtir.',
-              style: GoogleFonts.lora(fontSize: 13.5, height: 1.65, color: Colors.white))
+              style: GoogleFonts.lora(fontSize: 13.5, height: 1.65, color: Color(0xFFFAF7F0)))
         else
           for (final o in olaylar)
             Padding(
@@ -95,7 +95,7 @@ class TarihteBugunCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(o,
-                      style: GoogleFonts.lora(fontSize: 13.5, height: 1.65, color: Colors.white)),
+                      style: GoogleFonts.lora(fontSize: 13.5, height: 1.65, color: Color(0xFFFAF7F0))),
                 ),
               ]),
             ),
@@ -160,7 +160,7 @@ class GununIsimleriCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white.withAlpha(22),
+          color: Color(0xFFFAF7F0).withAlpha(22),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: QC.goldLight.withAlpha(90)),
         ),
@@ -171,7 +171,7 @@ class GununIsimleriCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(isim.isim,
               style: GoogleFonts.lora(
-                  fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
+                  fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFFFAF7F0))),
           const SizedBox(height: 4),
           Row(children: [
             const Icon(Icons.touch_app_rounded, size: 12, color: QC.goldLight),
@@ -188,7 +188,7 @@ class GununIsimleriCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFFAF7F0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(isim.isim,
             style: GoogleFonts.lora(fontWeight: FontWeight.w800, color: QC.greenDark)),
@@ -248,7 +248,7 @@ class _IsimlerScreenState extends State<IsimlerScreen> {
                 prefixIcon: const Icon(Icons.search_rounded, color: QC.greenMid),
                 isDense: true,
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Color(0xFFFAF7F0),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: QC.greenPale.withAlpha(160))),
@@ -267,7 +267,7 @@ class _IsimlerScreenState extends State<IsimlerScreen> {
             itemBuilder: (_, i) => Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xFFFAF7F0),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: QC.greenPale.withAlpha(150)),
               ),
@@ -289,7 +289,7 @@ class _IsimlerScreenState extends State<IsimlerScreen> {
 
   Widget _seg(String label, bool aktif, VoidCallback onTap) {
     return Material(
-      color: aktif ? QC.greenMain : Colors.white,
+      color: aktif ? QC.greenMain : Color(0xFFFAF7F0),
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
@@ -304,7 +304,7 @@ class _IsimlerScreenState extends State<IsimlerScreen> {
               style: GoogleFonts.lora(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: aktif ? Colors.white : QC.greenDark)),
+                  color: aktif ? Color(0xFFFAF7F0) : QC.greenDark)),
         ),
       ),
     );

@@ -49,7 +49,7 @@ class _EvlilikScreenState extends State<EvlilikScreen> {
                 prefixIcon: const Icon(Icons.search_rounded, color: QC.greenMid),
                 isDense: true,
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Color(0xFFFAF7F0),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: QC.greenPale.withAlpha(160))),
@@ -95,7 +95,7 @@ class _EvlilikScreenState extends State<EvlilikScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: QC.greenPale.withAlpha(150)),
       ),

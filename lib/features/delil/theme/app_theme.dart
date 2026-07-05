@@ -332,7 +332,7 @@ ThemeData buildAppTheme() {
       secondary: AppColors.purple,
       surface: AppColors.surface,
       onPrimary: AppColors.background,
-      onSecondary: Colors.white,
+      onSecondary: Color(0xFFFAF7F0),
       onSurface: AppColors.textPrimary,
     ),
     textTheme: GoogleFonts.notoSerifTextTheme(base.textTheme).copyWith(

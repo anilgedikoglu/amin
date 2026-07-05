@@ -789,9 +789,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               opacity: _c,
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Text("بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ",
-                    style: GoogleFonts.amiri(fontSize: 25, color: AC.goldLight, height: 1.4),
+                    style: GoogleFonts.amiri(fontSize: 25, color: AC.goldLight, height: 1.6),
                     textAlign: TextAlign.center),
-                const SizedBox(height: 6),
+                const SizedBox(height: 16),
                 Text("Bismillâhirrahmânirrahîm",
                     style: GoogleFonts.lora(
                         fontSize: 11,
@@ -1052,7 +1052,7 @@ class _MenuTile extends StatelessWidget {
             gradient: primary
                 ? const LinearGradient(colors: [AC.gold, AC.goldLight],
                     begin: Alignment.topLeft, end: Alignment.bottomRight)
-                : LinearGradient(colors: [Colors.white.withAlpha(20), Colors.white.withAlpha(10)]),
+                : LinearGradient(colors: [Color(0xFFFAF7F0).withAlpha(20), Color(0xFFFAF7F0).withAlpha(10)]),
             border: Border.all(
                 color: primary
                     ? Colors.transparent
@@ -1244,7 +1244,7 @@ class _DuaZikirHubScreenState extends State<DuaZikirHubScreen> {
                     end: Alignment.bottomRight,
                     colors: [AC.greenMid, AC.greenDark])
                 : null,
-            color: primary ? null : Colors.white.withAlpha(18),
+            color: primary ? null : Color(0xFFFAF7F0).withAlpha(18),
             border: Border.all(color: AC.gold.withAlpha(primary ? 200 : 110), width: 1.5),
             boxShadow: [BoxShadow(
               color: Colors.black.withAlpha(primary ? 90 : 60),
@@ -1377,7 +1377,7 @@ class _IstatistikScreenState extends State<IstatistikScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AC.greenPale.withAlpha(160)),
           boxShadow: [BoxShadow(color: Colors.black.withAlpha(12), blurRadius: 8, offset: const Offset(0, 3))],
@@ -1403,7 +1403,7 @@ class _IstatistikScreenState extends State<IstatistikScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AC.greenPale.withAlpha(150)),
       ),
@@ -1537,7 +1537,7 @@ class _KategoriCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AC.greenPale, width: 1.5),
           boxShadow: [BoxShadow(color: AC.greenMain.withAlpha(20), blurRadius: 10, offset: const Offset(0, 3))],
@@ -1670,7 +1670,7 @@ class _NiyetCard extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: done ? const Color(0xFFFFFBF0) : Colors.white,
+          color: done ? const Color(0xFFFFFBF0) : Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: done ? AC.gold : Colors.transparent, width: 2),
           boxShadow: [BoxShadow(color: AC.greenMain.withAlpha(33), blurRadius: 10, offset: const Offset(0, 3))],
@@ -1801,7 +1801,7 @@ class _DevamCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
         decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(16),
+          color: Color(0xFFFAF7F0), borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AC.greenPale, width: 1.5),
           boxShadow: [BoxShadow(color: AC.greenMain.withAlpha(25), blurRadius: 10, offset: const Offset(0, 3))]),
         child: Stack(children: [
@@ -2026,7 +2026,7 @@ class _DuaScreenState extends State<DuaScreen> with TickerProviderStateMixin {
               children: [
                 const TextSpan(text: "Okunan "),
                 TextSpan(text: "$count",
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(color: Color(0xFFFAF7F0), fontWeight: FontWeight.bold)),
                 const TextSpan(text: "  /  Gereken "),
                 TextSpan(text: "${n.hedef}",
                   style: const TextStyle(color: AC.goldLight, fontWeight: FontWeight.bold)),
@@ -2119,7 +2119,7 @@ class _DuaKutu extends StatelessWidget {
             height: availHeight,
             padding: const EdgeInsets.fromLTRB(18, 44, 18, 18),
             decoration: BoxDecoration(
-              color: Colors.white.withAlpha(18), borderRadius: BorderRadius.circular(16),
+              color: Color(0xFFFAF7F0).withAlpha(18), borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AC.gold.withAlpha(77))),
             child: SingleChildScrollView(
               child: isTurkish
@@ -2132,7 +2132,7 @@ class _DuaKutu extends StatelessWidget {
                             style: TextStyle(fontSize: 10, color: AC.goldLight, letterSpacing: 1.5))),
                       ]),
                       const SizedBox(height: 10),
-                      Text(content ?? '', style: GoogleFonts.lora(fontSize: 13.5 * fs, color: Colors.white, height: 1.9),
+                      Text(content ?? '', style: GoogleFonts.lora(fontSize: 13.5 * fs, color: Color(0xFFFAF7F0), height: 1.9),
                         textAlign: TextAlign.center),
                     ])
                   : Column(children: [
@@ -2162,7 +2162,7 @@ class _DuaKutu extends StatelessWidget {
                 duration: const Duration(milliseconds: 250),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: showTurkish ? AC.gold : Colors.white.withAlpha(40),
+                  color: showTurkish ? AC.gold : Color(0xFFFAF7F0).withAlpha(40),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: AC.gold.withAlpha(180), width: 1.5)),
                 child: Text(showTurkish ? "AR" : "TR",
@@ -2185,7 +2185,7 @@ class _DuaKutu extends StatelessWidget {
           width: 30, height: 26,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Colors.white.withAlpha(40),
+            color: Color(0xFFFAF7F0).withAlpha(40),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: AC.gold.withAlpha(180), width: 1.5)),
           child: Icon(icon, size: 15, color: AC.goldLight),
@@ -2296,7 +2296,7 @@ class _ZikirlerScreenState extends State<ZikirlerScreen> {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   decoration: BoxDecoration(
-                    color: done ? const Color(0xFFFFFBF0) : Colors.white,
+                    color: done ? const Color(0xFFFFFBF0) : Color(0xFFFAF7F0),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: done ? AC.gold : Colors.transparent, width: 2),
                     boxShadow: [BoxShadow(color: AC.greenMain.withAlpha(33), blurRadius: 10, offset: const Offset(0, 3))],
@@ -2416,7 +2416,7 @@ class _ZikirSayacScreenState extends State<ZikirSayacScreen> with SingleTickerPr
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(18), borderRadius: BorderRadius.circular(16),
+                  color: Color(0xFFFAF7F0).withAlpha(18), borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: AC.gold.withAlpha(77))),
                 child: Column(children: [
                   Row(children: [
@@ -2428,7 +2428,7 @@ class _ZikirSayacScreenState extends State<ZikirSayacScreen> with SingleTickerPr
                   ]),
                   const SizedBox(height: 8),
                   Text(z.anlam,
-                    style: GoogleFonts.lora(fontSize: 14, color: Colors.white, height: 1.8),
+                    style: GoogleFonts.lora(fontSize: 14, color: Color(0xFFFAF7F0), height: 1.8),
                     textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   Row(children: [
@@ -2450,7 +2450,7 @@ class _ZikirSayacScreenState extends State<ZikirSayacScreen> with SingleTickerPr
                 children: [
                   const TextSpan(text: "Okunan "),
                   TextSpan(text: "$count",
-                    style: const TextStyle(fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontSize: 26, color: Color(0xFFFAF7F0), fontWeight: FontWeight.bold)),
                   const TextSpan(text: "  /  Gereken "),
                   TextSpan(text: "${z.hedef}",
                     style: const TextStyle(color: AC.goldLight, fontWeight: FontWeight.bold)),

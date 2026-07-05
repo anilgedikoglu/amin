@@ -72,7 +72,7 @@ class AudioPlayerBar extends StatelessWidget {
                                   style: GoogleFonts.lora(
                                       fontSize: 13.5,
                                       fontWeight: FontWeight.w700,
-                                      color: Colors.white)),
+                                      color: Color(0xFFFAF7F0))),
                               Text("Ayet $ayahNo / ${surah.ayahCount}",
                                   style: const TextStyle(
                                       fontSize: 11, color: QC.greenPale)),
@@ -82,7 +82,7 @@ class AudioPlayerBar extends StatelessWidget {
                   ),
                   IconButton(
                     icon: const Icon(Icons.skip_previous_rounded,
-                        color: Colors.white, size: 28),
+                        color: Color(0xFFFAF7F0), size: 28),
                     onPressed: audio.previous,
                   ),
                   StreamBuilder<PlayerState>(
@@ -115,7 +115,7 @@ class AudioPlayerBar extends StatelessWidget {
                   ),
                   IconButton(
                     icon: const Icon(Icons.skip_next_rounded,
-                        color: Colors.white, size: 28),
+                        color: Color(0xFFFAF7F0), size: 28),
                     onPressed: audio.next,
                   ),
                   IconButton(

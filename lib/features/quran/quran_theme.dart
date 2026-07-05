@@ -14,9 +14,10 @@ class AppBgTheme {
     'Gök Mavisi',
     'Gece (Okuma)',
   ];
-  // Her tema: sayfa arka planı.
+  // Her tema: sayfa arka planı. Varsayılan: sıcak fildişi (yeşil hâkimiyetini
+  // azaltmak ve bembeyaz göz yorgunluğunu gidermek için).
   static const List<Color> arkaplan = [
-    Color(0xFFd8f3dc), // 0 yeşil (varsayılan)
+    Color(0xFFF3EEE3), // 0 sıcak fildişi (varsayılan)
     Color(0xFFf3ead6), // 1 sıcak kum
     Color(0xFFdbe7f2), // 2 gök mavisi
     Color(0xFF11201a), // 3 gece (siyaha yakın)

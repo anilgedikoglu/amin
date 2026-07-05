@@ -174,7 +174,7 @@ class _EzberScreenState extends State<EzberScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: QC.greenPale.withAlpha(150)),
       ),
@@ -330,7 +330,7 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Color(0xFFFAF7F0),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: QC.greenPale.withAlpha(160))),
               child: Text(d.latin,
@@ -352,7 +352,7 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color(0xFFFAF7F0),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: QC.greenPale.withAlpha(150))),
             child: Text(d.turkish,
@@ -433,7 +433,7 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: hidden ? QC.gold.withAlpha(30) : Colors.white,
+        color: hidden ? QC.gold.withAlpha(30) : Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
             color: hidden ? QC.gold.withAlpha(140) : QC.greenPale.withAlpha(160)),
@@ -451,7 +451,7 @@ class _EzberPracticeScreenState extends State<EzberPracticeScreen> {
 
   Widget _btn(String label, Color color, VoidCallback onTap,
       {IconData? icon, bool dark = false}) {
-    final fg = dark ? QC.greenDark : Colors.white;
+    final fg = dark ? QC.greenDark : Color(0xFFFAF7F0);
     return Material(
       color: color,
       borderRadius: BorderRadius.circular(14),

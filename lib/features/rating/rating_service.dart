@@ -86,7 +86,7 @@ class _RatingDialogState extends State<_RatingDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFFAF7F0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 32),
       child: Padding(
@@ -100,7 +100,7 @@ class _RatingDialogState extends State<_RatingDialog> {
               gradient: RadialGradient(
                   center: Alignment(-0.3, -0.3), colors: [QC.goldLight, QC.gold]),
             ),
-            child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 34),
+            child: const Icon(Icons.favorite_rounded, color: Color(0xFFFAF7F0), size: 34),
           ),
           const SizedBox(height: 16),
           Text('Amin\'i beğendin mi?',
@@ -143,11 +143,11 @@ class _RatingDialogState extends State<_RatingDialog> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 13),
                     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      const Icon(Icons.rate_review_rounded, color: Colors.white, size: 18),
+                      const Icon(Icons.rate_review_rounded, color: Color(0xFFFAF7F0), size: 18),
                       const SizedBox(width: 7),
                       Text('Değerlendir',
                           style: GoogleFonts.lora(
-                              fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white)),
+                              fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
                     ]),
                   ),
                 ),

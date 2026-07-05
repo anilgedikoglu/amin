@@ -119,7 +119,7 @@ class _BookList extends StatelessWidget {
                 ? '${b.chapters[0].length} ayet'
                 : '${b.chapters.length} bölüm';
             return Material(
-              color: Colors.white,
+              color: Color(0xFFFAF7F0),
               borderRadius: BorderRadius.circular(12),
               child: ListTile(
                 shape: RoundedRectangleBorder(
@@ -129,7 +129,7 @@ class _BookList extends StatelessWidget {
                   backgroundColor: QC.greenMain,
                   child: Text('${i + 1}',
                       style: GoogleFonts.lora(
-                          color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
+                          color: Color(0xFFFAF7F0), fontWeight: FontWeight.w700, fontSize: 13)),
                 ),
                 title: Text(b.name,
                     style: GoogleFonts.lora(
@@ -161,7 +161,7 @@ class _ChapterGrid extends StatelessWidget {
           crossAxisCount: 5, mainAxisSpacing: 10, crossAxisSpacing: 10),
       itemCount: book.chapters.length,
       itemBuilder: (_, i) => Material(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
@@ -228,7 +228,7 @@ class _VerseListState extends State<_VerseList> {
           margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.all(13),
           decoration: BoxDecoration(
-            color: hl ? QC.goldLight.withAlpha(90) : Colors.white,
+            color: hl ? QC.goldLight.withAlpha(90) : Color(0xFFFAF7F0),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
                 color: hl ? QC.gold : QC.greenPale.withAlpha(140),
@@ -242,7 +242,7 @@ class _VerseListState extends State<_VerseList> {
                   color: QC.greenMain, borderRadius: BorderRadius.circular(20)),
               child: Text('${i + 1}',
                   style: GoogleFonts.lora(
-                      color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.w700)),
+                      color: Color(0xFFFAF7F0), fontSize: 11.5, fontWeight: FontWeight.w700)),
             ),
             Expanded(
               child: Text(verses[i],
@@ -279,7 +279,7 @@ class _HakkindaCard extends StatelessWidget {
           leading: const Icon(Icons.auto_stories_rounded, color: QC.goldLight),
           title: Text('Hakkında — $name',
               style: GoogleFonts.lora(
-                  fontSize: 14.5, fontWeight: FontWeight.w700, color: Colors.white)),
+                  fontSize: 14.5, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
           subtitle: Text('Tarihçe · nasıl indirildi · kaç bölüm',
               style: GoogleFonts.lora(fontSize: 11.5, color: QC.greenPale)),
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -288,7 +288,7 @@ class _HakkindaCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                  color: Color(0xFFFAF7F0), borderRadius: BorderRadius.circular(10)),
               child: Text(hakkinda,
                   style: GoogleFonts.lora(
                       fontSize: 13.5, height: 1.7, color: const Color(0xFF374151))),

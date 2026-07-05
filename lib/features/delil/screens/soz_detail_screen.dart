@@ -71,7 +71,7 @@ class _SozDetailScreenState extends State<SozDetailScreen>
             backgroundColor: AppColors.surface,
             pinned: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+              icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFFFAF7F0)),
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: Row(

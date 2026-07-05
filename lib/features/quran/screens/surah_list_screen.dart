@@ -80,7 +80,7 @@ class _SurahListScreenState extends State<SurahListScreen> {
       child: TextField(
         controller: _searchCtrl,
         onChanged: _onSearch,
-        style: const TextStyle(color: Colors.white, fontSize: 14),
+        style: const TextStyle(color: Color(0xFFFAF7F0), fontSize: 14),
         cursorColor: QC.goldLight,
         decoration: InputDecoration(
           hintText: "Sure adı veya meal içinde ara…",
@@ -96,7 +96,7 @@ class _SurahListScreenState extends State<SurahListScreen> {
                 )
               : null,
           filled: true,
-          fillColor: Colors.white.withAlpha(22),
+          fillColor: Color(0xFFFAF7F0).withAlpha(22),
           contentPadding: const EdgeInsets.symmetric(vertical: 0),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -167,7 +167,7 @@ class _SurahTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: QC.greenPale, width: 1.2),
           boxShadow: [
@@ -230,7 +230,7 @@ class _ResultTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: QC.greenPale, width: 1.2),
         ),

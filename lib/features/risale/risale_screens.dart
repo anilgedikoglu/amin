@@ -69,7 +69,7 @@ class _RisaleHomeScreenState extends State<RisaleHomeScreen> {
           child: TextField(
             controller: _ctrl,
             onChanged: _onChanged,
-            style: GoogleFonts.lora(color: Colors.white, fontSize: 15),
+            style: GoogleFonts.lora(color: Color(0xFFFAF7F0), fontSize: 15),
             decoration: InputDecoration(
               hintText: 'Konu/kelime ara (iman, haşir, ihlas…)',
               hintStyle: GoogleFonts.lora(color: QC.greenPale, fontSize: 13.5),
@@ -118,7 +118,7 @@ class _RisaleHomeScreenState extends State<RisaleHomeScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 9),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: QC.greenPale.withAlpha(160)),
       ),
@@ -127,7 +127,7 @@ class _RisaleHomeScreenState extends State<RisaleHomeScreen> {
           backgroundColor: QC.greenMain,
           child: Text('$no',
               style: GoogleFonts.lora(
-                  color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
+                  color: Color(0xFFFAF7F0), fontWeight: FontWeight.w700, fontSize: 13)),
         ),
         title: Text(b.name,
             style: GoogleFonts.lora(
@@ -171,7 +171,7 @@ class _RisaleHomeScreenState extends State<RisaleHomeScreen> {
         return Container(
           margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Color(0xFFFAF7F0),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: QC.greenPale.withAlpha(150)),
           ),
@@ -233,7 +233,7 @@ class RisaleBookScreen extends StatelessWidget {
               return Container(
                 margin: const EdgeInsets.only(bottom: 7),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Color(0xFFFAF7F0),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: QC.greenPale.withAlpha(150)),
                 ),
@@ -390,7 +390,7 @@ class _RisaleSectionScreenState extends State<RisaleSectionScreen> {
                   Expanded(
                     child: FilledButton.icon(
                       style: FilledButton.styleFrom(
-                          backgroundColor: QC.greenMain, foregroundColor: Colors.white),
+                          backgroundColor: QC.greenMain, foregroundColor: Color(0xFFFAF7F0)),
                       onPressed: () => _goto(_index + 1),
                       icon: const Icon(Icons.chevron_right_rounded, size: 20),
                       label: const Text('Sonraki'),

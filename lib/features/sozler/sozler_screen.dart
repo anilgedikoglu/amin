@@ -90,13 +90,13 @@ class _SozlerScreenState extends State<SozlerScreen> {
       child: Column(children: [
         TextField(
           onChanged: (v) => setState(() => _q = v),
-          style: const TextStyle(color: Colors.white, fontSize: 14),
+          style: const TextStyle(color: Color(0xFFFAF7F0), fontSize: 14),
           cursorColor: QC.goldLight,
           decoration: InputDecoration(
             hintText: "Hadis veya söz ara…",
             hintStyle: const TextStyle(color: Colors.white38, fontSize: 13),
             prefixIcon: const Icon(Icons.search, color: QC.greenPale, size: 20),
-            filled: true, fillColor: Colors.white.withAlpha(22),
+            filled: true, fillColor: Color(0xFFFAF7F0).withAlpha(22),
             contentPadding: const EdgeInsets.symmetric(vertical: 0),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -124,7 +124,7 @@ class _SozlerScreenState extends State<SozlerScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
           decoration: BoxDecoration(
-            color: active ? QC.gold : Colors.white.withAlpha(22),
+            color: active ? QC.gold : Color(0xFFFAF7F0).withAlpha(22),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: QC.gold.withAlpha(active ? 255 : 90)),
           ),
@@ -232,7 +232,7 @@ class _SozCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale, width: 1.2),
         boxShadow: [BoxShadow(color: QC.greenMain.withAlpha(16), blurRadius: 8, offset: const Offset(0, 2))],

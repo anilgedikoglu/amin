@@ -73,7 +73,7 @@ class _ReminderSettingsScreenState extends State<ReminderSettingsScreen> {
       initialTime: TimeOfDay(hour: _hour, minute: _min),
       builder: (ctx, child) => Theme(
         data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(primary: QC.greenMain, onPrimary: Colors.white)),
+          colorScheme: const ColorScheme.light(primary: QC.greenMain, onPrimary: Color(0xFFFAF7F0))),
         child: child!,
       ),
     );
@@ -107,7 +107,7 @@ class _ReminderSettingsScreenState extends State<ReminderSettingsScreen> {
                   const Icon(Icons.notifications_active_rounded, color: QC.goldLight, size: 40),
                   const SizedBox(height: 10),
                   Text("Günün Hadisi / Sözü",
-                      style: GoogleFonts.lora(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white)),
+                      style: GoogleFonts.lora(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFFFAF7F0))),
                   const SizedBox(height: 6),
                   const Text("Her gün seçtiğiniz saatte bir hadis veya özlü söz bildirimi alın.",
                       textAlign: TextAlign.center,
@@ -117,7 +117,7 @@ class _ReminderSettingsScreenState extends State<ReminderSettingsScreen> {
               const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xFFFAF7F0),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: QC.greenPale, width: 1.2)),
                 child: Column(children: [
@@ -152,7 +152,7 @@ class _ReminderSettingsScreenState extends State<ReminderSettingsScreen> {
               const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xFFFAF7F0),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: QC.greenPale, width: 1.2)),
                 child: SwitchListTile(

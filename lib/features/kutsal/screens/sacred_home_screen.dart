@@ -98,7 +98,7 @@ class _SacredHomeScreenState extends State<SacredHomeScreen> {
         TextField(
           controller: _searchCtrl,
           onChanged: _onChanged,
-          style: GoogleFonts.lora(color: Colors.white, fontSize: 15),
+          style: GoogleFonts.lora(color: Color(0xFFFAF7F0), fontSize: 15),
           decoration: InputDecoration(
             hintText: 'Tüm kutsal metinlerde ara (ör. aşk, merhamet, love)',
             hintStyle: GoogleFonts.lora(color: QC.greenPale, fontSize: 13.5),
@@ -205,7 +205,7 @@ class _TextCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: Color(0xFFFAF7F0),
       elevation: 1,
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(
@@ -246,7 +246,7 @@ class _HitCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: Material(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),

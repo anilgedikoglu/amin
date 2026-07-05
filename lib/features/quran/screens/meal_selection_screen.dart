@@ -43,7 +43,7 @@ class _MealSelectionScreenState extends State<MealSelectionScreen> {
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: sel ? QC.greenMain : Colors.white,
+                      color: sel ? QC.greenMain : Color(0xFFFAF7F0),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: sel ? QC.gold : QC.greenPale, width: 1.4),
                     ),
@@ -56,7 +56,7 @@ class _MealSelectionScreenState extends State<MealSelectionScreen> {
                           Text(m.name,
                               style: GoogleFonts.lora(
                                   fontSize: 15, fontWeight: FontWeight.w700,
-                                  color: sel ? Colors.white : QC.greenDark)),
+                                  color: sel ? Color(0xFFFAF7F0) : QC.greenDark)),
                           const SizedBox(height: 2),
                           Text(m.author,
                               style: TextStyle(

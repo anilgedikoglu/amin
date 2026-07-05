@@ -68,7 +68,7 @@ class _Section extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale, width: 1.2),
       ),

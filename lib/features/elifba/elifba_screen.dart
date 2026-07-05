@@ -247,7 +247,7 @@ class ElifbaScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale.withAlpha(160)),
       ),
@@ -331,7 +331,7 @@ class _ElifbaDersScreenState extends State<ElifbaDersScreen> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale.withAlpha(160)),
         boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 6, offset: const Offset(0, 2))],
@@ -385,7 +385,7 @@ class _ElifbaDersScreenState extends State<ElifbaDersScreen> {
             Expanded(
               child: FilledButton.icon(
                 style: FilledButton.styleFrom(
-                    backgroundColor: QC.greenMain, foregroundColor: Colors.white),
+                    backgroundColor: QC.greenMain, foregroundColor: Color(0xFFFAF7F0)),
                 onPressed: () => setState(() => _i++),
                 icon: const Icon(Icons.chevron_right_rounded),
                 label: const Text('Sonraki ders'),

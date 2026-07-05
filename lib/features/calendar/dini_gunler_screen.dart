@@ -104,7 +104,7 @@ class _DiniGunlerScreenState extends State<DiniGunlerScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(20),
+                  color: Color(0xFFFAF7F0).withAlpha(20),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: QC.gold.withAlpha(80))),
               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -201,7 +201,7 @@ class _DiniGunCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: QC.greenPale, width: 1.2),
           boxShadow: [BoxShadow(color: QC.greenMain.withAlpha(16), blurRadius: 8, offset: const Offset(0, 2))],

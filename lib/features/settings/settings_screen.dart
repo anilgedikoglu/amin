@@ -46,7 +46,7 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _tile(IconData icon, String title, String sub, VoidCallback onTap) {
     return Material(
-      color: Colors.white,
+      color: Color(0xFFFAF7F0),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -113,7 +113,7 @@ class HakkindaScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: QC.greenPale.withAlpha(150)),
       ),

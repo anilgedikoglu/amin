@@ -141,7 +141,7 @@ class _TeolojiScreenState extends State<TeolojiScreen> {
           padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
           child: TextField(
             onChanged: (v) => setState(() => _q = v),
-            style: GoogleFonts.lora(color: Colors.white, fontSize: 14),
+            style: GoogleFonts.lora(color: Color(0xFFFAF7F0), fontSize: 14),
             decoration: InputDecoration(
               hintText: 'Konu ara (delil, kader, ruh, ahlak…)',
               hintStyle: GoogleFonts.lora(color: QC.greenPale, fontSize: 13),
@@ -189,7 +189,7 @@ class _TeolojiScreenState extends State<TeolojiScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: QC.greenPale.withAlpha(150)),
       ),

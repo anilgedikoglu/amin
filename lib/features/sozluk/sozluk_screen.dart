@@ -118,7 +118,7 @@ class _SozlukScreenState extends State<SozlukScreen> {
                 prefixIcon: const Icon(Icons.translate_rounded, color: QC.greenMid),
                 isDense: true,
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Color(0xFFFAF7F0),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: QC.greenPale.withAlpha(160))),
@@ -153,7 +153,7 @@ class _SozlukScreenState extends State<SozlukScreen> {
 
   Widget _yonBtn(String label, bool aktif, VoidCallback onTap) {
     return Material(
-      color: aktif ? QC.greenMain : Colors.white,
+      color: aktif ? QC.greenMain : Color(0xFFFAF7F0),
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
@@ -168,7 +168,7 @@ class _SozlukScreenState extends State<SozlukScreen> {
               style: GoogleFonts.lora(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w700,
-                  color: aktif ? Colors.white : QC.greenDark)),
+                  color: aktif ? Color(0xFFFAF7F0) : QC.greenDark)),
         ),
       ),
     );
@@ -181,7 +181,7 @@ class _SozlukScreenState extends State<SozlukScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFFAF7F0),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: QC.greenPale.withAlpha(150)),
       ),

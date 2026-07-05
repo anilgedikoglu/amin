@@ -177,7 +177,7 @@ class _QuranHomeScreenState extends State<QuranHomeScreen> {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xFFFAF7F0),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: QC.greenPale, width: 1.4),
           boxShadow: [
@@ -287,7 +287,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   margin: const EdgeInsets.only(bottom: 10),
                   padding: const EdgeInsets.all(13),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xFFFAF7F0),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: QC.greenPale, width: 1.2),
                   ),

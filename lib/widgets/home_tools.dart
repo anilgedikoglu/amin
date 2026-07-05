@@ -82,7 +82,7 @@ class _NextPrayerBannerState extends State<NextPrayerBanner> {
         padding: const EdgeInsets.symmetric(vertical: 9),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.black.withAlpha(55), Colors.white.withAlpha(8)]),
+              colors: [Colors.black.withAlpha(55), Color(0xFFFAF7F0).withAlpha(8)]),
           borderRadius: BorderRadius.circular(10),
           border: const Border(left: BorderSide(color: QC.gold, width: 4)),
         ),
@@ -171,7 +171,7 @@ class _DailyHadisCardState extends State<DailyHadisCard> {
           ]),
           const SizedBox(height: 10),
           Text(s.metin,
-              style: GoogleFonts.lora(fontSize: 14.5, height: 1.7, color: Colors.white)),
+              style: GoogleFonts.lora(fontSize: 14.5, height: 1.7, color: Color(0xFFFAF7F0))),
           const SizedBox(height: 8),
           Align(
             alignment: Alignment.centerRight,
@@ -258,7 +258,7 @@ class _DelilButton extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topLeft, end: Alignment.bottomRight,
-                colors: [Colors.white.withAlpha(20), Colors.white.withAlpha(10)]),
+                colors: [Color(0xFFFAF7F0).withAlpha(20), Color(0xFFFAF7F0).withAlpha(10)]),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: QC.gold.withAlpha(95), width: 1.2),
             boxShadow: [BoxShadow(color: Colors.black.withAlpha(55), blurRadius: 12, offset: const Offset(0, 6))],
@@ -353,7 +353,7 @@ class _ToolTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white.withAlpha(16),
+          color: Color(0xFFFAF7F0).withAlpha(16),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: QC.gold.withAlpha(75)),
         ),
