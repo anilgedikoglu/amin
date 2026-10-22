@@ -1,0 +1,24 @@
+screen_name,feature_name,current_icon_name_or_asset,current_icon_problem,suggested_new_icon_concept,visual_style,colors,size_needed,file_name_suggestion,priority
+HomeScreen,Uygulama logosu / ana sembol,"Emoji ☽ (Text widget, 52px) daire içinde","Emoji platforma göre değişir (Android/iOS farklı render), premium durmuyor, ölçeklenince bulanık","İnce hatlı hilal + tek yıldız, altın çizgi (line-art)","Line / outline, yumuşak köşeler","Altın #c9a84c → #f0d080 gradient, koyu yeşil zemin #1a4731",512x512 @1x/2x/3x,ic_brand_crescent.svg,Yüksek
+HomeScreen,DUA ET butonu,"Emoji 🤲","Emoji buton metniyle hizalanmıyor, kültürel ten rengi varyasyonu sorunlu","Açık avuçlar (dua eli) sade outline","Line, 2px stroke","Koyu yeşil #1a4731 (açık zeminde)",96x96,ic_dua_hands.svg,Yüksek
+HomeScreen,DUALARA DEVAM butonu,"Emoji 📿","Emoji tesbih net değil küçük boyutta","Tesbih taneleri zinciri, dairesel","Line, dolu noktalar","Altın #f0d080",96x96,ic_tasbih.svg,Orta
+HomeScreen,Kur'an-ı Kerim kartı (YENİ),Yok,"Feature için ikon yok","Açık mushaf (Kur'an) + ışık huzmesi, rahle üstünde","Filled + ince detay","Altın #c9a84c, yeşil #2d6a4f vurgu",128x128,ic_quran_book.svg,Yüksek
+KategoriScreen,Kategori kart ikonları (genel),"Emoji'ler: 🤲 🕋 📿 🌙 🌟 🕯️ 📅 🔮 💎 ✅ 📜 🗂️","12 farklı emoji tutarsız stil/ağırlıkta, marka dili yok, bazıları (🗂️ 🔮) dini içerikle uyumsuz","Her kategoriye özel tek-renk line ikon seti, ortak grid/stroke","Line set, tutarlı 2px stroke, 24px grid","Beyaz/açık (yeşil gradient kutu zemininde #2d6a4f→#1a4731)",96x96 her biri,ic_cat_{slug}.svg,Yüksek
+KategoriScreen,Kur'an Sureleri kategorisi,"Emoji 🕋 (Kâbe)","Kâbe emoji'si 'sure okuma' ile kavramsal uyumsuz","Açık kitap + ay yıldız filigranı","Line","Altın #c9a84c",96x96,ic_cat_quran.svg,Orta
+KategoriScreen,Zikirler kategorisi,"Emoji 📿","Diğer tesbih ikonuyla aynı, ayrışmıyor","Dönen tesbih + zikir dalgası","Line","Yeşil #40916c",96x96,ic_cat_zikir.svg,Orta
+SurahListScreen,Geri butonu,"Icons.arrow_back_ios_new (Material)","Material default, marka dışı","İnce ok, yuvarlatılmış uç","Line","Beyaz #ffffff70",48x48,ic_back.svg,Düşük
+SurahListScreen,Sure satırı numara rozeti,Yok,"Sure no için görsel yok","Sekizgen/mihrap çerçeveli numara rozeti","Filled çerçeve","Altın kenar #c9a84c, yeşil iç",64x64,ic_surah_badge.svg,Orta
+SurahListScreen,Mekki/Medeni rozeti,Yok,"İniş yeri göstergesi yok","Mekki: Kâbe minik; Medeni: Mescid-i Nebevi kubbe","Line, küçük rozet","Mekki altın, Medeni yeşil",48x48,ic_mekki.svg / ic_medeni.svg,Orta
+SurahListScreen,Arama,"Yok (eklenmeli)","Arama girişi/ikonu yok","Büyüteç ince","Line","Yeşil #2d6a4f",48x48,ic_search.svg,Yüksek
+SurahDetailScreen,Tüm sureyi dinle,Yok,"Ses oynatma ikonu yok","Daire içinde play üçgeni","Filled","Altın #f0d080 daire, koyu yeşil üçgen",72x72,ic_play_circle.svg,Yüksek
+SurahDetailScreen,Ayet dinle (satır),Yok,"Ayet bazlı oynatma yok","Küçük hoparlör / play","Line","Yeşil #40916c",48x48,ic_ayah_play.svg,Yüksek
+SurahDetailScreen,Favoriye ekle,Yok,"Favori sistemi yok","İçi boş/dolu yıldız (toggle)","Line (boş) + Filled (dolu)","Altın #c9a84c",48x48,ic_star_outline.svg / ic_star_filled.svg,Yüksek
+SurahDetailScreen,Font büyüt/küçült,Yok,"Yazı tipi kontrolü yok","A- / A+ harf kontrolü","Line + tipografik","Beyaz / altın",48x48,ic_font_minus.svg / ic_font_plus.svg,Orta
+SurahDetailScreen,Arapça göster/gizle,Yok,"Toggle yok","Arapça harf ﻉ açık/kapalı","Line toggle","Altın",48x48,ic_toggle_arabic.svg,Orta
+SurahDetailScreen,Meal göster/gizle,Yok,"Toggle yok","Latin harf T açık/kapalı","Line toggle","Yeşil",48x48,ic_toggle_meal.svg,Orta
+SurahDetailScreen,Son okunan yer işareti,Yok,"Kaldığı yer göstergesi yok","Kitap ayracı (bookmark) şeridi","Filled","Altın #c9a84c",48x48,ic_bookmark.svg,Yüksek
+AudioPlayerBar,Play / Pause,Yok,"Mini oynatıcı yok","Play üçgeni / iki çubuk pause","Filled","Beyaz, altın vurgu",48x48,ic_play.svg / ic_pause.svg,Yüksek
+AudioPlayerBar,Önceki / Sonraki ayet,Yok,"Geçiş kontrolü yok","Çift üçgen + çizgi (skip)","Line","Beyaz",48x48,ic_prev.svg / ic_next.svg,Yüksek
+AudioPlayerBar,İndir (offline ses),Yok,"Offline indirme göstergesi yok","Aşağı ok + alt çizgi; indirilince ✓ tik","Line + durum","Yeşil #40916c, tamamlanınca #74c69d",48x48,ic_download.svg / ic_downloaded.svg,Yüksek
+QuranSourcesScreen,Kaynaklar / lisans,Yok,"Kaynak sayfası ikonu yok","Belge + denge/terazi (telif)","Line","Yeşil #2d6a4f",64x64,ic_sources.svg,Düşük
+Genel,Ayarlar,Yok,"Ayar ekranı/ikonu yok","Dişli, ince","Line","Beyaz #ffffff70",48x48,ic_settings.svg,Düşük
