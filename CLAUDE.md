@@ -156,3 +156,6 @@ Apple Guideline 4.2 (minimum functionality) reddine karşı eklendi. Tam işlevs
 - **Global tema:** `AminApp` MaterialApp'te uygulama geneli AppBar/divider/splash(altın ripple)/snackbar + Cupertino sayfa geçişleri tanımlı (tek noktadan tutarlılık).
 - **Web repo:** `github.com/futurastictech/futurastictech.github.io`
 - **Uygulama repo:** `github.com/anilgedikoglu/amin`
+
+## Reklam düzeltmesi (24 Kas 2026) — BUILD BEKLİYOR
+Her 10 tıkta geçiş reklamı kaldırıldı (beklenmedik reklam politikası riski) → doğal arada: sayfadan geri dönüş (her 2.), zikir bitişi; en az 90 sn ara. Commit 471c0f7. Kod main'de; mağazaya çıkması için "test çık" onayı + build gerekir.
