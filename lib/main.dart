@@ -53,65 +53,21 @@ class _AdIds {
   static String get interstitial => Platform.isIOS
       ? 'ca-app-pub-6470338276121414/1633785489'
       : 'ca-app-pub-6470338276121414/3936380770';
-  // Rewarded (ödüllü) — sadece tema değişiminde kullanılır.
-  static String get rewarded => Platform.isIOS
-      ? 'ca-app-pub-6470338276121414/9147603563'
-      : 'ca-app-pub-6470338276121414/7877624629';
 }
 
 class AdManager {
   static final AdManager instance = AdManager._();
   AdManager._();
 
-  // Geçiş (interstitial): doğal arada (bkz. dogalAra). Ödüllü (rewarded): tema değişiminde.
+  // Geçiş (interstitial): doğal arada (bkz. dogalAra).
   InterstitialAd? _interstitial;
   bool _interstitialLoading = false;
   int _tapCount = 0;
-  RewardedAd? _rewarded;
-  bool _rewardedLoading = false;
   // Bilgi Yarışması sırasında tıklamalar sayılmaz (pop-up/reklam çıkmasın).
   bool pauseTaps = false;
 
   void load() {
     _loadInterstitial();
-    _loadRewarded();
-  }
-
-  void _loadRewarded() {
-    if (_rewardedLoading || _rewarded != null) return;
-    _rewardedLoading = true;
-    RewardedAd.load(
-      adUnitId: _AdIds.rewarded,
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (ad) {
-          _rewarded = ad;
-          _rewardedLoading = false;
-        },
-        onAdFailedToLoad: (_) {
-          _rewardedLoading = false;
-          Future.delayed(const Duration(minutes: 1), _loadRewarded);
-        },
-      ),
-    );
-  }
-
-  /// Ödüllü reklamı gösterir; kapanınca [onDone] çağrılır (reklam yoksa da).
-  void showRewarded(VoidCallback onDone) {
-    final ad = _rewarded;
-    if (ad == null) {
-      _loadRewarded();
-      onDone(); // reklam hazır değilse akışı bloklamadan devam et
-      return;
-    }
-    _rewarded = null;
-    var done = false;
-    void finish() { if (!done) { done = true; onDone(); } }
-    ad.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: (a) { a.dispose(); _loadRewarded(); finish(); },
-      onAdFailedToShowFullScreenContent: (a, _) { a.dispose(); _loadRewarded(); finish(); },
-    );
-    ad.show(onUserEarnedReward: (_, __) => finish());
   }
 
   void _loadInterstitial() {
