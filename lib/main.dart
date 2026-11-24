@@ -63,7 +63,7 @@ class AdManager {
   static final AdManager instance = AdManager._();
   AdManager._();
 
-  // Geçiş (interstitial): her 10 tıkta 1. Ödüllü (rewarded): tema değişiminde.
+  // Geçiş (interstitial): doğal arada (bkz. dogalAra). Ödüllü (rewarded): tema değişiminde.
   InterstitialAd? _interstitial;
   bool _interstitialLoading = false;
   int _tapCount = 0;
@@ -138,24 +138,52 @@ class AdManager {
   }
 
   void showInterstitial() {
-    if (_interstitial != null) {
-      _interstitial!.show();
+    final ad = _interstitial;
+    if (ad != null) {
+      _interstitial = null;
+      _sonReklam = DateTime.now();
+      ad.show();
     } else {
       _loadInterstitial(); // hazır değilse bir sonraki için yükle
     }
   }
 
-  // Her 10 tıkta 1 geçiş reklamı; her 100 tıkta (reklam yerine) puanlama pop-up'ı.
-  // Bilgi Yarışması sırasında tıklamalar hiç sayılmaz.
+  // 24 Kas: geçiş reklamı artık dokunuş sayısıyla DEĞİL, yalnız doğal arada çıkar
+  // (zikir sayarken parmağın altında açılan reklam = AdMob "beklenmedik reklam"
+  // ihlali + yanlış tıklama). Doğal ara: bir ekrandan geri dönüş (her 2.'si) ve
+  // zikir tamamlanınca "Yeniden Başla". İki reklam arası en az [_minAra].
+  static const Duration _minAra = Duration(seconds: 90);
+  DateTime? _sonReklam;
+  int _donusSayisi = 0;
+
+  void dogalAra({bool tamamlandi = false}) {
+    if (pauseTaps) return;
+    if (!tamamlandi) {
+      _donusSayisi++;
+      if (_donusSayisi % 2 != 0) return;
+    }
+    final son = _sonReklam;
+    if (son != null && DateTime.now().difference(son) < _minAra) return;
+    showInterstitial();
+  }
+
+  // Her 100 tıkta puanlama pop-up'ı (reklam yok). Bilgi Yarışması sırasında sayılmaz.
   void onTap() {
     if (pauseTaps) return;
     _tapCount++;
     if (_tapCount % 100 == 0) {
       final ctx = rootNavigatorKey.currentContext;
       if (ctx != null) RatingService.gosterEgerUygun(ctx);
-      return; // 100. tıkta reklam yerine değerlendirme daveti
     }
-    if (_tapCount % 10 == 0) showInterstitial();
+  }
+}
+
+/// Bir ekrandan geri dönülünce (pop) doğal arada geçiş reklamı dener.
+class ReklamNavGozlemci extends NavigatorObserver {
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    if (route is! PageRoute) return; // diyalog/alt sayfa kapanışı sayılmaz
+    WidgetsBinding.instance.addPostFrameCallback((_) => AdManager.instance.dogalAra());
   }
 }
 
@@ -686,7 +714,8 @@ class AminApp extends StatelessWidget {
     builder: (context, _, __) => MaterialApp(
     title: 'Amin', debugShowCheckedModeBanner: false,
     navigatorKey: rootNavigatorKey,
-    // Uygulamada nereye tıklanırsa tıklansın say; her 10 tıkta 1 geçiş reklamı.
+    navigatorObservers: [ReklamNavGozlemci()],
+    // Uygulamada nereye tıklanırsa tıklansın say (her 100 tıkta puanlama daveti).
     builder: (context, child) => Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_) => AdManager.instance.onTap(),
@@ -1945,9 +1974,10 @@ class _DuaScreenState extends State<DuaScreen> with TickerProviderStateMixin {
   void _fontUp() => setState(() => _fontScale = (_fontScale + 0.15).clamp(1.0, 2.0));
   void _fontDown() => setState(() => _fontScale = (_fontScale - 0.15).clamp(1.0, 2.0));
 
-  // TAMAMLANDI → "Yeniden Başla": sadece sıfırla (reklam global 10-tık sayacında).
+  // TAMAMLANDI → "Yeniden Başla": sıfırla + doğal arada geçiş reklamı (24 Kas).
   void _resetWithAd() {
     _reset();
+    AdManager.instance.dogalAra(tamamlandi: true);
   }
 
   @override
